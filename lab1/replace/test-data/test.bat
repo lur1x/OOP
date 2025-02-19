@@ -76,6 +76,14 @@ fc.exe "%TEMP%\output.txt" test10\cyclicity_out.txt >nul
 if ERRORLEVEL 1 goto err
 echo tenth test ok
 
+rem Сheck line "12312312345"
+%PROGRAM% test11\input.txt "%TEMP%\output.txt" 1231234 XYZ
+echo run eleventh test
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test11\output.txt >nul
+if ERRORLEVEL 1 goto err
+echo eleventh test ok
+
 
 echo Program testing succeeded
 exit 0
