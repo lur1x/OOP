@@ -1,0 +1,5 @@
+This application performs the inversion of a 3*3 matrix, i.e. finding the inverse matrix and
+outputting the coefficients of the resulting matrix to the standard output stream
+
+To run, enter the following command in the command line:
+invert.exe <file name with the matrix>

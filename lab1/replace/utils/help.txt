@@ -1,0 +1,19 @@
+This application replaces all occurrences of a substring in a text file with another string, and
+writes the result to an output file (different from the input).
+
+The program supports three modes of operation:
+
+1. Input via the command line:
+replace.exe <input file> <output file> <search string> <replace string>
+
+2. Input via stdin: If the program is launched without parameters, it takes the search string as
+the first line, the replacement string as the second line, and then the replacement text.
+ma
+mama
+mama delala pelmeni
+ya pokushal plotno
+where "ma" is the search string, "mama" is the replacement string, "mama delala pelmeni ya pokushal
+ plotno" is the replacement text.
+
+3. Launching the program with the -h parameter displays a brief help on
+usage and terminates execution.
