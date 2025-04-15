@@ -5,15 +5,26 @@
 
 void PrintHelp()
 {
-    auto helpFile = std::ifstream("../utils/help.txt");
-    if (!helpFile.is_open()) {
-        throw std::runtime_error("ERROR\n");
-    }
-    
-    std::string line;
-    while (std::getline(helpFile, line)) {
-        std::cout << line << std::endl;
-    }
+    const std::string HELP_TEXT = "This application replaces all occurrences of a substring in a text file with another string, and\n"
+                                  "writes the result to an output file (different from the input).\n"
+                                  "\n"
+                                  "The program supports three modes of operation:\n"
+                                  "\n"
+                                  "1. Input via the command line:\n"
+                                  "replace.exe <input file> <output file> <search string> <replace string>\n"
+                                  "\n"
+                                  "2. Input via stdin: If the program is launched without parameters, it takes the search string as\n"
+                                  "the first line, the replacement string as the second line, and then the replacement text.\n"
+                                  "ma\n"
+                                  "mama\n"
+                                  "mama delala pelmeni\n"
+                                  "ya pokushal plotno\n"
+                                  "where \"ma\" is the search string, \"mama\" is the replacement string, \"mama delala pelmeni ya pokushal\n"
+                                  " plotno\" is the replacement text.\n"
+                                  "\n"
+                                  "3. Launching the program with the -h parameter displays a brief help on\n"
+                                  "usage and terminates execution.";
+    std::cout << HELP_TEXT;
 }
 
 std::string ReplaceString(const std::string& subject,
@@ -86,57 +97,53 @@ void PrintFile(std::ifstream& output)
     }
 }
 
-void StdinMode()
+bool StdinMode()
 {
     std::string searchString;
     std::string replaceString;
 
     if (!std::getline(std::cin, searchString))
     {
-        throw std::invalid_argument("ERROR");
+        return false;
     }
     if (!std::getline(std::cin, replaceString))
     {
-        throw std::invalid_argument("ERROR");
+        return false;
     }
 
-    std::ofstream temFile("../output.txt");
-    CopyStreamWithReplacement(std::cin, temFile, searchString, replaceString);
-    temFile.close();
-
-    std::ifstream output("../output.txt");
-    PrintFile(output);
-    output.close();
+    CopyStreamWithReplacement(std::cin, std::cout, searchString, replaceString);
+    return true;
 }
 
 int main(int argc, char* argv[])
 {
-    try
-    {
-        const int STDIN_ARGS_COUNT = 1;
-        const int HELP_ARGS_COUNT = 2;
-        const int CLI_ARGS_COUNT = 5;
+    const int STDIN_ARGS_COUNT = 1;
+    const int HELP_ARGS_COUNT = 2;
+    const int CLI_ARGS_COUNT = 5;
 
-        if (argc == HELP_ARGS_COUNT && std::strcmp(argv[1], "-h") == 0)
+    if (argc == STDIN_ARGS_COUNT)
+    {
+        if (!StdinMode())
         {
-            PrintHelp();
-        }
-        else if (argc == CLI_ARGS_COUNT)
-        {
-            FileMode(argv[1], argv[2], argv[3], argv[4]);
-        }
-        else if (argc == STDIN_ARGS_COUNT)
-        {
-            StdinMode();
-        }
-        else
-        {
-            throw std::invalid_argument("ERROR");
+            return 1;
         }
     }
-    catch (const std::exception& exception)
+    else if (argc == HELP_ARGS_COUNT && std::strcmp(argv[1], "-h") == 0)
     {
-        std::cerr << exception.what() << std::endl;
+        PrintHelp();
+    }
+    else if (argc == CLI_ARGS_COUNT)
+    {
+        if(!FileMode(argv[1], argv[2], argv[3], argv[4]))
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        std::cout << "Error: Invalid arguments\n"
+                     "Usage: " << argv[0] << " <input> <output> <search> <replace>\n"
+                     "Or: " << argv[0] << " -h for help\n";
         return 1;
     }
     return 0;

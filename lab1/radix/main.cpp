@@ -16,6 +16,7 @@ bool IsOverflow(const int& num, int& digit, const int& radix)
 
 int CharToDigit(char ch)
 {
+    const std::string ERROR_INVALID_DIGIT = "Invalid digit";
     if (ch >= '0' && ch <= '9')
     {
         return ch - '0';
@@ -24,7 +25,7 @@ int CharToDigit(char ch)
     {
         return 10 + (ch - 'A');
     }
-    throw std::invalid_argument("Invalid digit");
+    throw std::invalid_argument(ERROR_INVALID_DIGIT);
 }
 
 bool IsValidDigit(const int& digit, const int& radix)
@@ -59,11 +60,15 @@ bool IsEmptyNumber(const size_t& startIndex, const std::string& str)
 
 int StringToInt(const std::string& str, int radix)
 {
+    const std::string ERROR_EMPTY_NUMBER = "Empty number";
+    const std::string ERROR_INVALID_DIGIT = "Invalid digit";
+    const std::string ERROR_OVERFLOW = "Overflow";
+
     auto [startIndex, isNegative] = ParseSign(str);
 
     if (IsEmptyNumber(startIndex, str))
     {
-        throw std::invalid_argument("Empty number");
+        throw std::invalid_argument(ERROR_EMPTY_NUMBER);
     }
 
     int num = 0;
@@ -72,12 +77,12 @@ int StringToInt(const std::string& str, int radix)
         int digit = CharToDigit(str[i]);
         if (!IsValidDigit(digit, radix))
         {
-            throw std::invalid_argument("Invalid digit");
+            throw std::invalid_argument(ERROR_INVALID_DIGIT);
         }
 
         if (IsOverflow(num, digit, radix))
         {
-            throw std::invalid_argument("Overflow");
+            throw std::invalid_argument(ERROR_OVERFLOW);
         }
         num = num * radix + digit;
     }
@@ -93,12 +98,14 @@ bool IsAcceptRadix(const int& radix)
 
 int ReadRadix(const std::string& str)
 {
+    const std::string ERROR_INVALID_RADIX = "Invalid radix";
+
     const int DECIMAL_NOTATION = 10;
 
     int radix = StringToInt(str,DECIMAL_NOTATION);
     if (IsAcceptRadix(radix))
     {
-        throw std::invalid_argument("Invalid radix");
+        throw std::invalid_argument(ERROR_INVALID_RADIX);
     }
 
     return radix;
@@ -106,11 +113,12 @@ int ReadRadix(const std::string& str)
 
 Args ParseArgs(int argc, char* argv[])
 {
+    const std::string ERROR_INVALID_ARGUMENTS = "Invalid arguments";
     const int EXPECTED_ARGS_COUNT= 4;
 
     if (argc != EXPECTED_ARGS_COUNT)
     {
-        throw  std::invalid_argument("Invalid arguments");
+        throw  std::invalid_argument(ERROR_INVALID_ARGUMENTS);
     }
 
     int sourceNotation = ReadRadix(argv[1]);
