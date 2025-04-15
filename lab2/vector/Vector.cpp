@@ -38,15 +38,6 @@ std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
     return processedNumbers;
 }
 
-std::vector<double> SortNumbers(const std::vector<double>& numbers)
-{
-    std::vector<double> sortedNumbers = numbers;
-    std::sort(sortedNumbers.begin(), sortedNumbers.end());
-
-    return sortedNumbers;
-}
-
-
 void PrintSortedNumbers(const std::vector<double>& numbers, std::ostream& output)
 {
     std::vector<double> sortedNumbers = SortNumbers(numbers);
