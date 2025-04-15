@@ -1,0 +1,662 @@
+        -:    0:Source:C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/any
+        -:    0:Graph:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcno
+        -:    0:Data:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcda
+        -:    0:Runs:1
+        -:    1:// <any> -*- C++ -*-
+        -:    2:
+        -:    3:// Copyright (C) 2014-2024 Free Software Foundation, Inc.
+        -:    4://
+        -:    5:// This file is part of the GNU ISO C++ Library.  This library is free
+        -:    6:// software; you can redistribute it and/or modify it under the
+        -:    7:// terms of the GNU General Public License as published by the
+        -:    8:// Free Software Foundation; either version 3, or (at your option)
+        -:    9:// any later version.
+        -:   10:
+        -:   11:// This library is distributed in the hope that it will be useful,
+        -:   12:// but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   13:// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   14:// GNU General Public License for more details.
+        -:   15:
+        -:   16:// Under Section 7 of GPL version 3, you are granted additional
+        -:   17:// permissions described in the GCC Runtime Library Exception, version
+        -:   18:// 3.1, as published by the Free Software Foundation.
+        -:   19:
+        -:   20:// You should have received a copy of the GNU General Public License and
+        -:   21:// a copy of the GCC Runtime Library Exception along with this program;
+        -:   22:// see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+        -:   23:// <http://www.gnu.org/licenses/>.
+        -:   24:
+        -:   25:/** @file include/any
+        -:   26: *  This is a Standard C++ Library header.
+        -:   27: */
+        -:   28:
+        -:   29:#ifndef _GLIBCXX_ANY
+        -:   30:#define _GLIBCXX_ANY 1
+        -:   31:
+        -:   32:#pragma GCC system_header
+        -:   33:
+        -:   34:#define __glibcxx_want_any
+        -:   35:#include <bits/version.h>
+        -:   36:
+        -:   37:#ifdef __cpp_lib_any // C++ >= 17
+        -:   38:
+        -:   39:#include <initializer_list>
+        -:   40:#include <typeinfo>
+        -:   41:#include <new>
+        -:   42:#include <type_traits>
+        -:   43:#include <bits/utility.h> // in_place_type_t
+        -:   44:
+        -:   45:namespace std _GLIBCXX_VISIBILITY(default)
+        -:   46:{
+        -:   47:_GLIBCXX_BEGIN_NAMESPACE_VERSION
+        -:   48:
+        -:   49:  /**
+        -:   50:   *  @addtogroup utilities
+        -:   51:   *  @{
+        -:   52:   */
+        -:   53:
+        -:   54:  /**
+        -:   55:   *  @brief Exception class thrown by a failed @c any_cast
+        -:   56:   *  @ingroup exceptions
+        -:   57:   */
+        -:   58:  class bad_any_cast : public bad_cast
+        -:   59:  {
+        -:   60:  public:
+function _ZNKSt12bad_any_cast4whatEv called 0 returned 0% blocks executed 0%
+    #####:   61:    virtual const char* what() const noexcept { return "bad any_cast"; }
+        -:   62:  };
+        -:   63:
+        -:   64:  [[gnu::noreturn]] inline void __throw_bad_any_cast()
+        -:   65:  {
+        -:   66:#if __cpp_exceptions
+        -:   67:    throw bad_any_cast{};
+        -:   68:#else
+        -:   69:    __builtin_abort();
+        -:   70:#endif
+        -:   71:  }
+        -:   72:
+        -:   73:  /**
+        -:   74:   *  @brief A type-safe container of any type.
+        -:   75:   *
+        -:   76:   *  An `any` object's state is either empty or it stores a contained object
+        -:   77:   *  of CopyConstructible type.
+        -:   78:   *
+        -:   79:   *  @since C++17
+        -:   80:   */
+        -:   81:  class any
+        -:   82:  {
+        -:   83:    // Holds either pointer to a heap object or the contained object itself.
+        -:   84:    union _Storage
+        -:   85:    {
+        -:   86:      constexpr _Storage() : _M_ptr{nullptr} {}
+        -:   87:
+        -:   88:      // Prevent trivial copies of this type, buffer might hold a non-POD.
+        -:   89:      _Storage(const _Storage&) = delete;
+        -:   90:      _Storage& operator=(const _Storage&) = delete;
+        -:   91:
+        -:   92:      void* _M_ptr;
+        -:   93:      aligned_storage<sizeof(_M_ptr), alignof(void*)>::type _M_buffer;
+        -:   94:    };
+        -:   95:
+        -:   96:    template<typename _Tp, typename _Safe = is_nothrow_move_constructible<_Tp>,
+        -:   97:	     bool _Fits = (sizeof(_Tp) <= sizeof(_Storage))
+        -:   98:			  && (alignof(_Tp) <= alignof(_Storage))>
+        -:   99:      using _Internal = std::integral_constant<bool, _Safe::value && _Fits>;
+        -:  100:
+        -:  101:    template<typename _Tp>
+        -:  102:      struct _Manager_internal; // uses small-object optimization
+        -:  103:
+        -:  104:    template<typename _Tp>
+        -:  105:      struct _Manager_external; // creates contained object on the heap
+        -:  106:
+        -:  107:    template<typename _Tp>
+        -:  108:      using _Manager = __conditional_t<_Internal<_Tp>::value,
+        -:  109:				       _Manager_internal<_Tp>,
+        -:  110:				       _Manager_external<_Tp>>;
+        -:  111:
+        -:  112:    template<typename _Tp, typename _VTp = decay_t<_Tp>>
+        -:  113:      using _Decay_if_not_any = enable_if_t<!is_same_v<_VTp, any>, _VTp>;
+        -:  114:
+        -:  115:    /// Emplace with an object created from @p __args as the contained object.
+        -:  116:    template <typename _Tp, typename... _Args,
+        -:  117:	      typename _Mgr = _Manager<_Tp>>
+        -:  118:      void __do_emplace(_Args&&... __args)
+        -:  119:      {
+        -:  120:	reset();
+        -:  121:        _Mgr::_S_create(_M_storage, std::forward<_Args>(__args)...);
+        -:  122:	_M_manager = &_Mgr::_S_manage;
+        -:  123:      }
+        -:  124:
+        -:  125:    /// Emplace with an object created from @p __il and @p __args as
+        -:  126:    /// the contained object.
+        -:  127:    template <typename _Tp, typename _Up, typename... _Args,
+        -:  128:	      typename _Mgr = _Manager<_Tp>>
+        -:  129:      void __do_emplace(initializer_list<_Up> __il, _Args&&... __args)
+        -:  130:      {
+        -:  131:	reset();
+        -:  132:	_Mgr::_S_create(_M_storage, __il, std::forward<_Args>(__args)...);
+        -:  133:	_M_manager = &_Mgr::_S_manage;
+        -:  134:      }
+        -:  135:
+        -:  136:    template <typename _Res, typename _Tp, typename... _Args>
+        -:  137:      using __any_constructible
+        -:  138:	= enable_if<__and_<is_copy_constructible<_Tp>,
+        -:  139:			   is_constructible<_Tp, _Args...>>::value,
+        -:  140:		    _Res>;
+        -:  141:
+        -:  142:    template <typename _Tp, typename... _Args>
+        -:  143:      using __any_constructible_t
+        -:  144:	= typename __any_constructible<bool, _Tp, _Args...>::type;
+        -:  145:
+        -:  146:    template<typename _VTp, typename... _Args>
+        -:  147:      using __emplace_t
+        -:  148:	= typename __any_constructible<_VTp&, _VTp, _Args...>::type;
+        -:  149:
+        -:  150:  public:
+        -:  151:    // construct/destruct
+        -:  152:
+        -:  153:    /// Default constructor, creates an empty object.
+        -:  154:    constexpr any() noexcept : _M_manager(nullptr) { }
+        -:  155:
+        -:  156:    /// Copy constructor, copies the state of @p __other
+        -:  157:    any(const any& __other)
+        -:  158:    {
+        -:  159:      if (!__other.has_value())
+        -:  160:	_M_manager = nullptr;
+        -:  161:      else
+        -:  162:	{
+        -:  163:	  _Arg __arg;
+        -:  164:	  __arg._M_any = this;
+        -:  165:	  __other._M_manager(_Op_clone, &__other, &__arg);
+        -:  166:	}
+        -:  167:    }
+        -:  168:
+        -:  169:    /**
+        -:  170:     * @brief Move constructor, transfer the state from @p __other
+        -:  171:     *
+        -:  172:     * @post @c !__other.has_value() (this postcondition is a GNU extension)
+        -:  173:     */
+        -:  174:    any(any&& __other) noexcept
+        -:  175:    {
+        -:  176:      if (!__other.has_value())
+        -:  177:	_M_manager = nullptr;
+        -:  178:      else
+        -:  179:	{
+        -:  180:	  _Arg __arg;
+        -:  181:	  __arg._M_any = this;
+        -:  182:	  __other._M_manager(_Op_xfer, &__other, &__arg);
+        -:  183:	}
+        -:  184:    }
+        -:  185:
+        -:  186:    /// Construct with a copy of @p __value as the contained object.
+        -:  187:    template <typename _Tp, typename _VTp = _Decay_if_not_any<_Tp>,
+        -:  188:	      typename _Mgr = _Manager<_VTp>,
+        -:  189:	      enable_if_t<is_copy_constructible_v<_VTp>
+        -:  190:			  && !__is_in_place_type_v<_VTp>, bool> = true>
+        -:  191:      any(_Tp&& __value)
+        -:  192:      : _M_manager(&_Mgr::_S_manage)
+        -:  193:      {
+        -:  194:	_Mgr::_S_create(_M_storage, std::forward<_Tp>(__value));
+        -:  195:      }
+        -:  196:
+        -:  197:    /// Construct with an object created from @p __args as the contained object.
+        -:  198:    template <typename _Tp, typename... _Args, typename _VTp = decay_t<_Tp>,
+        -:  199:	      typename _Mgr = _Manager<_VTp>,
+        -:  200:	      __any_constructible_t<_VTp, _Args&&...> = false>
+        -:  201:      explicit
+        -:  202:      any(in_place_type_t<_Tp>, _Args&&... __args)
+        -:  203:      : _M_manager(&_Mgr::_S_manage)
+        -:  204:      {
+        -:  205:	_Mgr::_S_create(_M_storage, std::forward<_Args>(__args)...);
+        -:  206:      }
+        -:  207:
+        -:  208:    /// Construct with an object created from @p __il and @p __args as
+        -:  209:    /// the contained object.
+        -:  210:    template <typename _Tp, typename _Up, typename... _Args,
+        -:  211:	      typename _VTp = decay_t<_Tp>, typename _Mgr = _Manager<_VTp>,
+        -:  212:	      __any_constructible_t<_VTp, initializer_list<_Up>&,
+        -:  213:				    _Args&&...> = false>
+        -:  214:      explicit
+        -:  215:      any(in_place_type_t<_Tp>, initializer_list<_Up> __il, _Args&&... __args)
+        -:  216:      : _M_manager(&_Mgr::_S_manage)
+        -:  217:      {
+        -:  218:	_Mgr::_S_create(_M_storage, __il, std::forward<_Args>(__args)...);
+        -:  219:      }
+        -:  220:
+        -:  221:    /// Destructor, calls @c reset()
+        -:  222:    ~any() { reset(); }
+        -:  223:
+        -:  224:    // assignments
+        -:  225:
+        -:  226:    /// Copy the state of another object.
+        -:  227:    any&
+        -:  228:    operator=(const any& __rhs)
+        -:  229:    {
+        -:  230:      *this = any(__rhs);
+        -:  231:      return *this;
+        -:  232:    }
+        -:  233:
+        -:  234:    /**
+        -:  235:     * @brief Move assignment operator
+        -:  236:     *
+        -:  237:     * @post @c !__rhs.has_value() (not guaranteed for other implementations)
+        -:  238:     */
+        -:  239:    any&
+        -:  240:    operator=(any&& __rhs) noexcept
+        -:  241:    {
+        -:  242:      if (!__rhs.has_value())
+        -:  243:	reset();
+        -:  244:      else if (this != &__rhs)
+        -:  245:	{
+        -:  246:	  reset();
+        -:  247:	  _Arg __arg;
+        -:  248:	  __arg._M_any = this;
+        -:  249:	  __rhs._M_manager(_Op_xfer, &__rhs, &__arg);
+        -:  250:	}
+        -:  251:      return *this;
+        -:  252:    }
+        -:  253:
+        -:  254:    /// Store a copy of @p __rhs as the contained object.
+        -:  255:    template<typename _Tp>
+        -:  256:      enable_if_t<is_copy_constructible<_Decay_if_not_any<_Tp>>::value, any&>
+        -:  257:      operator=(_Tp&& __rhs)
+        -:  258:      {
+        -:  259:	*this = any(std::forward<_Tp>(__rhs));
+        -:  260:	return *this;
+        -:  261:      }
+        -:  262:
+        -:  263:    /// Emplace with an object created from @p __args as the contained object.
+        -:  264:    template <typename _Tp, typename... _Args>
+        -:  265:      __emplace_t<decay_t<_Tp>, _Args...>
+        -:  266:      emplace(_Args&&... __args)
+        -:  267:      {
+        -:  268:	using _VTp = decay_t<_Tp>;
+        -:  269:	__do_emplace<_VTp>(std::forward<_Args>(__args)...);
+        -:  270:	return *any::_Manager<_VTp>::_S_access(_M_storage);
+        -:  271:      }
+        -:  272:
+        -:  273:    /// Emplace with an object created from @p __il and @p __args as
+        -:  274:    /// the contained object.
+        -:  275:    template <typename _Tp, typename _Up, typename... _Args>
+        -:  276:      __emplace_t<decay_t<_Tp>, initializer_list<_Up>&, _Args&&...>
+        -:  277:      emplace(initializer_list<_Up> __il, _Args&&... __args)
+        -:  278:      {
+        -:  279:	using _VTp = decay_t<_Tp>;
+        -:  280:	__do_emplace<_VTp, _Up>(__il, std::forward<_Args>(__args)...);
+        -:  281:	return *any::_Manager<_VTp>::_S_access(_M_storage);
+        -:  282:      }
+        -:  283:
+        -:  284:    // modifiers
+        -:  285:
+        -:  286:    /// If not empty, destroy the contained object.
+        -:  287:    void reset() noexcept
+        -:  288:    {
+        -:  289:      if (has_value())
+        -:  290:      {
+        -:  291:	_M_manager(_Op_destroy, this, nullptr);
+        -:  292:	_M_manager = nullptr;
+        -:  293:      }
+        -:  294:    }
+        -:  295:
+        -:  296:    /// Exchange state with another object.
+        -:  297:    void swap(any& __rhs) noexcept
+        -:  298:    {
+        -:  299:      if (!has_value() && !__rhs.has_value())
+        -:  300:	return;
+        -:  301:
+        -:  302:      if (has_value() && __rhs.has_value())
+        -:  303:	{
+        -:  304:	  if (this == &__rhs)
+        -:  305:	    return;
+        -:  306:
+        -:  307:	  any __tmp;
+        -:  308:	  _Arg __arg;
+        -:  309:	  __arg._M_any = &__tmp;
+        -:  310:	  __rhs._M_manager(_Op_xfer, &__rhs, &__arg);
+        -:  311:	  __arg._M_any = &__rhs;
+        -:  312:	  _M_manager(_Op_xfer, this, &__arg);
+        -:  313:	  __arg._M_any = this;
+        -:  314:	  __tmp._M_manager(_Op_xfer, &__tmp, &__arg);
+        -:  315:	}
+        -:  316:      else
+        -:  317:	{
+        -:  318:	  any* __empty = !has_value() ? this : &__rhs;
+        -:  319:	  any* __full = !has_value() ? &__rhs : this;
+        -:  320:	  _Arg __arg;
+        -:  321:	  __arg._M_any = __empty;
+        -:  322:	  __full->_M_manager(_Op_xfer, __full, &__arg);
+        -:  323:	}
+        -:  324:    }
+        -:  325:
+        -:  326:    // observers
+        -:  327:
+        -:  328:    /// Reports whether there is a contained object or not.
+        -:  329:    bool has_value() const noexcept { return _M_manager != nullptr; }
+        -:  330:
+        -:  331:#if __cpp_rtti
+        -:  332:    /// The @c typeid of the contained object, or @c typeid(void) if empty.
+        -:  333:    const type_info& type() const noexcept
+        -:  334:    {
+        -:  335:      if (!has_value())
+        -:  336:	return typeid(void);
+        -:  337:      _Arg __arg;
+        -:  338:      _M_manager(_Op_get_type_info, this, &__arg);
+        -:  339:      return *__arg._M_typeinfo;
+        -:  340:    }
+        -:  341:#endif
+        -:  342:
+        -:  343:    /// @cond undocumented
+        -:  344:    template<typename _Tp>
+        -:  345:      static constexpr bool __is_valid_cast()
+        -:  346:      { return __or_<is_reference<_Tp>, is_copy_constructible<_Tp>>::value; }
+        -:  347:    /// @endcond
+        -:  348:
+        -:  349:  private:
+        -:  350:    enum _Op {
+        -:  351:	_Op_access, _Op_get_type_info, _Op_clone, _Op_destroy, _Op_xfer
+        -:  352:    };
+        -:  353:
+        -:  354:    union _Arg
+        -:  355:    {
+        -:  356:	void* _M_obj;
+        -:  357:	const std::type_info* _M_typeinfo;
+        -:  358:	any* _M_any;
+        -:  359:    };
+        -:  360:
+        -:  361:    void (*_M_manager)(_Op, const any*, _Arg*);
+        -:  362:    _Storage _M_storage;
+        -:  363:
+        -:  364:    /// @cond undocumented
+        -:  365:    template<typename _Tp>
+        -:  366:      friend void* __any_caster(const any* __any);
+        -:  367:    /// @endcond
+        -:  368:
+        -:  369:    // Manage in-place contained object.
+        -:  370:    template<typename _Tp>
+        -:  371:      struct _Manager_internal
+        -:  372:      {
+        -:  373:	static void
+        -:  374:	_S_manage(_Op __which, const any* __anyp, _Arg* __arg);
+        -:  375:
+        -:  376:	template<typename _Up>
+        -:  377:	  static void
+        -:  378:	  _S_create(_Storage& __storage, _Up&& __value)
+        -:  379:	  {
+        -:  380:	    void* __addr = &__storage._M_buffer;
+        -:  381:	    ::new (__addr) _Tp(std::forward<_Up>(__value));
+        -:  382:	  }
+        -:  383:
+        -:  384:	template<typename... _Args>
+        -:  385:	  static void
+        -:  386:	  _S_create(_Storage& __storage, _Args&&... __args)
+        -:  387:	  {
+        -:  388:	    void* __addr = &__storage._M_buffer;
+        -:  389:	    ::new (__addr) _Tp(std::forward<_Args>(__args)...);
+        -:  390:	  }
+        -:  391:
+        -:  392:	static _Tp*
+        -:  393:	_S_access(const _Storage& __storage)
+        -:  394:	{
+        -:  395:	  // The contained object is in __storage._M_buffer
+        -:  396:	  const void* __addr = &__storage._M_buffer;
+        -:  397:	  return static_cast<_Tp*>(const_cast<void*>(__addr));
+        -:  398:	}
+        -:  399:      };
+        -:  400:
+        -:  401:    // Manage external contained object.
+        -:  402:    template<typename _Tp>
+        -:  403:      struct _Manager_external
+        -:  404:      {
+        -:  405:	static void
+        -:  406:	_S_manage(_Op __which, const any* __anyp, _Arg* __arg);
+        -:  407:
+        -:  408:	template<typename _Up>
+        -:  409:	  static void
+        -:  410:	  _S_create(_Storage& __storage, _Up&& __value)
+        -:  411:	  {
+        -:  412:	    __storage._M_ptr = new _Tp(std::forward<_Up>(__value));
+        -:  413:	  }
+        -:  414:	template<typename... _Args>
+        -:  415:	  static void
+        -:  416:	  _S_create(_Storage& __storage, _Args&&... __args)
+        -:  417:	  {
+        -:  418:	    __storage._M_ptr = new _Tp(std::forward<_Args>(__args)...);
+        -:  419:	  }
+        -:  420:	static _Tp*
+        -:  421:	_S_access(const _Storage& __storage)
+        -:  422:	{
+        -:  423:	  // The contained object is in *__storage._M_ptr
+        -:  424:	  return static_cast<_Tp*>(__storage._M_ptr);
+        -:  425:	}
+        -:  426:      };
+        -:  427:  };
+        -:  428:
+        -:  429:  /// Exchange the states of two @c any objects.
+        -:  430:  inline void swap(any& __x, any& __y) noexcept { __x.swap(__y); }
+        -:  431:
+        -:  432:  /// Create an `any` holding a `_Tp` constructed from `__args...`.
+        -:  433:  template <typename _Tp, typename... _Args>
+        -:  434:    inline
+        -:  435:    enable_if_t<is_constructible_v<any, in_place_type_t<_Tp>, _Args...>, any>
+        -:  436:    make_any(_Args&&... __args)
+        -:  437:    {
+        -:  438:      return any(in_place_type<_Tp>, std::forward<_Args>(__args)...);
+        -:  439:    }
+        -:  440:
+        -:  441:  /// Create an `any` holding a `_Tp` constructed from `__il` and `__args...`.
+        -:  442:  template <typename _Tp, typename _Up, typename... _Args>
+        -:  443:    inline
+        -:  444:    enable_if_t<is_constructible_v<any, in_place_type_t<_Tp>,
+        -:  445:				   initializer_list<_Up>&, _Args...>, any>
+        -:  446:    make_any(initializer_list<_Up> __il, _Args&&... __args)
+        -:  447:    {
+        -:  448:      return any(in_place_type<_Tp>, __il, std::forward<_Args>(__args)...);
+        -:  449:    }
+        -:  450:
+        -:  451:  /**
+        -:  452:   * @brief Access the contained object.
+        -:  453:   *
+        -:  454:   * @tparam  _ValueType  A const-reference or CopyConstructible type.
+        -:  455:   * @param   __any       The object to access.
+        -:  456:   * @return  The contained object.
+        -:  457:   * @throw   bad_any_cast If <code>
+        -:  458:   *          __any.type() != typeid(remove_reference_t<_ValueType>)
+        -:  459:   *          </code>
+        -:  460:   */
+        -:  461:  template<typename _ValueType>
+        -:  462:    inline _ValueType any_cast(const any& __any)
+        -:  463:    {
+        -:  464:      using _Up = __remove_cvref_t<_ValueType>;
+        -:  465:      static_assert(any::__is_valid_cast<_ValueType>(),
+        -:  466:	  "Template argument must be a reference or CopyConstructible type");
+        -:  467:      static_assert(is_constructible_v<_ValueType, const _Up&>,
+        -:  468:	  "Template argument must be constructible from a const value.");
+        -:  469:      auto __p = any_cast<_Up>(&__any);
+        -:  470:      if (__p)
+        -:  471:	return static_cast<_ValueType>(*__p);
+        -:  472:      __throw_bad_any_cast();
+        -:  473:    }
+        -:  474:
+        -:  475:  /**
+        -:  476:   * @brief Access the contained object.
+        -:  477:   *
+        -:  478:   * @tparam  _ValueType  A reference or CopyConstructible type.
+        -:  479:   * @param   __any       The object to access.
+        -:  480:   * @return  The contained object.
+        -:  481:   * @throw   bad_any_cast If <code>
+        -:  482:   *          __any.type() != typeid(remove_reference_t<_ValueType>)
+        -:  483:   *          </code>
+        -:  484:   *
+        -:  485:   * @{
+        -:  486:   */
+        -:  487:  template<typename _ValueType>
+        -:  488:    inline _ValueType any_cast(any& __any)
+        -:  489:    {
+        -:  490:      using _Up = __remove_cvref_t<_ValueType>;
+        -:  491:      static_assert(any::__is_valid_cast<_ValueType>(),
+        -:  492:	  "Template argument must be a reference or CopyConstructible type");
+        -:  493:      static_assert(is_constructible_v<_ValueType, _Up&>,
+        -:  494:	  "Template argument must be constructible from an lvalue.");
+        -:  495:      auto __p = any_cast<_Up>(&__any);
+        -:  496:      if (__p)
+        -:  497:	return static_cast<_ValueType>(*__p);
+        -:  498:      __throw_bad_any_cast();
+        -:  499:    }
+        -:  500:
+        -:  501:  template<typename _ValueType>
+        -:  502:    inline _ValueType any_cast(any&& __any)
+        -:  503:    {
+        -:  504:      using _Up = __remove_cvref_t<_ValueType>;
+        -:  505:      static_assert(any::__is_valid_cast<_ValueType>(),
+        -:  506:	  "Template argument must be a reference or CopyConstructible type");
+        -:  507:      static_assert(is_constructible_v<_ValueType, _Up>,
+        -:  508:	  "Template argument must be constructible from an rvalue.");
+        -:  509:      auto __p = any_cast<_Up>(&__any);
+        -:  510:      if (__p)
+        -:  511:	return static_cast<_ValueType>(std::move(*__p));
+        -:  512:      __throw_bad_any_cast();
+        -:  513:    }
+        -:  514:  /// @}
+        -:  515:
+        -:  516:  /// @cond undocumented
+        -:  517:  template<typename _Tp>
+        -:  518:    void* __any_caster(const any* __any)
+        -:  519:    {
+        -:  520:      // any_cast<T> returns non-null if __any->type() == typeid(T) and
+        -:  521:      // typeid(T) ignores cv-qualifiers so remove them:
+        -:  522:      using _Up = remove_cv_t<_Tp>;
+        -:  523:      // The contained value has a decayed type, so if decay_t<U> is not U,
+        -:  524:      // then it's not possible to have a contained value of type U:
+        -:  525:      if constexpr (!is_same_v<decay_t<_Up>, _Up>)
+        -:  526:	return nullptr;
+        -:  527:      // Only copy constructible types can be used for contained values:
+        -:  528:      else if constexpr (!is_copy_constructible_v<_Up>)
+        -:  529:	return nullptr;
+        -:  530:      // First try comparing function addresses, which works without RTTI
+        -:  531:      else if (__any->_M_manager == &any::_Manager<_Up>::_S_manage
+        -:  532:#if __cpp_rtti
+        -:  533:	  || __any->type() == typeid(_Tp)
+        -:  534:#endif
+        -:  535:	  )
+        -:  536:	{
+        -:  537:	  return any::_Manager<_Up>::_S_access(__any->_M_storage);
+        -:  538:	}
+        -:  539:      return nullptr;
+        -:  540:    }
+        -:  541:  /// @endcond
+        -:  542:
+        -:  543:  /**
+        -:  544:   * @brief Access the contained object.
+        -:  545:   *
+        -:  546:   * @tparam  _ValueType  The type of the contained object.
+        -:  547:   * @param   __any       A pointer to the object to access.
+        -:  548:   * @return  The address of the contained object if <code>
+        -:  549:   *          __any != nullptr && __any.type() == typeid(_ValueType)
+        -:  550:   *          </code>, otherwise a null pointer.
+        -:  551:   *
+        -:  552:   * @{
+        -:  553:   */
+        -:  554:  template<typename _ValueType>
+        -:  555:    inline const _ValueType* any_cast(const any* __any) noexcept
+        -:  556:    {
+        -:  557:      if constexpr (is_object_v<_ValueType>)
+        -:  558:	if (__any)
+        -:  559:	  return static_cast<_ValueType*>(__any_caster<_ValueType>(__any));
+        -:  560:      return nullptr;
+        -:  561:    }
+        -:  562:
+        -:  563:  template<typename _ValueType>
+        -:  564:    inline _ValueType* any_cast(any* __any) noexcept
+        -:  565:    {
+        -:  566:      if constexpr (is_object_v<_ValueType>)
+        -:  567:	if (__any)
+        -:  568:	  return static_cast<_ValueType*>(__any_caster<_ValueType>(__any));
+        -:  569:      return nullptr;
+        -:  570:    }
+        -:  571:  /// @}
+        -:  572:
+        -:  573:  template<typename _Tp>
+        -:  574:    void
+        -:  575:    any::_Manager_internal<_Tp>::
+        -:  576:    _S_manage(_Op __which, const any* __any, _Arg* __arg)
+        -:  577:    {
+        -:  578:      // The contained object is in _M_storage._M_buffer
+        -:  579:      auto __ptr = reinterpret_cast<const _Tp*>(&__any->_M_storage._M_buffer);
+        -:  580:      switch (__which)
+        -:  581:      {
+        -:  582:      case _Op_access:
+        -:  583:	__arg->_M_obj = const_cast<_Tp*>(__ptr);
+        -:  584:	break;
+        -:  585:      case _Op_get_type_info:
+        -:  586:#if __cpp_rtti
+        -:  587:	__arg->_M_typeinfo = &typeid(_Tp);
+        -:  588:#endif
+        -:  589:	break;
+        -:  590:      case _Op_clone:
+        -:  591:	::new(&__arg->_M_any->_M_storage._M_buffer) _Tp(*__ptr);
+        -:  592:	__arg->_M_any->_M_manager = __any->_M_manager;
+        -:  593:	break;
+        -:  594:      case _Op_destroy:
+        -:  595:	__ptr->~_Tp();
+        -:  596:	break;
+        -:  597:      case _Op_xfer:
+        -:  598:	::new(&__arg->_M_any->_M_storage._M_buffer) _Tp
+        -:  599:	  (std::move(*const_cast<_Tp*>(__ptr)));
+        -:  600:	__ptr->~_Tp();
+        -:  601:	__arg->_M_any->_M_manager = __any->_M_manager;
+        -:  602:	const_cast<any*>(__any)->_M_manager = nullptr;
+        -:  603:	break;
+        -:  604:      }
+        -:  605:    }
+        -:  606:
+        -:  607:  template<typename _Tp>
+        -:  608:    void
+        -:  609:    any::_Manager_external<_Tp>::
+        -:  610:    _S_manage(_Op __which, const any* __any, _Arg* __arg)
+        -:  611:    {
+        -:  612:      // The contained object is *_M_storage._M_ptr
+        -:  613:      auto __ptr = static_cast<const _Tp*>(__any->_M_storage._M_ptr);
+        -:  614:      switch (__which)
+        -:  615:      {
+        -:  616:      case _Op_access:
+        -:  617:	__arg->_M_obj = const_cast<_Tp*>(__ptr);
+        -:  618:	break;
+        -:  619:      case _Op_get_type_info:
+        -:  620:#if __cpp_rtti
+        -:  621:	__arg->_M_typeinfo = &typeid(_Tp);
+        -:  622:#endif
+        -:  623:	break;
+        -:  624:      case _Op_clone:
+        -:  625:	__arg->_M_any->_M_storage._M_ptr = new _Tp(*__ptr);
+        -:  626:	__arg->_M_any->_M_manager = __any->_M_manager;
+        -:  627:	break;
+        -:  628:      case _Op_destroy:
+        -:  629:	delete __ptr;
+        -:  630:	break;
+        -:  631:      case _Op_xfer:
+        -:  632:	__arg->_M_any->_M_storage._M_ptr = __any->_M_storage._M_ptr;
+        -:  633:	__arg->_M_any->_M_manager = __any->_M_manager;
+        -:  634:	const_cast<any*>(__any)->_M_manager = nullptr;
+        -:  635:	break;
+        -:  636:      }
+        -:  637:    }
+        -:  638:
+        -:  639:  /// @}
+        -:  640:
+        -:  641:  namespace __detail::__variant
+        -:  642:  {
+        -:  643:    template<typename> struct _Never_valueless_alt; // see <variant>
+        -:  644:
+        -:  645:    // Provide the strong exception-safety guarantee when emplacing an
+        -:  646:    // any into a variant.
+        -:  647:    template<>
+        -:  648:      struct _Never_valueless_alt<std::any>
+        -:  649:      : std::true_type
+        -:  650:      { };
+        -:  651:  }  // namespace __detail::__variant
+        -:  652:
+        -:  653:_GLIBCXX_END_NAMESPACE_VERSION
+        -:  654:} // namespace std
+        -:  655:
+        -:  656:#endif // __cpp_lib_any
+        -:  657:#endif // _GLIBCXX_ANY

@@ -1,0 +1,302 @@
+        -:    0:Source:C:/mingw64/x86_64-w64-mingw32/include/sys/stat.h
+        -:    0:Graph:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcno
+        -:    0:Data:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcda
+        -:    0:Runs:1
+        -:    1:/**
+        -:    2: * This file has no copyright assigned and is placed in the Public Domain.
+        -:    3: * This file is part of the mingw-w64 runtime package.
+        -:    4: * No warranty is given; refer to the file DISCLAIMER.PD within this package.
+        -:    5: */
+        -:    6:#ifndef _INC_STAT
+        -:    7:#define _INC_STAT
+        -:    8:
+        -:    9:#ifndef _WIN32
+        -:   10:#error Only Win32 target is supported!
+        -:   11:#endif
+        -:   12:
+        -:   13:#include <crtdefs.h>
+        -:   14:#include <io.h>
+        -:   15:
+        -:   16:#pragma pack(push,_CRT_PACKING)
+        -:   17:
+        -:   18:#ifdef __cplusplus
+        -:   19:extern "C" {
+        -:   20:#endif
+        -:   21:
+        -:   22:#ifndef _CRTIMP
+        -:   23:#define _CRTIMP __declspec(dllimport)
+        -:   24:#endif
+        -:   25:
+        -:   26:#include <sys/types.h>
+        -:   27:
+        -:   28:#ifdef _USE_32BIT_TIME_T
+        -:   29:#ifdef _WIN64
+        -:   30:#undef _USE_32BIT_TIME_T
+        -:   31:#endif
+        -:   32:#endif
+        -:   33:
+        -:   34:#ifndef _TIME32_T_DEFINED
+        -:   35:  typedef long __time32_t;
+        -:   36:#define _TIME32_T_DEFINED
+        -:   37:#endif
+        -:   38:
+        -:   39:#ifndef _TIME64_T_DEFINED
+        -:   40:  __MINGW_EXTENSION typedef __int64 __time64_t;
+        -:   41:#define _TIME64_T_DEFINED
+        -:   42:#endif
+        -:   43:
+        -:   44:#ifndef _TIME_T_DEFINED
+        -:   45:#ifdef _USE_32BIT_TIME_T
+        -:   46:  typedef __time32_t time_t;
+        -:   47:#else
+        -:   48:  typedef __time64_t time_t;
+        -:   49:#endif
+        -:   50:#define _TIME_T_DEFINED
+        -:   51:#endif
+        -:   52:
+        -:   53:#ifndef _WCHAR_T_DEFINED
+        -:   54:  typedef unsigned short wchar_t;
+        -:   55:#define _WCHAR_T_DEFINED
+        -:   56:#endif
+        -:   57:
+        -:   58:#include <_mingw_stat64.h>
+        -:   59:
+        -:   60:#define _S_IFMT 0xF000
+        -:   61:#define _S_IFDIR 0x4000
+        -:   62:#define _S_IFCHR 0x2000
+        -:   63:#define _S_IFIFO 0x1000
+        -:   64:#define _S_IFREG 0x8000
+        -:   65:#define _S_IREAD 0x0100
+        -:   66:#define _S_IWRITE 0x0080
+        -:   67:#define _S_IEXEC 0x0040
+        -:   68:
+        -:   69:  _CRTIMP int __cdecl _fstat32(int _FileDes,struct _stat32 *_Stat);
+        -:   70:  _CRTIMP int __cdecl _stat32(const char *_Name,struct _stat32 *_Stat);
+        -:   71:  _CRTIMP int __cdecl _fstat64(int _FileDes,struct _stat64 *_Stat);
+        -:   72:  _CRTIMP int __cdecl _fstat32i64(int _FileDes,struct _stat32i64 *_Stat);
+        -:   73:  int __cdecl _fstat64i32(int _FileDes,struct _stat64i32 *_Stat);
+        -:   74:#ifndef __CRT__NO_INLINE
+        -:   75:  __CRT_INLINE int __cdecl _fstat64i32(int _FileDes,struct _stat64i32 *_Stat)
+        -:   76:  {
+        -:   77:    struct _stat64 st;
+        -:   78:    int __ret=_fstat64(_FileDes,&st);
+        -:   79:    if (__ret == -1) {
+        -:   80:      memset(_Stat,0,sizeof(struct _stat64i32));
+        -:   81:      return -1;
+        -:   82:    }
+        -:   83:    _Stat->st_dev=st.st_dev;
+        -:   84:    _Stat->st_ino=st.st_ino;
+        -:   85:    _Stat->st_mode=st.st_mode;
+        -:   86:    _Stat->st_nlink=st.st_nlink;
+        -:   87:    _Stat->st_uid=st.st_uid;
+        -:   88:    _Stat->st_gid=st.st_gid;
+        -:   89:    _Stat->st_rdev=st.st_rdev;
+        -:   90:    _Stat->st_size=(_off_t) st.st_size;
+        -:   91:    _Stat->st_atime=st.st_atime;
+        -:   92:    _Stat->st_mtime=st.st_mtime;
+        -:   93:    _Stat->st_ctime=st.st_ctime;
+        -:   94:    return __ret;
+        -:   95:  }
+        -:   96:#endif /* __CRT__NO_INLINE */
+        -:   97:  _CRTIMP int __cdecl _stat64(const char *_Name,struct _stat64 *_Stat);
+        -:   98:  _CRTIMP int __cdecl _stat32i64(const char *_Name,struct _stat32i64 *_Stat);
+        -:   99:  int __cdecl _stat64i32(const char *_Name,struct _stat64i32 *_Stat);
+        -:  100:#ifndef __CRT__NO_INLINE
+function _stat64i32 called 0 returned 0% blocks executed 0%
+    #####:  101:  __CRT_INLINE int __cdecl _stat64i32(const char *_Name,struct _stat64i32 *_Stat)
+        -:  102:  {
+    #####:  103:    struct _stat64 st;
+    #####:  104:    int __ret=_stat64(_Name,&st);
+    %%%%%:  104-block 2
+call    0 never executed
+    #####:  105:    if (__ret == -1) {
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    #####:  106:      memset(_Stat,0,sizeof(struct _stat64i32));
+    #####:  107:      return -1;
+    %%%%%:  107-block 4
+        -:  108:    }
+    #####:  109:    _Stat->st_dev=st.st_dev;
+    #####:  110:    _Stat->st_ino=st.st_ino;
+    #####:  111:    _Stat->st_mode=st.st_mode;
+    #####:  112:    _Stat->st_nlink=st.st_nlink;
+    #####:  113:    _Stat->st_uid=st.st_uid;
+    #####:  114:    _Stat->st_gid=st.st_gid;
+    #####:  115:    _Stat->st_rdev=st.st_rdev;
+    #####:  116:    _Stat->st_size=(_off_t) st.st_size;
+    #####:  117:    _Stat->st_atime=st.st_atime;
+    #####:  118:    _Stat->st_mtime=st.st_mtime;
+    #####:  119:    _Stat->st_ctime=st.st_ctime;
+    #####:  120:    return __ret;
+    %%%%%:  120-block 5
+        -:  121:  }
+        -:  122:#endif /* __CRT__NO_INLINE */
+        -:  123:
+        -:  124:#ifndef _WSTAT_DEFINED
+        -:  125:#define _WSTAT_DEFINED
+        -:  126:  _CRTIMP int __cdecl _wstat32(const wchar_t *_Name,struct _stat32 *_Stat);
+        -:  127:  _CRTIMP int __cdecl _wstat32i64(const wchar_t *_Name,struct _stat32i64 *_Stat);
+        -:  128:  int __cdecl _wstat64i32(const wchar_t *_Name,struct _stat64i32 *_Stat);
+        -:  129:  _CRTIMP int __cdecl _wstat64(const wchar_t *_Name,struct _stat64 *_Stat);
+        -:  130:#endif
+        -:  131:
+        -:  132:#ifndef	NO_OLDNAMES
+        -:  133:#define	_S_IFBLK	0x3000	/* Block: Is this ever set under w32? */
+        -:  134:
+        -:  135:#define S_IFMT _S_IFMT
+        -:  136:#define S_IFDIR _S_IFDIR
+        -:  137:#define S_IFCHR _S_IFCHR
+        -:  138:#define S_IFREG _S_IFREG
+        -:  139:#define S_IREAD _S_IREAD
+        -:  140:#define S_IWRITE _S_IWRITE
+        -:  141:#define S_IEXEC _S_IEXEC
+        -:  142:#define	S_IFIFO		_S_IFIFO
+        -:  143:#define	S_IFBLK		_S_IFBLK
+        -:  144:
+        -:  145:#define	_S_IRWXU	(_S_IREAD | _S_IWRITE | _S_IEXEC)
+        -:  146:#define	_S_IXUSR	_S_IEXEC
+        -:  147:#define	_S_IWUSR	_S_IWRITE
+        -:  148:
+        -:  149:#define	S_IRWXU		_S_IRWXU
+        -:  150:#define	S_IXUSR		_S_IXUSR
+        -:  151:#define	S_IWUSR		_S_IWUSR
+        -:  152:#define	S_IRUSR		_S_IRUSR
+        -:  153:#define	_S_IRUSR	_S_IREAD
+        -:  154:
+        -:  155:#define S_IRGRP    (S_IRUSR >> 3)
+        -:  156:#define S_IWGRP    (S_IWUSR >> 3)
+        -:  157:#define S_IXGRP    (S_IXUSR >> 3)
+        -:  158:#define S_IRWXG    (S_IRWXU >> 3)
+        -:  159:
+        -:  160:#define S_IROTH    (S_IRGRP >> 3)
+        -:  161:#define S_IWOTH    (S_IWGRP >> 3)
+        -:  162:#define S_IXOTH    (S_IXGRP >> 3)
+        -:  163:#define S_IRWXO    (S_IRWXG >> 3)
+        -:  164:
+        -:  165:#define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+        -:  166:#define	S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
+        -:  167:#define	S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
+        -:  168:#define	S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
+        -:  169:#define	S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
+        -:  170:
+        -:  171:#endif
+        -:  172:
+        -:  173:#if !defined (RC_INVOKED) && !defined (NO_OLDNAMES)
+        -:  174:int __cdecl fstat(int _Desc,struct stat *_Stat);
+        -:  175:#ifdef _UCRT
+        -:  176:  __mingw_ovr int __cdecl stat(const char *_Filename,struct stat *_Stat)
+        -:  177:  {
+        -:  178:    return _stat(_Filename, (struct _stat *)_Stat);
+        -:  179:  }
+        -:  180:  __mingw_ovr int __cdecl wstat(const wchar_t *_Filename,struct stat *_Stat)
+        -:  181:  {
+        -:  182:    return _wstat(_Filename, (struct _stat *)_Stat);
+        -:  183:  }
+        -:  184:#else
+        -:  185:int __cdecl stat(const char *_Filename,struct stat *_Stat);
+        -:  186:int __cdecl wstat(const wchar_t *_Filename,struct stat *_Stat);
+        -:  187:#endif
+        -:  188:
+        -:  189:#ifndef __CRT__NO_INLINE
+        -:  190:#ifdef _USE_32BIT_TIME_T
+        -:  191:__CRT_INLINE int __cdecl
+        -:  192: fstat(int _Desc,struct stat *_Stat) {
+        -:  193:  struct _stat32 st;
+        -:  194:  int __ret=_fstat32(_Desc,&st);
+        -:  195:  if (__ret == -1) {
+        -:  196:    memset(_Stat,0,sizeof(struct stat));
+        -:  197:    return -1;
+        -:  198:  }
+        -:  199:  /* struct stat and struct _stat32
+        -:  200:     are the same for this case. */
+        -:  201:  memcpy(_Stat, &st, sizeof(struct _stat32));
+        -:  202:  return __ret;
+        -:  203:}
+        -:  204:/* Disable it for making sure trailing slash issue is fixed.  */
+        -:  205:#if 0
+        -:  206:__CRT_INLINE int __cdecl
+        -:  207: stat(const char *_Filename,struct stat *_Stat) {
+        -:  208:  struct _stat32 st;
+        -:  209:  int __ret=_stat32(_Filename,&st);
+        -:  210:  if (__ret == -1) {
+        -:  211:    memset(_Stat,0,sizeof(struct stat));
+        -:  212:    return -1;
+        -:  213:  }
+        -:  214:  /* struct stat and struct _stat32
+        -:  215:     are the same for this case. */
+        -:  216:  memcpy(_Stat, &st, sizeof(struct _stat32));
+        -:  217:  return __ret;
+        -:  218:}
+        -:  219:#endif
+        -:  220:#else
+        -:  221:__CRT_INLINE int __cdecl
+        -:  222: fstat(int _Desc,struct stat *_Stat) {
+        -:  223:  struct _stat64 st;
+        -:  224:  int __ret=_fstat64(_Desc,&st);
+        -:  225:  if (__ret == -1) {
+        -:  226:    memset(_Stat,0,sizeof(struct stat));
+        -:  227:    return -1;
+        -:  228:  }
+        -:  229:  /* struct stat and struct _stat64i32
+        -:  230:     are the same for this case. */
+        -:  231:  _Stat->st_dev=st.st_dev;
+        -:  232:  _Stat->st_ino=st.st_ino;
+        -:  233:  _Stat->st_mode=st.st_mode;
+        -:  234:  _Stat->st_nlink=st.st_nlink;
+        -:  235:  _Stat->st_uid=st.st_uid;
+        -:  236:  _Stat->st_gid=st.st_gid;
+        -:  237:  _Stat->st_rdev=st.st_rdev;
+        -:  238:  _Stat->st_size=(_off_t) st.st_size;
+        -:  239:  _Stat->st_atime=st.st_atime;
+        -:  240:  _Stat->st_mtime=st.st_mtime;
+        -:  241:  _Stat->st_ctime=st.st_ctime;
+        -:  242:  return __ret;
+        -:  243:}
+        -:  244:/* Disable it for making sure trailing slash issue is fixed.  */
+        -:  245:#if 0
+        -:  246:__CRT_INLINE int __cdecl
+        -:  247: stat(const char *_Filename,struct stat *_Stat) {
+        -:  248:  struct _stat64 st;
+        -:  249:  int __ret=_stat64(_Filename,&st);
+        -:  250:  if (__ret == -1) {
+        -:  251:    memset(_Stat,0,sizeof(struct stat));
+        -:  252:    return -1;
+        -:  253:  }
+        -:  254:  /* struct stat and struct _stat64i32
+        -:  255:     are the same for this case. */
+        -:  256:  _Stat->st_dev=st.st_dev;
+        -:  257:  _Stat->st_ino=st.st_ino;
+        -:  258:  _Stat->st_mode=st.st_mode;
+        -:  259:  _Stat->st_nlink=st.st_nlink;
+        -:  260:  _Stat->st_uid=st.st_uid;
+        -:  261:  _Stat->st_gid=st.st_gid;
+        -:  262:  _Stat->st_rdev=st.st_rdev;
+        -:  263:  _Stat->st_size=(_off_t) st.st_size;
+        -:  264:  _Stat->st_atime=st.st_atime;
+        -:  265:  _Stat->st_mtime=st.st_mtime;
+        -:  266:  _Stat->st_ctime=st.st_ctime;
+        -:  267:  return __ret;
+        -:  268:}
+        -:  269:#endif
+        -:  270:#endif /* _USE_32BIT_TIME_T */
+        -:  271:#endif /* __CRT__NO_INLINE */
+        -:  272:#endif /* !RC_INVOKED && !NO_OLDNAMES */
+        -:  273:
+        -:  274:#if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
+        -:  275:#ifdef _USE_32BIT_TIME_T
+        -:  276:#define stat _stat32i64
+        -:  277:#define fstat _fstat32i64
+        -:  278:#else
+        -:  279:#define stat _stat64
+        -:  280:#define fstat _fstat64
+        -:  281:#endif
+        -:  282:#endif
+        -:  283:
+        -:  284:#ifdef __cplusplus
+        -:  285:}
+        -:  286:#endif
+        -:  287:
+        -:  288:#pragma pack(pop)
+        -:  289:
+        -:  290:#endif /* _INC_STAT */
+        -:  291:

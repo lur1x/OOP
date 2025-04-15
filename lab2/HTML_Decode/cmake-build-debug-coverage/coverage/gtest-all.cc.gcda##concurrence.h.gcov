@@ -1,0 +1,323 @@
+        -:    0:Source:C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/concurrence.h
+        -:    0:Graph:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcno
+        -:    0:Data:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcda
+        -:    0:Runs:1
+        -:    1:// Support for concurrent programing -*- C++ -*-
+        -:    2:
+        -:    3:// Copyright (C) 2003-2024 Free Software Foundation, Inc.
+        -:    4://
+        -:    5:// This file is part of the GNU ISO C++ Library.  This library is free
+        -:    6:// software; you can redistribute it and/or modify it under the
+        -:    7:// terms of the GNU General Public License as published by the
+        -:    8:// Free Software Foundation; either version 3, or (at your option)
+        -:    9:// any later version.
+        -:   10:
+        -:   11:// This library is distributed in the hope that it will be useful,
+        -:   12:// but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   13:// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   14:// GNU General Public License for more details.
+        -:   15:
+        -:   16:// Under Section 7 of GPL version 3, you are granted additional
+        -:   17:// permissions described in the GCC Runtime Library Exception, version
+        -:   18:// 3.1, as published by the Free Software Foundation.
+        -:   19:
+        -:   20:// You should have received a copy of the GNU General Public License and
+        -:   21:// a copy of the GCC Runtime Library Exception along with this program;
+        -:   22:// see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+        -:   23:// <http://www.gnu.org/licenses/>.
+        -:   24:
+        -:   25:/** @file ext/concurrence.h
+        -:   26: *  This file is a GNU extension to the Standard C++ Library.
+        -:   27: */
+        -:   28:
+        -:   29:#ifndef _CONCURRENCE_H
+        -:   30:#define _CONCURRENCE_H 1
+        -:   31:
+        -:   32:#pragma GCC system_header
+        -:   33:
+        -:   34:#include <exception>
+        -:   35:#include <bits/gthr.h> 
+        -:   36:#include <bits/functexcept.h>
+        -:   37:#include <bits/cpp_type_traits.h>
+        -:   38:#include <ext/type_traits.h>
+        -:   39:
+        -:   40:namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
+        -:   41:{
+        -:   42:_GLIBCXX_BEGIN_NAMESPACE_VERSION
+        -:   43:
+        -:   44:  // Available locking policies:
+        -:   45:  // _S_single    single-threaded code that doesn't need to be locked.
+        -:   46:  // _S_mutex     multi-threaded code that requires additional support
+        -:   47:  //              from gthr.h or abstraction layers in concurrence.h.
+        -:   48:  // _S_atomic    multi-threaded code using atomic operations.
+        -:   49:  enum _Lock_policy { _S_single, _S_mutex, _S_atomic }; 
+        -:   50:
+        -:   51:  // Compile time constant that indicates prefered locking policy in
+        -:   52:  // the current configuration.
+        -:   53:  _GLIBCXX17_INLINE const _Lock_policy __default_lock_policy =
+        -:   54:#ifndef __GTHREADS
+        -:   55:  _S_single;
+        -:   56:#elif defined _GLIBCXX_HAVE_ATOMIC_LOCK_POLICY
+        -:   57:  _S_atomic;
+        -:   58:#else
+        -:   59:  _S_mutex;
+        -:   60:#endif
+        -:   61:
+        -:   62:  // NB: As this is used in libsupc++, need to only depend on
+        -:   63:  // exception. No stdexception classes, no use of std::string.
+        -:   64:  class __concurrence_lock_error : public std::exception
+        -:   65:  {
+        -:   66:  public:
+        -:   67:    virtual char const*
+function _ZNK9__gnu_cxx24__concurrence_lock_error4whatEv called 0 returned 0% blocks executed 0%
+    #####:   68:    what() const throw()
+    #####:   69:    { return "__gnu_cxx::__concurrence_lock_error"; }
+        -:   70:  };
+        -:   71:
+        -:   72:  class __concurrence_unlock_error : public std::exception
+        -:   73:  {
+        -:   74:  public:
+        -:   75:    virtual char const*
+function _ZNK9__gnu_cxx26__concurrence_unlock_error4whatEv called 0 returned 0% blocks executed 0%
+    #####:   76:    what() const throw()
+    #####:   77:    { return "__gnu_cxx::__concurrence_unlock_error"; }
+        -:   78:  };
+        -:   79:
+        -:   80:  class __concurrence_broadcast_error : public std::exception
+        -:   81:  {
+        -:   82:  public:
+        -:   83:    virtual char const*
+function _ZNK9__gnu_cxx29__concurrence_broadcast_error4whatEv called 0 returned 0% blocks executed 0%
+    #####:   84:    what() const throw()
+    #####:   85:    { return "__gnu_cxx::__concurrence_broadcast_error"; }
+        -:   86:  };
+        -:   87:
+        -:   88:  class __concurrence_wait_error : public std::exception
+        -:   89:  {
+        -:   90:  public:
+        -:   91:    virtual char const*
+function _ZNK9__gnu_cxx24__concurrence_wait_error4whatEv called 0 returned 0% blocks executed 0%
+    #####:   92:    what() const throw()
+    #####:   93:    { return "__gnu_cxx::__concurrence_wait_error"; }
+        -:   94:  };
+        -:   95:
+        -:   96:  // Substitute for concurrence_error object in the case of -fno-exceptions.
+        -:   97:  inline void
+        -:   98:  __throw_concurrence_lock_error()
+        -:   99:  { _GLIBCXX_THROW_OR_ABORT(__concurrence_lock_error()); }
+        -:  100:
+        -:  101:  inline void
+        -:  102:  __throw_concurrence_unlock_error()
+        -:  103:  { _GLIBCXX_THROW_OR_ABORT(__concurrence_unlock_error()); }
+        -:  104:
+        -:  105:#ifdef __GTHREAD_HAS_COND
+        -:  106:  inline void
+        -:  107:  __throw_concurrence_broadcast_error()
+        -:  108:  { _GLIBCXX_THROW_OR_ABORT(__concurrence_broadcast_error()); }
+        -:  109:
+        -:  110:  inline void
+        -:  111:  __throw_concurrence_wait_error()
+        -:  112:  { _GLIBCXX_THROW_OR_ABORT(__concurrence_wait_error()); }
+        -:  113:#endif
+        -:  114: 
+        -:  115:  class __mutex 
+        -:  116:  {
+        -:  117:  private:
+        -:  118:#if __GTHREADS && defined __GTHREAD_MUTEX_INIT
+        -:  119:    __gthread_mutex_t _M_mutex = __GTHREAD_MUTEX_INIT;
+        -:  120:#else
+        -:  121:    __gthread_mutex_t _M_mutex;
+        -:  122:#endif
+        -:  123:
+        -:  124:    __mutex(const __mutex&);
+        -:  125:    __mutex& operator=(const __mutex&);
+        -:  126:
+        -:  127:  public:
+        -:  128:    __mutex() 
+        -:  129:    { 
+        -:  130:#if __GTHREADS && ! defined __GTHREAD_MUTEX_INIT
+        -:  131:      if (__gthread_active_p())
+        -:  132:	__GTHREAD_MUTEX_INIT_FUNCTION(&_M_mutex);
+        -:  133:#endif
+        -:  134:    }
+        -:  135:
+        -:  136:#if __GTHREADS && ! defined __GTHREAD_MUTEX_INIT
+        -:  137:    ~__mutex() 
+        -:  138:    { 
+        -:  139:      if (__gthread_active_p())
+        -:  140:	__gthread_mutex_destroy(&_M_mutex); 
+        -:  141:    }
+        -:  142:#endif 
+        -:  143:
+        -:  144:    void lock()
+        -:  145:    {
+        -:  146:#if __GTHREADS
+        -:  147:      if (__gthread_active_p())
+        -:  148:	{
+        -:  149:	  if (__gthread_mutex_lock(&_M_mutex) != 0)
+        -:  150:	    __throw_concurrence_lock_error();
+        -:  151:	}
+        -:  152:#endif
+        -:  153:    }
+        -:  154:    
+        -:  155:    void unlock()
+        -:  156:    {
+        -:  157:#if __GTHREADS
+        -:  158:      if (__gthread_active_p())
+        -:  159:	{
+        -:  160:	  if (__gthread_mutex_unlock(&_M_mutex) != 0)
+        -:  161:	    __throw_concurrence_unlock_error();
+        -:  162:	}
+        -:  163:#endif
+        -:  164:    }
+        -:  165:
+        -:  166:    __gthread_mutex_t* gthread_mutex(void)
+        -:  167:      { return &_M_mutex; }
+        -:  168:  };
+        -:  169:
+        -:  170:  class __recursive_mutex 
+        -:  171:  {
+        -:  172:  private:
+        -:  173:#if __GTHREADS && defined __GTHREAD_RECURSIVE_MUTEX_INIT
+        -:  174:    __gthread_recursive_mutex_t _M_mutex = __GTHREAD_RECURSIVE_MUTEX_INIT;
+        -:  175:#else
+        -:  176:    __gthread_recursive_mutex_t _M_mutex;
+        -:  177:#endif
+        -:  178:
+        -:  179:    __recursive_mutex(const __recursive_mutex&);
+        -:  180:    __recursive_mutex& operator=(const __recursive_mutex&);
+        -:  181:
+        -:  182:  public:
+        -:  183:    __recursive_mutex() 
+        -:  184:    { 
+        -:  185:#if __GTHREADS && ! defined __GTHREAD_RECURSIVE_MUTEX_INIT
+        -:  186:      if (__gthread_active_p())
+        -:  187:	__GTHREAD_RECURSIVE_MUTEX_INIT_FUNCTION(&_M_mutex);
+        -:  188:#endif
+        -:  189:    }
+        -:  190:
+        -:  191:#if __GTHREADS && ! defined __GTHREAD_RECURSIVE_MUTEX_INIT
+        -:  192:    ~__recursive_mutex()
+        -:  193:    {
+        -:  194:      if (__gthread_active_p())
+        -:  195:	__gthread_recursive_mutex_destroy(&_M_mutex);
+        -:  196:    }
+        -:  197:#endif
+        -:  198:
+        -:  199:    void lock()
+        -:  200:    { 
+        -:  201:#if __GTHREADS
+        -:  202:      if (__gthread_active_p())
+        -:  203:	{
+        -:  204:	  if (__gthread_recursive_mutex_lock(&_M_mutex) != 0)
+        -:  205:	    __throw_concurrence_lock_error();
+        -:  206:	}
+        -:  207:#endif
+        -:  208:    }
+        -:  209:    
+        -:  210:    void unlock()
+        -:  211:    { 
+        -:  212:#if __GTHREADS
+        -:  213:      if (__gthread_active_p())
+        -:  214:	{
+        -:  215:	  if (__gthread_recursive_mutex_unlock(&_M_mutex) != 0)
+        -:  216:	    __throw_concurrence_unlock_error();
+        -:  217:	}
+        -:  218:#endif
+        -:  219:    }
+        -:  220:
+        -:  221:    __gthread_recursive_mutex_t* gthread_recursive_mutex(void)
+        -:  222:    { return &_M_mutex; }
+        -:  223:  };
+        -:  224:
+        -:  225:  /// Scoped lock idiom.
+        -:  226:  // Acquire the mutex here with a constructor call, then release with
+        -:  227:  // the destructor call in accordance with RAII style.
+        -:  228:  class __scoped_lock
+        -:  229:  {
+        -:  230:  public:
+        -:  231:    typedef __mutex __mutex_type;
+        -:  232:
+        -:  233:  private:
+        -:  234:    __mutex_type& _M_device;
+        -:  235:
+        -:  236:    __scoped_lock(const __scoped_lock&);
+        -:  237:    __scoped_lock& operator=(const __scoped_lock&);
+        -:  238:
+        -:  239:  public:
+        -:  240:    explicit __scoped_lock(__mutex_type& __name) : _M_device(__name)
+        -:  241:    { _M_device.lock(); }
+        -:  242:
+        -:  243:    ~__scoped_lock() throw()
+        -:  244:    { _M_device.unlock(); }
+        -:  245:  };
+        -:  246:
+        -:  247:#ifdef __GTHREAD_HAS_COND
+        -:  248:  class __cond
+        -:  249:  {
+        -:  250:  private:
+        -:  251:#if __GTHREADS && defined __GTHREAD_COND_INIT
+        -:  252:    __gthread_cond_t _M_cond = __GTHREAD_COND_INIT;
+        -:  253:#else
+        -:  254:    __gthread_cond_t _M_cond;
+        -:  255:#endif
+        -:  256:
+        -:  257:    __cond(const __cond&);
+        -:  258:    __cond& operator=(const __cond&);
+        -:  259:
+        -:  260:  public:
+        -:  261:    __cond() 
+        -:  262:    { 
+        -:  263:#if __GTHREADS && ! defined __GTHREAD_COND_INIT
+        -:  264:      if (__gthread_active_p())
+        -:  265:	__GTHREAD_COND_INIT_FUNCTION(&_M_cond);
+        -:  266:#endif
+        -:  267:    }
+        -:  268:
+        -:  269:#if __GTHREADS && ! defined __GTHREAD_COND_INIT
+        -:  270:    ~__cond() 
+        -:  271:    { 
+        -:  272:      if (__gthread_active_p())
+        -:  273:	__gthread_cond_destroy(&_M_cond); 
+        -:  274:    }
+        -:  275:#endif 
+        -:  276:
+        -:  277:    void broadcast()
+        -:  278:    {
+        -:  279:#if __GTHREADS
+        -:  280:      if (__gthread_active_p())
+        -:  281:	{
+        -:  282:	  if (__gthread_cond_broadcast(&_M_cond) != 0)
+        -:  283:	    __throw_concurrence_broadcast_error();
+        -:  284:	}
+        -:  285:#endif
+        -:  286:    }
+        -:  287:
+        -:  288:    void wait(__mutex *mutex)
+        -:  289:    {
+        -:  290:#if __GTHREADS
+        -:  291:      {
+        -:  292:	  if (__gthread_cond_wait(&_M_cond, mutex->gthread_mutex()) != 0)
+        -:  293:	    __throw_concurrence_wait_error();
+        -:  294:      }
+        -:  295:#endif
+        -:  296:    }
+        -:  297:
+        -:  298:    void wait_recursive(__recursive_mutex *mutex)
+        -:  299:    {
+        -:  300:#if __GTHREADS
+        -:  301:      {
+        -:  302:	  if (__gthread_cond_wait_recursive(&_M_cond,
+        -:  303:					    mutex->gthread_recursive_mutex())
+        -:  304:	      != 0)
+        -:  305:	    __throw_concurrence_wait_error();
+        -:  306:      }
+        -:  307:#endif
+        -:  308:    }
+        -:  309:  };
+        -:  310:#endif
+        -:  311:
+        -:  312:_GLIBCXX_END_NAMESPACE_VERSION
+        -:  313:} // namespace
+        -:  314:
+        -:  315:#endif

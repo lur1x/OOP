@@ -1,0 +1,20 @@
+# ninja log v6
+14	1322	7641119666365179	CMakeFiles/HTML_DecodeTest.dir/HTMLDecodeCore.cpp.obj.ddi	383a53921612c398
+19	1358	7641119666420522	CMakeFiles/HTML_DecodeTest.dir/StreamUtils.cpp.obj.ddi	c40498280d44f563
+11	1422	7641119666345067	CMakeFiles/HTML_DecodeTest.dir/Decoder.cpp.obj.ddi	5f8b3200ccb43cd3
+6	1631	7641119666240769	CMakeFiles/HTML_DecodeTest.dir/test/HTML_DecodeTest.cpp.obj.ddi	c8c1c0d256fbcf21
+1631	1679	7641119682963800	CMakeFiles/HTML_DecodeTest.dir/CXX.dd	cf32389700786467
+1631	1679	7641119682963800	C:/Users/esipo/CLionProjects/OOP/lab2/HTML_Decode/cmake-build-debug-coverage/CMakeFiles/HTML_DecodeTest.dir/CXXModules.json	cf32389700786467
+1631	1679	7641119682963800	CMakeFiles/HTML_DecodeTest.dir/test/HTML_DecodeTest.cpp.obj.modmap	cf32389700786467
+1631	1679	7641119682963800	CMakeFiles/HTML_DecodeTest.dir/Decoder.cpp.obj.modmap	cf32389700786467
+1631	1679	7641119682963800	CMakeFiles/HTML_DecodeTest.dir/HTMLDecodeCore.cpp.obj.modmap	cf32389700786467
+1631	1679	7641119682963800	CMakeFiles/HTML_DecodeTest.dir/StreamUtils.cpp.obj.modmap	cf32389700786467
+1693	3502	7641119683166040	CMakeFiles/HTML_DecodeTest.dir/StreamUtils.cpp.obj	7931acb682f06f81
+1686	3544	7641119683086015	CMakeFiles/HTML_DecodeTest.dir/Decoder.cpp.obj	4e88e81659d2d13f
+1690	3663	7641119683126037	CMakeFiles/HTML_DecodeTest.dir/HTMLDecodeCore.cpp.obj	7126c926c8827651
+28	4178	7641119666500966	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	b48a3c7a95ff6555
+1682	5850	7641119683046027	CMakeFiles/HTML_DecodeTest.dir/test/HTML_DecodeTest.cpp.obj	892ade744512ca8f
+24	19167	7641119666460724	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	8c36deadb1ddf6a3
+19168	19304	7641119857914562	lib/libgtest.a	79749289197d9888
+19304	19371	7641119859270871	lib/libgtest_main.a	b1f174a051101c05
+19371	19715	7641119859941987	C:/Users/esipo/CLionProjects/OOP/lab2/HTML_Decode/bin/HTML_DecodeTest.exe	11f9265bf1268a37

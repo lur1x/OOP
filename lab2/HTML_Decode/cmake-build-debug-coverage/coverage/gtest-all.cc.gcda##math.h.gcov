@@ -1,0 +1,1593 @@
+        -:    0:Source:C:/mingw64/x86_64-w64-mingw32/include/math.h
+        -:    0:Graph:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcno
+        -:    0:Data:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcda
+        -:    0:Runs:1
+        -:    1:/**
+        -:    2: * This file has no copyright assigned and is placed in the Public Domain.
+        -:    3: * This file is part of the mingw-w64 runtime package.
+        -:    4: * No warranty is given; refer to the file DISCLAIMER.PD within this package.
+        -:    5: */
+        -:    6:#ifndef _MATH_H_
+        -:    7:#define _MATH_H_
+        -:    8:
+        -:    9:#ifdef __GNUC__
+        -:   10:#pragma GCC system_header
+        -:   11:#endif /* __GNUC__ */
+        -:   12:
+        -:   13:#include <crtdefs.h>
+        -:   14:
+        -:   15:struct _exception;
+        -:   16:
+        -:   17:#pragma pack(push,_CRT_PACKING)
+        -:   18:
+        -:   19:#define	_DOMAIN		1	/* domain error in argument */
+        -:   20:#define	_SING		2	/* singularity */
+        -:   21:#define	_OVERFLOW	3	/* range overflow */
+        -:   22:#define	_UNDERFLOW	4	/* range underflow */
+        -:   23:#define	_TLOSS		5	/* total loss of precision */
+        -:   24:#define	_PLOSS		6	/* partial loss of precision */
+        -:   25:
+        -:   26:#ifndef __STRICT_ANSI__
+        -:   27:#ifndef	NO_OLDNAMES
+        -:   28:
+        -:   29:#define	DOMAIN		_DOMAIN
+        -:   30:#define	SING		_SING
+        -:   31:#define	OVERFLOW	_OVERFLOW
+        -:   32:#define	UNDERFLOW	_UNDERFLOW
+        -:   33:#define	TLOSS		_TLOSS
+        -:   34:#define	PLOSS		_PLOSS
+        -:   35:
+        -:   36:#endif
+        -:   37:#endif
+        -:   38:
+        -:   39:#if !defined(__STRICT_ANSI__) || defined(_POSIX_C_SOURCE) || defined(_POSIX_SOURCE) || defined(_XOPEN_SOURCE) || defined(_GNU_SOURCE) || defined(_BSD_SOURCE) || defined(_USE_MATH_DEFINES)
+        -:   40:#define M_E		2.7182818284590452354
+        -:   41:#define M_LOG2E		1.4426950408889634074
+        -:   42:#define M_LOG10E	0.43429448190325182765
+        -:   43:#define M_LN2		0.69314718055994530942
+        -:   44:#define M_LN10		2.30258509299404568402
+        -:   45:#define M_PI		3.14159265358979323846
+        -:   46:#define M_PI_2		1.57079632679489661923
+        -:   47:#define M_PI_4		0.78539816339744830962
+        -:   48:#define M_1_PI		0.31830988618379067154
+        -:   49:#define M_2_PI		0.63661977236758134308
+        -:   50:#define M_2_SQRTPI	1.12837916709551257390
+        -:   51:#define M_SQRT2		1.41421356237309504880
+        -:   52:#define M_SQRT1_2	0.70710678118654752440
+        -:   53:#endif
+        -:   54:
+        -:   55:#ifndef __STRICT_ANSI__
+        -:   56:/* See also float.h  */
+        -:   57:#ifndef __MINGW_FPCLASS_DEFINED
+        -:   58:#define __MINGW_FPCLASS_DEFINED 1
+        -:   59:/* IEEE 754 classication */
+        -:   60:#define	_FPCLASS_SNAN	0x0001	/* Signaling "Not a Number" */
+        -:   61:#define	_FPCLASS_QNAN	0x0002	/* Quiet "Not a Number" */
+        -:   62:#define	_FPCLASS_NINF	0x0004	/* Negative Infinity */
+        -:   63:#define	_FPCLASS_NN	0x0008	/* Negative Normal */
+        -:   64:#define	_FPCLASS_ND	0x0010	/* Negative Denormal */
+        -:   65:#define	_FPCLASS_NZ	0x0020	/* Negative Zero */
+        -:   66:#define	_FPCLASS_PZ	0x0040	/* Positive Zero */
+        -:   67:#define	_FPCLASS_PD	0x0080	/* Positive Denormal */
+        -:   68:#define	_FPCLASS_PN	0x0100	/* Positive Normal */
+        -:   69:#define	_FPCLASS_PINF	0x0200	/* Positive Infinity */
+        -:   70:#endif
+        -:   71:#endif
+        -:   72:
+        -:   73:#ifndef RC_INVOKED
+        -:   74:
+        -:   75:#ifndef __mingw_types_compatible_p
+        -:   76:#ifdef __cplusplus
+        -:   77:extern "C++" {
+        -:   78:template <typename type1, typename type2> struct __mingw_types_compatible_p {
+        -:   79:  static const bool result = false;
+        -:   80:};
+        -:   81:
+        -:   82:template <typename type1> struct __mingw_types_compatible_p<type1, type1> {
+        -:   83: static const bool result = true;
+        -:   84:};
+        -:   85:
+        -:   86:template <typename type1> struct __mingw_types_compatible_p<const type1, type1> {
+        -:   87:  static const bool result = true;
+        -:   88:};
+        -:   89:
+        -:   90:template <typename type1> struct __mingw_types_compatible_p<type1, const type1> {
+        -:   91:  static const bool result = true;
+        -:   92:};
+        -:   93:}
+        -:   94:
+        -:   95:#define __mingw_types_compatible_p(type1, type2) __mingw_types_compatible_p <type1, type2>::result
+        -:   96:#else
+        -:   97:#define __mingw_types_compatible_p(type1, type2) __builtin_types_compatible_p (type1, type2)
+        -:   98:#endif
+        -:   99:#endif
+        -:  100:
+        -:  101:#ifndef __mingw_choose_expr
+        -:  102:#ifdef __cplusplus
+        -:  103:#define __mingw_choose_expr(C, E1, E2) ((C) ? E1 : E2)
+        -:  104:#else
+        -:  105:#define __mingw_choose_expr __builtin_choose_expr
+        -:  106:#endif
+        -:  107:#endif
+        -:  108:
+        -:  109:
+        -:  110:#ifdef __cplusplus
+        -:  111:extern "C" {
+        -:  112:#endif
+        -:  113:
+        -:  114:#ifndef __MINGW_SOFTMATH
+        -:  115:#define __MINGW_SOFTMATH
+        -:  116:
+        -:  117:/* IEEE float/double type shapes.  */
+        -:  118:
+        -:  119:  typedef union __mingw_dbl_type_t {
+        -:  120:    double x;
+        -:  121:    unsigned long long val;
+        -:  122:    __C89_NAMELESS struct {
+        -:  123:      unsigned int low, high;
+        -:  124:    } lh;
+        -:  125:  } __mingw_dbl_type_t;
+        -:  126:
+        -:  127:  typedef union __mingw_flt_type_t {
+        -:  128:    float x;
+        -:  129:    unsigned int val;
+        -:  130:  } __mingw_flt_type_t;
+        -:  131:
+        -:  132:  typedef union __mingw_ldbl_type_t
+        -:  133:  {
+        -:  134:    long double x;
+        -:  135:    __C89_NAMELESS struct {
+        -:  136:      unsigned int low, high;
+        -:  137:      int sign_exponent : 16;
+        -:  138:      int res1 : 16;
+        -:  139:      int res0 : 32;
+        -:  140:    } lh;
+        -:  141:  } __mingw_ldbl_type_t;
+        -:  142:
+        -:  143:#endif
+        -:  144:
+        -:  145:#ifndef _HUGE
+        -:  146:#ifdef _UCRT
+        -:  147:  extern double const _HUGE;
+        -:  148:#define _HUGE _HUGE
+        -:  149:#else
+        -:  150:  extern double * __MINGW_IMP_SYMBOL(_HUGE);
+        -:  151:#define _HUGE	(* __MINGW_IMP_SYMBOL(_HUGE))
+        -:  152:#endif /* _UCRT */
+        -:  153:#endif
+        -:  154:
+        -:  155:#ifdef __GNUC__
+        -:  156:#define	HUGE_VAL __builtin_huge_val()
+        -:  157:#else
+        -:  158:#define HUGE_VAL _HUGE
+        -:  159:#endif /* __GNUC__ */
+        -:  160:
+        -:  161:#ifndef _EXCEPTION_DEFINED
+        -:  162:#define _EXCEPTION_DEFINED
+        -:  163:  struct _exception {
+        -:  164:    int type;
+        -:  165:    const char *name;
+        -:  166:    double arg1;
+        -:  167:    double arg2;
+        -:  168:    double retval;
+        -:  169:  };
+        -:  170:
+        -:  171:  void __mingw_raise_matherr (int typ, const char *name, double a1, double a2,
+        -:  172:			      double rslt);
+        -:  173:  void __mingw_setusermatherr (int (__cdecl *)(struct _exception *));
+        -:  174:  _CRTIMP void __setusermatherr(int (__cdecl *)(struct _exception *));
+        -:  175:  #define __setusermatherr __mingw_setusermatherr
+        -:  176:#endif
+        -:  177:
+        -:  178:  double __cdecl sin(double _X);
+        -:  179:  double __cdecl cos(double _X);
+        -:  180:  double __cdecl tan(double _X);
+        -:  181:  double __cdecl sinh(double _X);
+        -:  182:  double __cdecl cosh(double _X);
+        -:  183:  double __cdecl tanh(double _X);
+        -:  184:  double __cdecl asin(double _X);
+        -:  185:  double __cdecl acos(double _X);
+        -:  186:  double __cdecl atan(double _X);
+        -:  187:  double __cdecl atan2(double _Y,double _X);
+        -:  188:  double __cdecl exp(double _X);
+        -:  189:  double __cdecl log(double _X);
+        -:  190:  double __cdecl log10(double _X);
+        -:  191:  double __cdecl pow(double _X,double _Y);
+        -:  192:  double __cdecl sqrt(double _X);
+        -:  193:  double __cdecl ceil(double _X);
+        -:  194:  double __cdecl floor(double _X);
+        -:  195:
+        -:  196:/* 7.12.7.2 The fabs functions: Double in C89 */
+        -:  197:  extern  float __cdecl fabsf (float x);
+        -:  198:  extern long double __cdecl fabsl (long double);
+        -:  199:  extern double __cdecl fabs (double _X);
+        -:  200:
+        -:  201:#ifndef __CRT__NO_INLINE
+        -:  202:#if !defined (__ia64__)
+        -:  203:  __CRT_INLINE float __cdecl fabsf (float x)
+        -:  204:  {
+        -:  205:#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+        -:  206:    return __builtin_fabsf (x);
+        -:  207:#else
+        -:  208:    float res = 0.0F;
+        -:  209:    __asm__ __volatile__ ("fabs;" : "=t" (res) : "0" (x));
+        -:  210:    return res;
+        -:  211:#endif
+        -:  212:  }
+        -:  213:
+        -:  214:  __CRT_INLINE long double __cdecl fabsl (long double x)
+        -:  215:  {
+        -:  216:#if defined(__arm__) || defined(__aarch64__)
+        -:  217:    return __builtin_fabsl (x);
+        -:  218:#else
+        -:  219:    long double res = 0.0l;
+        -:  220:    __asm__ __volatile__ ("fabs;" : "=t" (res) : "0" (x));
+        -:  221:    return res;
+        -:  222:#endif
+        -:  223:  }
+        -:  224:
+    #####:  225:  __CRT_INLINE double __cdecl fabs (double x)
+        -:  226:  {
+        -:  227:#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+    #####:  228:    return __builtin_fabs (x);
+    %%%%%:  228-block 2
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  228-block 4
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  229:#else
+        -:  230:    double res = 0.0;
+        -:  231:    __asm__ __volatile__ ("fabs;" : "=t" (res) : "0" (x));
+        -:  232:    return res;
+        -:  233:#endif
+        -:  234:  }
+        -:  235:#endif
+        -:  236:#endif
+        -:  237:
+        -:  238:  double __cdecl ldexp(double _X,int _Y);
+        -:  239:  double __cdecl frexp(double _X,int *_Y);
+        -:  240:  double __cdecl modf(double _X,double *_Y);
+        -:  241:  double __cdecl fmod(double _X,double _Y);
+        -:  242:
+        -:  243:  void __cdecl sincos (double __x, double *p_sin, double *p_cos);
+        -:  244:  void __cdecl sincosl (long double __x, long double *p_sin, long double *p_cos);
+        -:  245:  void __cdecl sincosf (float __x, float *p_sin, float *p_cos);
+        -:  246:
+        -:  247:#ifndef _CRT_ABS_DEFINED
+        -:  248:#define _CRT_ABS_DEFINED
+        -:  249:  int __cdecl abs(int _X);
+        -:  250:  long __cdecl labs(long _X);
+        -:  251:#endif
+        -:  252:#ifndef _CRT_ATOF_DEFINED
+        -:  253:#define _CRT_ATOF_DEFINED
+        -:  254:  double __cdecl atof(const char *_String);
+        -:  255:  double __cdecl _atof_l(const char *_String,_locale_t _Locale);
+        -:  256:#endif
+        -:  257:
+        -:  258:#define EDOM 33
+        -:  259:#define ERANGE 34
+        -:  260:
+        -:  261:#ifndef __STRICT_ANSI__
+        -:  262:
+        -:  263:#ifndef _COMPLEX_DEFINED
+        -:  264:#define _COMPLEX_DEFINED
+        -:  265:  struct _complex {
+        -:  266:    double x;
+        -:  267:    double y;
+        -:  268:  };
+        -:  269:#endif
+        -:  270:
+        -:  271:  double __cdecl _cabs(struct _complex _ComplexA); /* Overridden to use our cabs.  */
+        -:  272:  double __cdecl _hypot(double _X,double _Y);
+        -:  273:  _CRTIMP double __cdecl _j0(double _X);
+        -:  274:  _CRTIMP double __cdecl _j1(double _X);
+        -:  275:  _CRTIMP double __cdecl _jn(int _X,double _Y);
+        -:  276:  _CRTIMP double __cdecl _y0(double _X);
+        -:  277:  _CRTIMP double __cdecl _y1(double _X);
+        -:  278:  _CRTIMP double __cdecl _yn(int _X,double _Y);
+        -:  279:#ifndef _CRT_MATHERR_DEFINED
+        -:  280:#define _CRT_MATHERR_DEFINED
+        -:  281:  _CRTIMP int __cdecl _matherr (struct _exception *);
+        -:  282:#endif
+        -:  283:
+        -:  284:/* These are also declared in Mingw float.h; needed here as well to work 
+        -:  285:   around GCC build issues.  */
+        -:  286:/* BEGIN FLOAT.H COPY */
+        -:  287:/*
+        -:  288: * IEEE recommended functions
+        -:  289: */
+        -:  290:#ifndef _SIGN_DEFINED
+        -:  291:#define _SIGN_DEFINED
+        -:  292:  _CRTIMP double __cdecl _chgsign (double _X);
+        -:  293:  _CRTIMP double __cdecl _copysign (double _Number,double _Sign);
+        -:  294:  _CRTIMP double __cdecl _logb (double);
+        -:  295:  _CRTIMP double __cdecl _nextafter (double, double);
+        -:  296:  _CRTIMP double __cdecl _scalb (double, long);
+        -:  297:  _CRTIMP int __cdecl _finite (double);
+        -:  298:  _CRTIMP int __cdecl _fpclass (double);
+        -:  299:  _CRTIMP int __cdecl _isnan (double);
+        -:  300:#endif
+        -:  301:
+        -:  302:/* END FLOAT.H COPY */
+        -:  303:
+        -:  304:#if !defined(NO_OLDNAMES)
+        -:  305:
+        -:  306:_CRTIMP double __cdecl j0 (double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  307:_CRTIMP double __cdecl j1 (double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  308:_CRTIMP double __cdecl jn (int, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  309:_CRTIMP double __cdecl y0 (double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  310:_CRTIMP double __cdecl y1 (double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  311:_CRTIMP double __cdecl yn (int, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005;
+        -:  312:
+        -:  313:_CRTIMP double __cdecl chgsign (double);
+        -:  314:/*
+        -:  315: * scalb() is a GCC built-in.
+        -:  316: * Exclude this _scalb() stub; the semantics are incompatible
+        -:  317: * with the built-in implementation.
+        -:  318: *
+        -:  319:_CRTIMP double __cdecl scalb (double, long);
+        -:  320: *
+        -:  321: */
+        -:  322:  _CRTIMP int __cdecl finite (double);
+        -:  323:  _CRTIMP int __cdecl fpclass (double);
+        -:  324:
+        -:  325:#define FP_SNAN    _FPCLASS_SNAN
+        -:  326:#define FP_QNAN    _FPCLASS_QNAN
+        -:  327:#define FP_NINF    _FPCLASS_NINF
+        -:  328:#define FP_PINF    _FPCLASS_PINF
+        -:  329:#define FP_NDENORM _FPCLASS_ND
+        -:  330:#define FP_PDENORM _FPCLASS_PD
+        -:  331:#define FP_NZERO   _FPCLASS_NZ
+        -:  332:#define FP_PZERO   _FPCLASS_PZ
+        -:  333:#define FP_NNORM   _FPCLASS_NN
+        -:  334:#define FP_PNORM   _FPCLASS_PN
+        -:  335:
+        -:  336:#endif /* !defined (_NO_OLDNAMES) && !define (NO_OLDNAMES) */
+        -:  337:
+        -:  338:#if(defined(_X86_) && !defined(__x86_64))
+        -:  339:  _CRTIMP int __cdecl _set_SSE2_enable(int _Flag);
+        -:  340:#endif
+        -:  341:
+        -:  342:#endif
+        -:  343:
+        -:  344:#ifndef __NO_ISOCEXT
+        -:  345:#if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+        -:  346:	|| !defined __STRICT_ANSI__ || defined __cplusplus
+        -:  347:
+        -:  348:#ifdef __GNUC__
+        -:  349:#define HUGE_VALF	__builtin_huge_valf()
+        -:  350:#define HUGE_VALL	__builtin_huge_vall()
+        -:  351:#define INFINITY	__builtin_inff()
+        -:  352:#define NAN		__builtin_nanf("")
+        -:  353:#else
+        -:  354:extern const float __INFF;
+        -:  355:#define HUGE_VALF __INFF
+        -:  356:extern const long double  __INFL;
+        -:  357:#define HUGE_VALL __INFL
+        -:  358:#define INFINITY HUGE_VALF
+        -:  359:extern const double __QNANF;
+        -:  360:#define NAN __QNANF
+        -:  361:#endif /* __GNUC__ */
+        -:  362:
+        -:  363:/* Use the compiler's builtin define for FLT_EVAL_METHOD to
+        -:  364:   set float_t and double_t.  */
+        -:  365:#if defined (__x86_64__) || defined(__FLT_EVAL_METHOD__)  
+        -:  366:# if defined (__x86_64__) || ( __FLT_EVAL_METHOD__== 0)
+        -:  367:typedef float float_t;
+        -:  368:typedef double double_t;
+        -:  369:# elif (__FLT_EVAL_METHOD__ == 1)
+        -:  370:typedef double float_t;
+        -:  371:typedef double double_t;
+        -:  372:# else /* (__FLT_EVAL_METHOD__ == 2) default ix87 FPU */
+        -:  373:typedef long double float_t;
+        -:  374:typedef long double double_t;
+        -:  375:#endif
+        -:  376:#else /* ix87 FPU default */
+        -:  377:typedef long double float_t;
+        -:  378:typedef long double double_t;
+        -:  379:#endif
+        -:  380:
+        -:  381:/* 7.12.3.1 */
+        -:  382:/*
+        -:  383:   Return values for fpclassify.
+        -:  384:   These are based on Intel x87 fpu condition codes
+        -:  385:   in the high byte of status word and differ from
+        -:  386:   the return values for MS IEEE 754 extension _fpclass()
+        -:  387:*/
+        -:  388:#define FP_NAN		0x0100
+        -:  389:#define FP_NORMAL	0x0400
+        -:  390:#define FP_INFINITE	(FP_NAN | FP_NORMAL)
+        -:  391:#define FP_ZERO		0x4000
+        -:  392:#define FP_SUBNORMAL	(FP_NORMAL | FP_ZERO)
+        -:  393:/* 0x0200 is signbit mask */
+        -:  394:
+        -:  395:/*
+        -:  396:  We can't inline float or double, because we want to ensure truncation
+        -:  397:  to semantic type before classification. 
+        -:  398:  (A normal long double value might become subnormal when 
+        -:  399:  converted to double, and zero when converted to float.)
+        -:  400:*/
+        -:  401:
+        -:  402:  extern int __cdecl __fpclassifyl (long double);
+        -:  403:  extern int __cdecl __fpclassifyf (float);
+        -:  404:  extern int __cdecl __fpclassify (double);
+        -:  405:
+        -:  406:#ifndef __CRT__NO_INLINE
+        -:  407:  __CRT_INLINE int __cdecl __fpclassifyl (long double x) {
+        -:  408:#if defined(__x86_64__) || defined(_AMD64_)
+        -:  409:    __mingw_ldbl_type_t hlp;
+        -:  410:    unsigned int e;
+        -:  411:    hlp.x = x;
+        -:  412:    e = hlp.lh.sign_exponent & 0x7fff;
+        -:  413:    if (!e)
+        -:  414:      {
+        -:  415:        unsigned int h = hlp.lh.high;
+        -:  416:        if (!(hlp.lh.low | h))
+        -:  417:          return FP_ZERO;
+        -:  418:        else if (!(h & 0x80000000))
+        -:  419:          return FP_SUBNORMAL;
+        -:  420:      }
+        -:  421:    else if (e == 0x7fff)
+        -:  422:      return (((hlp.lh.high & 0x7fffffff) | hlp.lh.low) == 0 ?
+        -:  423:              FP_INFINITE : FP_NAN);
+        -:  424:    return FP_NORMAL;
+        -:  425:#elif defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  426:    return __fpclassify(x);
+        -:  427:#elif defined(__i386__) || defined(_X86_)
+        -:  428:    unsigned short sw;
+        -:  429:    __asm__ __volatile__ ("fxam; fstsw %%ax;" : "=a" (sw): "t" (x));
+        -:  430:    return sw & (FP_NAN | FP_NORMAL | FP_ZERO );
+        -:  431:#endif
+        -:  432:  }
+        -:  433:  __CRT_INLINE int __cdecl __fpclassify (double x) {
+        -:  434:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  435:    __mingw_dbl_type_t hlp;
+        -:  436:    unsigned int l, h;
+        -:  437:
+        -:  438:    hlp.x = x;
+        -:  439:    h = hlp.lh.high;
+        -:  440:    l = hlp.lh.low | (h & 0xfffff);
+        -:  441:    h &= 0x7ff00000;
+        -:  442:    if ((h | l) == 0)
+        -:  443:      return FP_ZERO;
+        -:  444:    if (!h)
+        -:  445:      return FP_SUBNORMAL;
+        -:  446:    if (h == 0x7ff00000)
+        -:  447:      return (l ? FP_NAN : FP_INFINITE);
+        -:  448:    return FP_NORMAL;
+        -:  449:#elif defined(__i386__) || defined(_X86_)
+        -:  450:    unsigned short sw;
+        -:  451:    __asm__ __volatile__ ("fxam; fstsw %%ax;" : "=a" (sw): "t" (x));
+        -:  452:    return sw & (FP_NAN | FP_NORMAL | FP_ZERO );
+        -:  453:#endif
+        -:  454:  }
+        -:  455:  __CRT_INLINE int __cdecl __fpclassifyf (float x) {
+        -:  456:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  457:    __mingw_flt_type_t hlp;
+        -:  458:
+        -:  459:    hlp.x = x;
+        -:  460:    hlp.val &= 0x7fffffff;
+        -:  461:    if (hlp.val == 0)
+        -:  462:      return FP_ZERO;
+        -:  463:    if (hlp.val < 0x800000)
+        -:  464:      return FP_SUBNORMAL;
+        -:  465:    if (hlp.val >= 0x7f800000)
+        -:  466:      return (hlp.val > 0x7f800000 ? FP_NAN : FP_INFINITE);
+        -:  467:    return FP_NORMAL;
+        -:  468:#elif defined(__i386__) || defined(_X86_)
+        -:  469:    unsigned short sw;
+        -:  470:    __asm__ __volatile__ ("fxam; fstsw %%ax;" : "=a" (sw): "t" (x));
+        -:  471:    return sw & (FP_NAN | FP_NORMAL | FP_ZERO );
+        -:  472:#endif
+        -:  473:  }
+        -:  474:#endif
+        -:  475:
+        -:  476:#ifdef __STDC_WANT_DEC_FP__
+        -:  477:#define __dfp_expansion(__call,__fin,x) \
+        -:  478:__mingw_choose_expr (                                  \
+        -:  479:      __mingw_types_compatible_p (__typeof__ (x), _Decimal32),    \
+        -:  480:        __call##d32(x),                                         \
+        -:  481:    __mingw_choose_expr (                                     \
+        -:  482:      __mingw_types_compatible_p (__typeof__ (x), _Decimal64),    \
+        -:  483:        __call##d64(x),                                         \
+        -:  484:    __mingw_choose_expr (                                     \
+        -:  485:      __mingw_types_compatible_p (__typeof__ (x), _Decimal128),   \
+        -:  486:        __call##d128(x),                                        \
+        -:  487:__fin)))
+        -:  488:#else
+        -:  489:#define __dfp_expansion(__call,__fin,x) __fin
+        -:  490:#endif
+        -:  491:
+        -:  492:#define fpclassify(x) \
+        -:  493:__mingw_choose_expr (                                         \
+        -:  494:  __mingw_types_compatible_p (__typeof__ (x), double),            \
+        -:  495:    __fpclassify(x),                                            \
+        -:  496:    __mingw_choose_expr (                                     \
+        -:  497:      __mingw_types_compatible_p (__typeof__ (x), float),         \
+        -:  498:        __fpclassifyf(x),                                       \
+        -:  499:    __mingw_choose_expr (                                     \
+        -:  500:      __mingw_types_compatible_p (__typeof__ (x), long double),   \
+        -:  501:        __fpclassifyl(x),                                       \
+        -:  502:    __dfp_expansion(__fpclassify,(__builtin_trap(),0),x))))
+        -:  503:
+        -:  504:
+        -:  505:/* 7.12.3.2 */
+        -:  506:#define isfinite(x) ((fpclassify(x) & FP_NAN) == 0)
+        -:  507:
+        -:  508:/* 7.12.3.3 */
+        -:  509:#define isinf(x) (fpclassify(x) == FP_INFINITE)
+        -:  510:
+        -:  511:/* 7.12.3.4 */
+        -:  512:/* We don't need to worry about truncation here:
+        -:  513:   A NaN stays a NaN. */
+        -:  514:
+        -:  515:  extern int __cdecl __isnan (double);
+        -:  516:  extern int __cdecl __isnanf (float);
+        -:  517:  extern int __cdecl __isnanl (long double);
+        -:  518:
+        -:  519:#ifndef __CRT__NO_INLINE
+        -:  520:  __CRT_INLINE int __cdecl __isnan (double _x)
+        -:  521:  {
+        -:  522:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  523:    __mingw_dbl_type_t hlp;
+        -:  524:    unsigned int l, h;
+        -:  525:
+        -:  526:    hlp.x = _x;
+        -:  527:    l = hlp.lh.low;
+        -:  528:    h = hlp.lh.high & 0x7fffffff;
+        -:  529:    h |= (l | -l) >> 31;
+        -:  530:    h = 0x7ff00000 - h;
+        -:  531:    return (int) h >> 31;
+        -:  532:#elif defined(__i386__) || defined(_X86_)
+        -:  533:    unsigned short sw;
+        -:  534:    __asm__ __volatile__ ("fxam;"
+        -:  535:      "fstsw %%ax": "=a" (sw) : "t" (_x));
+        -:  536:    return (sw & (FP_NAN | FP_NORMAL | FP_INFINITE | FP_ZERO | FP_SUBNORMAL))
+        -:  537:      == FP_NAN;
+        -:  538:#endif
+        -:  539:  }
+        -:  540:
+        -:  541:  __CRT_INLINE int __cdecl __isnanf (float _x)
+        -:  542:  {
+        -:  543:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  544:    __mingw_flt_type_t hlp;
+        -:  545:    unsigned int i;
+        -:  546:    
+        -:  547:    hlp.x = _x;
+        -:  548:    i = hlp.val & 0x7fffffff;
+        -:  549:    i = 0x7f800000 - i;
+        -:  550:    return (int) (i >> 31);
+        -:  551:#elif defined(__i386__) || defined(_X86_)
+        -:  552:    unsigned short sw;
+        -:  553:    __asm__ __volatile__ ("fxam;"
+        -:  554:      "fstsw %%ax": "=a" (sw) : "t" (_x));
+        -:  555:    return (sw & (FP_NAN | FP_NORMAL | FP_INFINITE | FP_ZERO | FP_SUBNORMAL))
+        -:  556:      == FP_NAN;
+        -:  557:#endif
+        -:  558:  }
+        -:  559:
+        -:  560:  __CRT_INLINE int __cdecl __isnanl (long double _x)
+        -:  561:  {
+        -:  562:#if defined(__x86_64__) || defined(_AMD64_)
+        -:  563:    __mingw_ldbl_type_t ld;
+        -:  564:    unsigned int xx, signexp;
+        -:  565:
+        -:  566:    ld.x = _x;
+        -:  567:    signexp = (ld.lh.sign_exponent & 0x7fff) << 1;
+        -:  568:    xx = ld.lh.low | (ld.lh.high & 0x7fffffffu);
+        -:  569:    signexp |= (xx | (-xx)) >> 31;
+        -:  570:    signexp = 0xfffe - signexp;
+        -:  571:    return (int) signexp >> 16;
+        -:  572:#elif defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  573:    return __isnan(_x);
+        -:  574:#elif defined(__i386__) || defined(_X86_)
+        -:  575:    unsigned short sw;
+        -:  576:    __asm__ __volatile__ ("fxam;"
+        -:  577:      "fstsw %%ax": "=a" (sw) : "t" (_x));
+        -:  578:    return (sw & (FP_NAN | FP_NORMAL | FP_INFINITE | FP_ZERO | FP_SUBNORMAL))
+        -:  579:      == FP_NAN;
+        -:  580:#endif
+        -:  581:  }
+        -:  582:#endif
+        -:  583:
+        -:  584:
+        -:  585:
+        -:  586:#define isnan(x) \
+        -:  587:__mingw_choose_expr (                                         \
+        -:  588:  __mingw_types_compatible_p (__typeof__ (x), double),            \
+        -:  589:    __isnan(x),                                                 \
+        -:  590:    __mingw_choose_expr (                                     \
+        -:  591:      __mingw_types_compatible_p (__typeof__ (x), float),         \
+        -:  592:        __isnanf(x),                                            \
+        -:  593:    __mingw_choose_expr (                                     \
+        -:  594:      __mingw_types_compatible_p (__typeof__ (x), long double),   \
+        -:  595:        __isnanl(x),                                            \
+        -:  596:    __dfp_expansion(__isnan,(__builtin_trap(),x),x))))
+        -:  597:
+        -:  598:/* 7.12.3.5 */
+        -:  599:#define isnormal(x) (fpclassify(x) == FP_NORMAL)
+        -:  600:
+        -:  601:/* 7.12.3.6 The signbit macro */
+        -:  602:  extern int __cdecl __signbit (double);
+        -:  603:  extern int __cdecl __signbitf (float);
+        -:  604:  extern int __cdecl __signbitl (long double);
+        -:  605:#ifndef __CRT__NO_INLINE
+        -:  606:  __CRT_INLINE int __cdecl __signbit (double x) {
+        -:  607:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  608:    __mingw_dbl_type_t hlp;
+        -:  609:
+        -:  610:    hlp.x = x;
+        -:  611:    return ((hlp.lh.high & 0x80000000) != 0);
+        -:  612:#elif defined(__i386__) || defined(_X86_)
+        -:  613:    unsigned short stw;
+        -:  614:    __asm__ __volatile__ ( "fxam; fstsw %%ax;": "=a" (stw) : "t" (x));
+        -:  615:    return stw & 0x0200;
+        -:  616:#endif
+        -:  617:  }
+        -:  618:
+        -:  619:  __CRT_INLINE int __cdecl __signbitf (float x) {
+        -:  620:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  621:    __mingw_flt_type_t hlp;
+        -:  622:    hlp.x = x;
+        -:  623:    return ((hlp.val & 0x80000000) != 0);
+        -:  624:#elif defined(__i386__) || defined(_X86_)
+        -:  625:    unsigned short stw;
+        -:  626:    __asm__ __volatile__ ("fxam; fstsw %%ax;": "=a" (stw) : "t" (x));
+        -:  627:    return stw & 0x0200;
+        -:  628:#endif
+        -:  629:  }
+        -:  630:
+        -:  631:  __CRT_INLINE int __cdecl __signbitl (long double x) {
+        -:  632:#if defined(__x86_64__) || defined(_AMD64_)
+        -:  633:    __mingw_ldbl_type_t ld;
+        -:  634:    ld.x = x;
+        -:  635:    return ((ld.lh.sign_exponent & 0x8000) != 0);
+        -:  636:#elif defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  637:    return __signbit(x);
+        -:  638:#elif defined(__i386__) || defined(_X86_)
+        -:  639:    unsigned short stw;
+        -:  640:    __asm__ __volatile__ ("fxam; fstsw %%ax;": "=a" (stw) : "t" (x));
+        -:  641:    return stw & 0x0200;
+        -:  642:#endif
+        -:  643:  }
+        -:  644:#endif
+        -:  645:
+        -:  646:#define signbit(x) \
+        -:  647:__mingw_choose_expr (                                         \
+        -:  648:  __mingw_types_compatible_p (__typeof__ (x), double),            \
+        -:  649:    __signbit(x),                                               \
+        -:  650:    __mingw_choose_expr (                                     \
+        -:  651:      __mingw_types_compatible_p (__typeof__ (x), float),         \
+        -:  652:        __signbitf(x),                                          \
+        -:  653:    __mingw_choose_expr (                                     \
+        -:  654:      __mingw_types_compatible_p (__typeof__ (x), long double),   \
+        -:  655:        __signbitl(x),                                          \
+        -:  656:     __dfp_expansion(__signbit,(__builtin_trap(),x),x))))
+        -:  657:
+        -:  658:/* 7.12.4 Trigonometric functions: Double in C89 */
+        -:  659:  extern float __cdecl sinf(float _X);
+        -:  660:  extern long double __cdecl sinl(long double);
+        -:  661:
+        -:  662:  extern float __cdecl cosf(float _X);
+        -:  663:  extern long double __cdecl cosl(long double);
+        -:  664:
+        -:  665:  extern float __cdecl tanf(float _X);
+        -:  666:  extern long double __cdecl tanl(long double);
+        -:  667:  extern float __cdecl asinf(float _X);
+        -:  668:  extern long double __cdecl asinl(long double);
+        -:  669:
+        -:  670:  extern float __cdecl acosf (float);
+        -:  671:  extern long double __cdecl acosl (long double);
+        -:  672:
+        -:  673:  extern float __cdecl atanf (float);
+        -:  674:  extern long double __cdecl atanl (long double);
+        -:  675:
+        -:  676:  extern float __cdecl atan2f (float, float);
+        -:  677:  extern long double __cdecl atan2l (long double, long double);
+        -:  678:
+        -:  679:/* 7.12.5 Hyperbolic functions: Double in C89  */
+        -:  680:  extern float __cdecl sinhf(float _X);
+        -:  681:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  682:  __CRT_INLINE float sinhf(float _X) { return ((float)sinh((double)_X)); }
+        -:  683:#endif
+        -:  684:  extern long double __cdecl sinhl(long double);
+        -:  685:
+        -:  686:  extern float __cdecl coshf(float _X);
+        -:  687:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  688:  __CRT_INLINE float coshf(float _X) { return ((float)cosh((double)_X)); }
+        -:  689:#endif
+        -:  690:  extern long double __cdecl coshl(long double);
+        -:  691:
+        -:  692:  extern float __cdecl tanhf(float _X);
+        -:  693:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  694:  __CRT_INLINE float tanhf(float _X) { return ((float)tanh((double)_X)); }
+        -:  695:#endif
+        -:  696:  extern long double __cdecl tanhl(long double);
+        -:  697:
+        -:  698:/* Inverse hyperbolic trig functions  */ 
+        -:  699:/* 7.12.5.1 */
+        -:  700:  extern double __cdecl acosh (double);
+        -:  701:  extern float __cdecl acoshf (float);
+        -:  702:  extern long double __cdecl acoshl (long double);
+        -:  703:
+        -:  704:/* 7.12.5.2 */
+        -:  705:  extern double __cdecl asinh (double);
+        -:  706:  extern float __cdecl asinhf (float);
+        -:  707:  extern long double __cdecl asinhl (long double);
+        -:  708:
+        -:  709:/* 7.12.5.3 */
+        -:  710:  extern double __cdecl atanh (double);
+        -:  711:  extern float __cdecl atanhf  (float);
+        -:  712:  extern long double __cdecl atanhl (long double);
+        -:  713:
+        -:  714:/* Exponentials and logarithms  */
+        -:  715:/* 7.12.6.1 Double in C89 */
+        -:  716:  extern float __cdecl expf(float _X);
+        -:  717:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  718:  __CRT_INLINE float expf(float _X) { return ((float)exp((double)_X)); }
+        -:  719:#endif
+        -:  720:  extern long double __cdecl expl(long double);
+        -:  721:
+        -:  722:/* 7.12.6.2 */
+        -:  723:  extern double __cdecl exp2(double);
+        -:  724:  extern float __cdecl exp2f(float);
+        -:  725:  extern long double __cdecl exp2l(long double);
+        -:  726:
+        -:  727:/* 7.12.6.3 The expm1 functions */
+        -:  728:/* TODO: These could be inlined */
+        -:  729:  extern double __cdecl expm1(double);
+        -:  730:  extern float __cdecl expm1f(float);
+        -:  731:  extern long double __cdecl expm1l(long double);
+        -:  732:
+        -:  733:/* 7.12.6.4 Double in C89 */
+        -:  734:  extern float frexpf(float _X,int *_Y);
+        -:  735:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  736:  __CRT_INLINE float frexpf(float _X,int *_Y) { return ((float)frexp((double)_X,_Y)); }
+        -:  737:#endif
+        -:  738:  extern long double __cdecl frexpl(long double,int *);
+        -:  739:
+        -:  740:/* 7.12.6.5 */
+        -:  741:#define FP_ILOGB0 ((int)0x80000000)
+        -:  742:#define FP_ILOGBNAN ((int)0x7fffffff)
+        -:  743:  extern int __cdecl ilogb (double);
+        -:  744:  extern int __cdecl ilogbf (float);
+        -:  745:  extern int __cdecl ilogbl (long double);
+        -:  746:
+        -:  747:/* 7.12.6.6  Double in C89 */
+        -:  748:  extern float __cdecl ldexpf(float _X,int _Y);
+        -:  749:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  750:  __CRT_INLINE float __cdecl ldexpf (float x, int expn) { return (float) ldexp ((double)x, expn); }
+        -:  751:#endif
+        -:  752:  extern long double __cdecl ldexpl (long double, int);
+        -:  753:
+        -:  754:/* 7.12.6.7 Double in C89 */
+        -:  755:  extern float __cdecl logf (float);
+        -:  756:  extern long double __cdecl logl(long double);
+        -:  757:
+        -:  758:/* 7.12.6.8 Double in C89 */
+        -:  759:  extern float __cdecl log10f (float);
+        -:  760:  extern long double __cdecl log10l(long double);
+        -:  761:
+        -:  762:/* 7.12.6.9 */
+        -:  763:  extern double __cdecl log1p(double);
+        -:  764:  extern float __cdecl log1pf(float);
+        -:  765:  extern long double __cdecl log1pl(long double);
+        -:  766:
+        -:  767:/* 7.12.6.10 */
+        -:  768:  extern double __cdecl log2 (double);
+        -:  769:  extern float __cdecl log2f (float);
+        -:  770:  extern long double __cdecl log2l (long double);
+        -:  771:
+        -:  772:/* 7.12.6.11 */
+        -:  773:  extern double __cdecl logb (double);
+        -:  774:  extern float __cdecl logbf (float);
+        -:  775:  extern long double __cdecl logbl (long double);
+        -:  776:
+        -:  777:#ifndef __CRT__NO_INLINE
+        -:  778:/* When compiling with gcc, always use gcc's builtins.
+        -:  779: * The asm inlines below are kept here for future reference:
+        -:  780: * they were written for gcc and do no error handling
+        -:  781: * (exceptions/errno), therefore only valid if __FAST_MATH__
+        -:  782: * is defined (-ffast-math) .  */
+        -:  783:#if 0 /*defined(__GNUC__) && defined(__FAST_MATH__)*/
+        -:  784:  __CRT_INLINE double __cdecl logb (double x)
+        -:  785:  {
+        -:  786:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  787:  __mingw_dbl_type_t hlp;
+        -:  788:  int lx, hx;
+        -:  789:
+        -:  790:  hlp.x = x;
+        -:  791:  lx = hlp.lh.low;
+        -:  792:  hx = hlp.lh.high & 0x7fffffff; /* high |x| */
+        -:  793:  if ((hx | lx) == 0)
+        -:  794:    return -1.0 / fabs (x);
+        -:  795:  if (hx >= 0x7ff00000)
+        -:  796:    return x * x;
+        -:  797:  if ((hx >>= 20) == 0) {
+        -:  798:    unsigned long long mantissa = hlp.val & 0xfffffffffffffULL;
+        -:  799:    return -1023.0 - (__builtin_clzll(mantissa) - 12);
+        -:  800:  }
+        -:  801:  return (double) (hx - 1023);
+        -:  802:#elif defined(__i386__) || defined(_X86_)
+        -:  803:    double res = 0.0;
+        -:  804:    __asm__ __volatile__ ("fxtract\n\t"
+        -:  805:      "fstp	%%st" : "=t" (res) : "0" (x));
+        -:  806:    return res;
+        -:  807:#endif
+        -:  808:  }
+        -:  809:
+        -:  810:  __CRT_INLINE float __cdecl logbf (float x)
+        -:  811:  {
+        -:  812:#if defined(__x86_64__) || defined(_AMD64_) || defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  813:    int v;
+        -:  814:    __mingw_flt_type_t hlp;
+        -:  815:
+        -:  816:    hlp.x = x;
+        -:  817:    v = hlp.val & 0x7fffffff;                     /* high |x| */
+        -:  818:    if (!v)
+        -:  819:      return (float)-1.0 / fabsf (x);
+        -:  820:    if (v >= 0x7f800000)
+        -:  821:    return x * x;
+        -:  822:    if ((v >>= 23) == 0)
+        -:  823:      return -127.0 - (__builtin_clzl(hlp.val & 0x7fffff) - 9);
+        -:  824:  return (float) (v - 127);
+        -:  825:#elif defined(__i386__) || defined(_X86_)
+        -:  826:    float res = 0.0F;
+        -:  827:    __asm__ __volatile__ ("fxtract\n\t"
+        -:  828:      "fstp	%%st" : "=t" (res) : "0" (x));
+        -:  829:    return res;
+        -:  830:#endif
+        -:  831:  }
+        -:  832:
+        -:  833:  __CRT_INLINE long double __cdecl logbl (long double x)
+        -:  834:  {
+        -:  835:#if defined(__arm__) || defined(_ARM_) || defined(__aarch64__) || defined(_ARM64_)
+        -:  836:  __mingw_ldbl_type_t hlp;
+        -:  837:  int lx, hx;
+        -:  838:
+        -:  839:  hlp.x = x;
+        -:  840:  lx = hlp.lh.low;
+        -:  841:  hx = hlp.lh.high & 0x7fffffff; /* high |x| */
+        -:  842:  if ((hx | lx) == 0)
+        -:  843:    return -1.0 / fabs (x);
+        -:  844:  if (hx >= 0x7ff00000)
+        -:  845:    return x * x;
+        -:  846:  if ((hx >>= 20) == 0) {
+        -:  847:    unsigned long long mantissa = hlp.val & 0xfffffffffffffULL;
+        -:  848:    return -1023.0 - (__builtin_clzll(mantissa) - 12);
+        -:  849:  }
+        -:  850:  return (double) (hx - 1023);
+        -:  851:#elif defined(__x86_64__) || defined(_AMD64_) || defined(__i386__) || defined(_X86_)
+        -:  852:    long double res = 0.0l;
+        -:  853:    __asm__ __volatile__ ("fxtract\n\t"
+        -:  854:      "fstp	%%st" : "=t" (res) : "0" (x));
+        -:  855:    return res;
+        -:  856:#endif
+        -:  857:  }
+        -:  858:#endif /* defined(__GNUC__) && defined(__FAST_MATH__) */
+        -:  859:#endif /* __CRT__NO_INLINE */
+        -:  860:
+        -:  861:/* 7.12.6.12  Double in C89 */
+        -:  862:  extern float __cdecl modff (float, float*);
+        -:  863:  extern long double __cdecl modfl (long double, long double*);
+        -:  864:
+        -:  865:/* 7.12.6.13 */
+        -:  866:  extern double __cdecl scalbn (double, int);
+        -:  867:  extern float __cdecl scalbnf (float, int);
+        -:  868:  extern long double __cdecl scalbnl (long double, int);
+        -:  869:
+        -:  870:  extern double __cdecl scalbln (double, long);
+        -:  871:  extern float __cdecl scalblnf (float, long);
+        -:  872:  extern long double __cdecl scalblnl (long double, long);
+        -:  873:
+        -:  874:/* 7.12.7.1 */
+        -:  875:/* Implementations adapted from Cephes versions */ 
+        -:  876:  extern double __cdecl cbrt (double);
+        -:  877:  extern float __cdecl cbrtf (float);
+        -:  878:  extern long double __cdecl cbrtl (long double);
+        -:  879:
+        -:  880:/* 7.12.7.3  */
+        -:  881:  extern double __cdecl hypot (double, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005; /* in libmoldname.a */
+        -:  882:  extern float __cdecl hypotf (float x, float y);
+        -:  883:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  884:  __CRT_INLINE float __cdecl hypotf (float x, float y) { return (float) hypot ((double)x, (double)y);}
+        -:  885:#endif
+        -:  886:  extern long double __cdecl hypotl (long double, long double);
+        -:  887:
+        -:  888:/* 7.12.7.4 The pow functions. Double in C89 */
+        -:  889:  extern float __cdecl powf(float _X,float _Y);
+        -:  890:#if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
+        -:  891:  __CRT_INLINE float powf(float _X,float _Y) { return ((float)pow((double)_X,(double)_Y)); }
+        -:  892:#endif
+        -:  893:  extern long double __cdecl powl (long double, long double);
+        -:  894:
+        -:  895:/* 7.12.7.5 The sqrt functions. Double in C89. */
+        -:  896:  extern float __cdecl sqrtf (float);
+        -:  897:  extern long double sqrtl(long double);
+        -:  898:
+        -:  899:/* 7.12.8.1 The erf functions  */
+        -:  900:  extern double __cdecl erf (double);
+        -:  901:  extern float __cdecl erff (float);
+        -:  902:  extern long double __cdecl erfl (long double);
+        -:  903:
+        -:  904:/* 7.12.8.2 The erfc functions  */
+        -:  905:  extern double __cdecl erfc (double);
+        -:  906:  extern float __cdecl erfcf (float);
+        -:  907:  extern long double __cdecl erfcl (long double);
+        -:  908:
+        -:  909:/* 7.12.8.3 The lgamma functions */
+        -:  910:  extern double __cdecl lgamma (double);
+        -:  911:  extern float __cdecl lgammaf (float);
+        -:  912:  extern long double __cdecl lgammal (long double);
+        -:  913:
+        -:  914:  extern int signgam;
+        -:  915:
+        -:  916:/* 7.12.8.4 The tgamma functions */
+        -:  917:  extern double __cdecl tgamma (double);
+        -:  918:  extern float __cdecl tgammaf (float);
+        -:  919:  extern long double __cdecl tgammal (long double);
+        -:  920:
+        -:  921:/* 7.12.9.1 Double in C89 */
+        -:  922:  extern float __cdecl ceilf (float);
+        -:  923:  extern long double __cdecl ceill (long double);
+        -:  924:
+        -:  925:/* 7.12.9.2 Double in C89 */
+        -:  926:  extern float __cdecl floorf (float);
+        -:  927:  extern long double __cdecl floorl (long double);
+        -:  928:
+        -:  929:/* 7.12.9.3 */
+        -:  930:  extern double __cdecl nearbyint ( double);
+        -:  931:  extern float __cdecl nearbyintf (float);
+        -:  932:  extern long double __cdecl nearbyintl (long double);
+        -:  933:
+        -:  934:/* 7.12.9.4 */
+        -:  935:/* round, using fpu control word settings */
+        -:  936:extern double __cdecl rint (double);
+        -:  937:extern float __cdecl rintf (float);
+        -:  938:extern long double __cdecl rintl (long double);
+        -:  939:
+        -:  940:/* 7.12.9.5 */
+        -:  941:extern long __cdecl lrint (double);
+        -:  942:extern long __cdecl lrintf (float);
+        -:  943:extern long __cdecl lrintl (long double);
+        -:  944:
+        -:  945:__MINGW_EXTENSION long long __cdecl llrint (double);
+        -:  946:__MINGW_EXTENSION long long __cdecl llrintf (float);
+        -:  947:__MINGW_EXTENSION long long __cdecl llrintl (long double);
+        -:  948:
+        -:  949:#ifndef __CRT__NO_INLINE
+        -:  950:/* When compiling with gcc, always use gcc's builtins.
+        -:  951: * The asm inlines below are kept here for future reference:
+        -:  952: * they were written for gcc and do no error handling
+        -:  953: * (exceptions/errno), therefore only valid if __FAST_MATH__
+        -:  954: * is defined (-ffast-math) .  */
+        -:  955:#if 0 /*defined(__GNUC__) && defined(__FAST_MATH__)*/
+        -:  956:  __CRT_INLINE double __cdecl rint (double x)
+        -:  957:  {
+        -:  958:    double retval = 0.0;
+        -:  959:    __asm__ __volatile__ ("frndint;": "=t" (retval) : "0" (x));
+        -:  960:    return retval;
+        -:  961:  }
+        -:  962:
+        -:  963:  __CRT_INLINE float __cdecl rintf (float x)
+        -:  964:  {
+        -:  965:    float retval = 0.0;
+        -:  966:    __asm__ __volatile__ ("frndint;" : "=t" (retval) : "0" (x) );
+        -:  967:    return retval;
+        -:  968:  }
+        -:  969:
+        -:  970:  __CRT_INLINE long double __cdecl rintl (long double x)
+        -:  971:  {
+        -:  972:    long double retval = 0.0l;
+        -:  973:    __asm__ __volatile__ ("frndint;" : "=t" (retval) : "0" (x) );
+        -:  974:    return retval;
+        -:  975:  }
+        -:  976:
+        -:  977:  __CRT_INLINE long __cdecl lrint (double x) 
+        -:  978:  {
+        -:  979:    long retval = 0;
+        -:  980:    __asm__ __volatile__							      \
+        -:  981:      ("fistpl %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -:  982:      return retval;
+        -:  983:  }
+        -:  984:
+        -:  985:  __CRT_INLINE long __cdecl lrintf (float x) 
+        -:  986:  {
+        -:  987:    long retval = 0;
+        -:  988:    __asm__ __volatile__							      \
+        -:  989:      ("fistpl %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -:  990:      return retval;
+        -:  991:  }
+        -:  992:
+        -:  993:  __CRT_INLINE long __cdecl lrintl (long double x) 
+        -:  994:  {
+        -:  995:    long retval = 0;
+        -:  996:    __asm__ __volatile__							      \
+        -:  997:      ("fistpl %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -:  998:      return retval;
+        -:  999:  }
+        -: 1000:
+        -: 1001:  __MINGW_EXTENSION __CRT_INLINE long long __cdecl llrint (double x) 
+        -: 1002:  {
+        -: 1003:    __MINGW_EXTENSION long long retval = 0ll;
+        -: 1004:    __asm__ __volatile__							      \
+        -: 1005:      ("fistpll %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -: 1006:      return retval;
+        -: 1007:  }
+        -: 1008:
+        -: 1009:  __MINGW_EXTENSION __CRT_INLINE long long __cdecl llrintf (float x) 
+        -: 1010:  {
+        -: 1011:    __MINGW_EXTENSION long long retval = 0ll;
+        -: 1012:    __asm__ __volatile__							      \
+        -: 1013:      ("fistpll %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -: 1014:      return retval;
+        -: 1015:  }
+        -: 1016:
+        -: 1017:  __MINGW_EXTENSION __CRT_INLINE long long __cdecl llrintl (long double x) 
+        -: 1018:  {
+        -: 1019:    __MINGW_EXTENSION long long retval = 0ll;
+        -: 1020:    __asm__ __volatile__							      \
+        -: 1021:      ("fistpll %0"  : "=m" (retval) : "t" (x) : "st");				      \
+        -: 1022:      return retval;
+        -: 1023:  }
+        -: 1024:#endif /* defined(__GNUC__) && defined(__FAST_MATH__) */
+        -: 1025:#endif /* !__CRT__NO_INLINE */
+        -: 1026:
+        -: 1027:/* 7.12.9.6 */
+        -: 1028:/* round away from zero, regardless of fpu control word settings */
+        -: 1029:  extern double __cdecl round (double);
+        -: 1030:  extern float __cdecl roundf (float);
+        -: 1031:  extern long double __cdecl roundl (long double);
+        -: 1032:
+        -: 1033:/* 7.12.9.7  */
+        -: 1034:  extern long __cdecl lround (double);
+        -: 1035:  extern long __cdecl lroundf (float);
+        -: 1036:  extern long __cdecl lroundl (long double);
+        -: 1037:  __MINGW_EXTENSION long long __cdecl llround (double);
+        -: 1038:  __MINGW_EXTENSION long long __cdecl llroundf (float);
+        -: 1039:  __MINGW_EXTENSION long long __cdecl llroundl (long double);
+        -: 1040:  
+        -: 1041:/* 7.12.9.8 */
+        -: 1042:/* round towards zero, regardless of fpu control word settings */
+        -: 1043:  extern double __cdecl trunc (double);
+        -: 1044:  extern float __cdecl truncf (float);
+        -: 1045:  extern long double __cdecl truncl (long double);
+        -: 1046:
+        -: 1047:/* 7.12.10.1 Double in C89 */
+        -: 1048:  extern float __cdecl fmodf (float, float);
+        -: 1049:  extern long double __cdecl fmodl (long double, long double);
+        -: 1050:
+        -: 1051:/* 7.12.10.2 */ 
+        -: 1052:  extern double __cdecl remainder (double, double);
+        -: 1053:  extern float __cdecl remainderf (float, float);
+        -: 1054:  extern long double __cdecl remainderl (long double, long double);
+        -: 1055:
+        -: 1056:/* 7.12.10.3 */
+        -: 1057:  extern double __cdecl remquo(double, double, int *);
+        -: 1058:  extern float __cdecl remquof(float, float, int *);
+        -: 1059:  extern long double __cdecl remquol(long double, long double, int *);
+        -: 1060:
+        -: 1061:/* 7.12.11.1 */
+        -: 1062:  extern double __cdecl copysign (double, double); /* in libmoldname.a */
+        -: 1063:  extern float __cdecl copysignf (float, float);
+        -: 1064:  extern long double __cdecl copysignl (long double, long double);
+        -: 1065:
+        -: 1066:#ifndef __CRT__NO_INLINE
+        -: 1067:#if !defined (__ia64__)
+        -: 1068:  __CRT_INLINE double __cdecl copysign (double x, double y)
+        -: 1069:  {
+        -: 1070:    __mingw_dbl_type_t hx, hy;
+        -: 1071:    hx.x = x; hy.x = y;
+        -: 1072:    hx.lh.high = (hx.lh.high & 0x7fffffff) | (hy.lh.high & 0x80000000);
+        -: 1073:    return hx.x;
+        -: 1074:  }
+        -: 1075:  __CRT_INLINE float __cdecl copysignf (float x, float y)
+        -: 1076:  {
+        -: 1077:    __mingw_flt_type_t hx, hy;
+        -: 1078:    hx.x = x; hy.x = y;
+        -: 1079:    hx.val = (hx.val & 0x7fffffff) | (hy.val & 0x80000000);
+        -: 1080:    return hx.x;
+        -: 1081:  }
+        -: 1082:#endif
+        -: 1083:#endif
+        -: 1084:
+        -: 1085:/* 7.12.11.2 Return a NaN */
+        -: 1086:  extern double __cdecl nan(const char *tagp);
+        -: 1087:  extern float __cdecl nanf(const char *tagp);
+        -: 1088:  extern long double __cdecl nanl(const char *tagp);
+        -: 1089:
+        -: 1090:#ifndef __STRICT_ANSI__
+        -: 1091:#define _nan() nan("")
+        -: 1092:#define _nanf() nanf("")
+        -: 1093:#define _nanl() nanl("")
+        -: 1094:#endif
+        -: 1095:
+        -: 1096:/* 7.12.11.3 */
+        -: 1097:  extern double __cdecl nextafter (double, double); /* in libmoldname.a */
+        -: 1098:  extern float __cdecl nextafterf (float, float);
+        -: 1099:  extern long double __cdecl nextafterl (long double, long double);
+        -: 1100:
+        -: 1101:/* 7.12.11.4 The nexttoward functions */
+        -: 1102:  extern double __cdecl nexttoward (double,  long double);
+        -: 1103:  extern float __cdecl nexttowardf (float,  long double);
+        -: 1104:  extern long double __cdecl nexttowardl (long double, long double);
+        -: 1105:
+        -: 1106:/* 7.12.12.1 */
+        -: 1107:/*  x > y ? (x - y) : 0.0  */
+        -: 1108:  extern double __cdecl fdim (double x, double y);
+        -: 1109:  extern float __cdecl fdimf (float x, float y);
+        -: 1110:  extern long double __cdecl fdiml (long double x, long double y);
+        -: 1111:
+        -: 1112:/* fmax and fmin.
+        -: 1113:   NaN arguments are treated as missing data: if one argument is a NaN
+        -: 1114:   and the other numeric, then these functions choose the numeric
+        -: 1115:   value. */
+        -: 1116:
+        -: 1117:/* 7.12.12.2 */
+        -: 1118:  extern double __cdecl fmax  (double, double);
+        -: 1119:  extern float __cdecl fmaxf (float, float);
+        -: 1120:  extern long double __cdecl fmaxl (long double, long double);
+        -: 1121:
+        -: 1122:/* 7.12.12.3 */
+        -: 1123:  extern double __cdecl fmin (double, double);
+        -: 1124:  extern float __cdecl fminf (float, float);
+        -: 1125:  extern long double __cdecl fminl (long double, long double);
+        -: 1126:
+        -: 1127:/* 7.12.13.1 */
+        -: 1128:/* return x * y + z as a ternary op */ 
+        -: 1129:  extern double __cdecl fma (double, double, double);
+        -: 1130:  extern float __cdecl fmaf (float, float, float);
+        -: 1131:  extern long double __cdecl fmal (long double, long double, long double);
+        -: 1132:
+        -: 1133:/* 7.12.14 */
+        -: 1134:/* 
+        -: 1135: *  With these functions, comparisons involving quiet NaNs set the FP
+        -: 1136: *  condition code to "unordered".  The IEEE floating-point spec
+        -: 1137: *  dictates that the result of floating-point comparisons should be
+        -: 1138: *  false whenever a NaN is involved, with the exception of the != op, 
+        -: 1139: *  which always returns true: yes, (NaN != NaN) is true).
+        -: 1140: */
+        -: 1141:
+        -: 1142:#ifdef __GNUC__
+        -: 1143:
+        -: 1144:#define isgreater(x, y) __builtin_isgreater(x, y)
+        -: 1145:#define isgreaterequal(x, y) __builtin_isgreaterequal(x, y)
+        -: 1146:#define isless(x, y) __builtin_isless(x, y)
+        -: 1147:#define islessequal(x, y) __builtin_islessequal(x, y)
+        -: 1148:#define islessgreater(x, y) __builtin_islessgreater(x, y)
+        -: 1149:#define isunordered(x, y) __builtin_isunordered(x, y)
+        -: 1150:
+        -: 1151:#else
+        -: 1152:/*  helper  */
+        -: 1153:#ifndef __CRT__NO_INLINE
+        -: 1154:  __CRT_INLINE int  __cdecl
+        -: 1155:    __fp_unordered_compare (long double x, long double y){
+        -: 1156:      unsigned short retval;
+        -: 1157:      __asm__ __volatile__ ("fucom %%st(1);"
+        -: 1158:	"fnstsw;": "=a" (retval) : "t" (x), "u" (y));
+        -: 1159:      return retval;
+        -: 1160:  }
+        -: 1161:#endif /* __GNUC__ */
+        -: 1162:
+        -: 1163:#define isgreater(x, y) ((__fp_unordered_compare(x, y)  & 0x4500) == 0)
+        -: 1164:#define isless(x, y) ((__fp_unordered_compare (y, x)  & 0x4500) == 0)
+        -: 1165:#define isgreaterequal(x, y) ((__fp_unordered_compare (x, y)  & FP_INFINITE) == 0)
+        -: 1166:#define islessequal(x, y) ((__fp_unordered_compare(y, x)  & FP_INFINITE) == 0)
+        -: 1167:#define islessgreater(x, y) ((__fp_unordered_compare(x, y)  & FP_SUBNORMAL) == 0)
+        -: 1168:#define isunordered(x, y) ((__fp_unordered_compare(x, y)  & 0x4500) == 0x4500)
+        -: 1169:
+        -: 1170:#endif
+        -: 1171:
+        -: 1172:#endif /* __STDC_VERSION__ >= 199901L */
+        -: 1173:#endif /* __NO_ISOCEXT */
+        -: 1174:
+        -: 1175:#if defined(_X86_) && !defined(__x86_64)
+        -: 1176:  _CRTIMP float __cdecl _hypotf(float _X,float _Y);
+        -: 1177:#endif
+        -: 1178:
+        -: 1179:#if !defined(__ia64__)
+        -: 1180:   _CRTIMP float __cdecl _copysignf (float _Number,float _Sign);
+        -: 1181:   _CRTIMP float __cdecl _chgsignf (float _X);
+        -: 1182:   _CRTIMP float __cdecl _logbf(float _X);
+        -: 1183:   _CRTIMP float __cdecl _nextafterf(float _X,float _Y);
+        -: 1184:   _CRTIMP int __cdecl _finitef(float _X);
+        -: 1185:   _CRTIMP int __cdecl _isnanf(float _X);
+        -: 1186:   _CRTIMP int __cdecl _fpclassf(float _X);
+        -: 1187:#endif
+        -: 1188:
+        -: 1189:#ifdef _SIGN_DEFINED
+        -: 1190:   extern long double __cdecl _chgsignl (long double);
+        -: 1191:#define _copysignl copysignl
+        -: 1192:#endif /* _SIGN_DEFINED */
+        -: 1193:
+        -: 1194:#define _hypotl hypotl
+        -: 1195:
+        -: 1196:#ifndef	NO_OLDNAMES
+        -: 1197:#define matherr _matherr
+        -: 1198:#define HUGE	_HUGE
+        -: 1199:#endif
+        -: 1200:
+        -: 1201:/* Documentation on decimal float math
+        -: 1202:   http://h21007.www2.hp.com/portal/site/dspp/menuitem.863c3e4cbcdc3f3515b49c108973a801?ciid=8cf166fedd1aa110VgnVCM100000a360ea10RCRD 
+        -: 1203: */
+        -: 1204:#ifdef __STDC_WANT_DEC_FP__
+        -: 1205:
+        -: 1206:#define DEC_INFINITY __builtin_infd32()
+        -: 1207:#define DEC_NAN __builtin_nand32("")
+        -: 1208:
+        -: 1209:  extern int __cdecl __isnand32(_Decimal32 x);
+        -: 1210:  extern int __cdecl __isnand64(_Decimal64 x);
+        -: 1211:  extern int __cdecl __isnand128(_Decimal128 x);
+        -: 1212:  extern int __cdecl __fpclassifyd32 (_Decimal32);
+        -: 1213:  extern int __cdecl __fpclassifyd64 (_Decimal64);
+        -: 1214:  extern int __cdecl __fpclassifyd128 (_Decimal128);
+        -: 1215:  extern int __cdecl __signbitd32 (_Decimal32);
+        -: 1216:  extern int __cdecl __signbitd64 (_Decimal64);
+        -: 1217:  extern int __cdecl __signbitd128 (_Decimal128);
+        -: 1218:
+        -: 1219:#ifndef __CRT__NO_INLINE
+        -: 1220:  __CRT_INLINE int __cdecl __isnand32(_Decimal32 x){
+        -: 1221:    return __builtin_isnand32(x);
+        -: 1222:  }
+        -: 1223:
+        -: 1224:  __CRT_INLINE int __cdecl __isnand64(_Decimal64 x){
+        -: 1225:    return __builtin_isnand64(x);
+        -: 1226:  }
+        -: 1227:
+        -: 1228:  __CRT_INLINE int __cdecl __isnand128(_Decimal128 x){
+        -: 1229:    return __builtin_isnand128(x);
+        -: 1230:  }
+        -: 1231:
+        -: 1232:  __CRT_INLINE int __cdecl __signbitd32 (_Decimal32 x){
+        -: 1233:    return __builtin_signbitd32(x);
+        -: 1234:  }
+        -: 1235:
+        -: 1236:  __CRT_INLINE int __cdecl __signbitd64 (_Decimal64 x){
+        -: 1237:    return __builtin_signbitd64(x);
+        -: 1238:  }
+        -: 1239:
+        -: 1240:  __CRT_INLINE int __cdecl __signbitd128 (_Decimal128 x){
+        -: 1241:    return __builtin_signbitd128(x);
+        -: 1242:  }
+        -: 1243:
+        -: 1244:#endif
+        -: 1245:
+        -: 1246:/* Still missing 
+        -: 1247:#define HUGE_VAL_D32
+        -: 1248:#define HUGE_VAL_D64
+        -: 1249:#define HUGE_VAL_D128
+        -: 1250:*/
+        -: 1251:
+        -: 1252:/*** exponentials ***/
+        -: 1253:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/expd64.3m.htm */
+        -: 1254:_Decimal64 __cdecl expd64(_Decimal64 _X);
+        -: 1255:_Decimal128 __cdecl expd128(_Decimal128 _X);
+        -: 1256:_Decimal32 __cdecl expd32(_Decimal32 _X);
+        -: 1257:
+        -: 1258:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/exp2d64.3m.htm */
+        -: 1259:_Decimal64 __cdecl exp2d64(_Decimal64 _X);
+        -: 1260:_Decimal128 __cdecl exp2d128(_Decimal128 _X);
+        -: 1261:_Decimal32 __cdecl exp2d32(_Decimal32 _X);
+        -: 1262:
+        -: 1263:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/exp10d64.3m.htm */
+        -: 1264:_Decimal64 __cdecl exp10d64(_Decimal64 _X);
+        -: 1265:_Decimal128 __cdecl exp10d128(_Decimal128 _X);
+        -: 1266:_Decimal32 __cdecl exp10d32(_Decimal32 _X);
+        -: 1267:
+        -: 1268:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/expm1d64.3m.htm */
+        -: 1269:_Decimal64 __cdecl expm1d64(_Decimal64 _X);
+        -: 1270:_Decimal128 __cdecl expm1d128(_Decimal128 _X);
+        -: 1271:_Decimal32 __cdecl expm1d32(_Decimal32 _X);
+        -: 1272:
+        -: 1273:/*** logarithms ***/
+        -: 1274:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/logd64.3m.htm */
+        -: 1275:_Decimal64 __cdecl logd64(_Decimal64 _X);
+        -: 1276:_Decimal128 __cdecl logd128(_Decimal128 _X);
+        -: 1277:_Decimal32 __cdecl logd32(_Decimal32 _X);
+        -: 1278:
+        -: 1279:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/log2d64.3m.htm */
+        -: 1280:_Decimal64 __cdecl log2d64(_Decimal64 _X);
+        -: 1281:_Decimal128 __cdecl log2d128(_Decimal128 _X);
+        -: 1282:_Decimal32 __cdecl log2d32(_Decimal32 _X);
+        -: 1283:
+        -: 1284:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/log10d64.3m.htm */
+        -: 1285:_Decimal64 __cdecl log10d64(_Decimal64 _X);
+        -: 1286:_Decimal128 __cdecl log10d128(_Decimal128 _X);
+        -: 1287:_Decimal32 __cdecl log10d32(_Decimal32 _X);
+        -: 1288:
+        -: 1289:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/log1pd64.3m.htm */
+        -: 1290:_Decimal64 __cdecl log1pd64(_Decimal64 _X);
+        -: 1291:_Decimal128 __cdecl log1pd128(_Decimal128 _X);
+        -: 1292:_Decimal32 __cdecl log1pd32(_Decimal32 _X);
+        -: 1293:
+        -: 1294:/*** trigonometrics ***/
+        -: 1295:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/cosd64.3m.htm */
+        -: 1296:_Decimal64 __cdecl cosd64(_Decimal64 _X);
+        -: 1297:_Decimal128 __cdecl cosd128(_Decimal128 _X);
+        -: 1298:_Decimal32 __cdecl cosd32(_Decimal32 _X);
+        -: 1299:
+        -: 1300:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/sind64.3m.htm */
+        -: 1301:_Decimal64 __cdecl sind64(_Decimal64 _X);
+        -: 1302:_Decimal128 __cdecl sind128(_Decimal128 _X);
+        -: 1303:_Decimal32 __cdecl sind32(_Decimal32 _X);
+        -: 1304:
+        -: 1305:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/tand64.3m.htm */
+        -: 1306:_Decimal64 __cdecl tand64(_Decimal64 _X);
+        -: 1307:_Decimal128 __cdecl tand128(_Decimal128 _X);
+        -: 1308:_Decimal32 __cdecl tand32(_Decimal32 _X);
+        -: 1309:
+        -: 1310:/*** inverse trigonometrics ***/
+        -: 1311:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/acosd64.3m.htm */
+        -: 1312:_Decimal64 __cdecl acosd64(_Decimal64 _X);
+        -: 1313:_Decimal128 __cdecl acosd128(_Decimal128 _X);
+        -: 1314:_Decimal32 __cdecl acosd32(_Decimal32 _X);
+        -: 1315:
+        -: 1316:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/asind64.3m.htm */
+        -: 1317:_Decimal64 __cdecl asind64(_Decimal64 _X);
+        -: 1318:_Decimal128 __cdecl asind128(_Decimal128 _X);
+        -: 1319:_Decimal32 __cdecl asind32(_Decimal32 _X);
+        -: 1320:
+        -: 1321:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/atand64.3m.htm */
+        -: 1322:_Decimal64 __cdecl atand64(_Decimal64 _X);
+        -: 1323:_Decimal128 __cdecl atand128(_Decimal128 _X);
+        -: 1324:_Decimal32 __cdecl atand32(_Decimal32 _X);
+        -: 1325:
+        -: 1326:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/atan2d64.3m.htm */
+        -: 1327:_Decimal64 __cdecl atan2d64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1328:_Decimal128 __cdecl atan2d128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1329:_Decimal32 __cdecl atan2d32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1330:
+        -: 1331:/*** hyperbolics ***/
+        -: 1332:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/coshd64.3m.htm */
+        -: 1333:_Decimal64 __cdecl coshd64(_Decimal64 _X);
+        -: 1334:_Decimal128 __cdecl coshd128(_Decimal128 _X);
+        -: 1335:_Decimal32 __cdecl coshd32(_Decimal32 _X);
+        -: 1336:
+        -: 1337:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/sinhd64.3m.htm */
+        -: 1338:_Decimal64 __cdecl sinhd64(_Decimal64 _X);
+        -: 1339:_Decimal128 __cdecl sinhd128(_Decimal128 _X);
+        -: 1340:_Decimal32 __cdecl sinhd32(_Decimal32 _X);
+        -: 1341:
+        -: 1342:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/tanhd64.3m.htm */
+        -: 1343:_Decimal64 __cdecl tanhd64(_Decimal64 _X);
+        -: 1344:_Decimal128 __cdecl tanhd128(_Decimal128 _X);
+        -: 1345:_Decimal32 __cdecl tanhd32(_Decimal32 _X);
+        -: 1346:
+        -: 1347:/*** inverse hyperbolics ***/
+        -: 1348:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/acoshd64.3m.htm */
+        -: 1349:_Decimal64 __cdecl acoshd64(_Decimal64 _X);
+        -: 1350:_Decimal128 __cdecl acoshd128(_Decimal128 _X);
+        -: 1351:_Decimal32 __cdecl acoshd32(_Decimal32 _X);
+        -: 1352:
+        -: 1353:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/asinhd64.3m.htm */
+        -: 1354:_Decimal64 __cdecl asinhd64(_Decimal64 _X);
+        -: 1355:_Decimal128 __cdecl asinhd128(_Decimal128 _X);
+        -: 1356:_Decimal32 __cdecl asinhd32(_Decimal32 _X);
+        -: 1357:
+        -: 1358:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/atanhd64.3m.htm */
+        -: 1359:_Decimal64 __cdecl atanhd64(_Decimal64 _X);
+        -: 1360:_Decimal128 __cdecl atanhd128(_Decimal128 _X);
+        -: 1361:_Decimal32 __cdecl atanhd32(_Decimal32 _X);
+        -: 1362:
+        -: 1363:/*** square & cube roots, hypotenuse ***/
+        -: 1364:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/sqrtd64.3m.htm */
+        -: 1365:_Decimal64 __cdecl sqrtd64(_Decimal64 _X);
+        -: 1366:_Decimal128 __cdecl sqrtd128(_Decimal128 _X);
+        -: 1367:_Decimal32 __cdecl sqrtd32(_Decimal32 _X);
+        -: 1368:
+        -: 1369:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/cbrtd64.3m.htm */
+        -: 1370:_Decimal64 __cdecl cbrtd64(_Decimal64 _X);
+        -: 1371:_Decimal128 __cdecl cbrtd128(_Decimal128 _X);
+        -: 1372:_Decimal32 __cdecl cbrtd32(_Decimal32 _X);
+        -: 1373:
+        -: 1374:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/hypotd64.3m.htm */
+        -: 1375:_Decimal64 __cdecl hypotd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1376:_Decimal128 __cdecl hypotd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1377:_Decimal32 __cdecl hypotd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1378:
+        -: 1379:/*** floating multiply-add ***/
+        -: 1380:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fmad64.3m.htm */
+        -: 1381:_Decimal64 __cdecl fmad64(_Decimal64 _X, _Decimal64 y, _Decimal64 _Z);
+        -: 1382:_Decimal128 __cdecl fmad128(_Decimal128 _X, _Decimal128 y, _Decimal128 _Z);
+        -: 1383:_Decimal32 __cdecl fmad32(_Decimal32 _X, _Decimal32 y, _Decimal32 _Z);
+        -: 1384:
+        -: 1385:/*** exponent/significand ***/
+        -: 1386:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/logbd64.3m.htm */
+        -: 1387:_Decimal64 __cdecl logbd64(_Decimal64 _X);
+        -: 1388:_Decimal128 __cdecl logbd128(_Decimal128 _X);
+        -: 1389:_Decimal32 __cdecl logbd32(_Decimal32 _X);
+        -: 1390:
+        -: 1391:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/ilogbd64.3m.htm */
+        -: 1392:int __cdecl ilogbd64(_Decimal64 _X);
+        -: 1393:int __cdecl ilogbd128(_Decimal128 _X);
+        -: 1394:int __cdecl ilogbd32(_Decimal32 _X);
+        -: 1395:
+        -: 1396:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/frexpd64.3m.htm */
+        -: 1397:_Decimal64 __cdecl frexpd64(_Decimal64 _X, int *_Y);
+        -: 1398:_Decimal128 __cdecl frexpd128(_Decimal128 _X, int *_Y);
+        -: 1399:_Decimal32 __cdecl frexpd32(_Decimal32 _X, int *_Y);
+        -: 1400:
+        -: 1401:/*** quantum ***/
+        -: 1402:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/quantized64.3m.htm */
+        -: 1403:_Decimal64 __cdecl quantized64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1404:_Decimal128 __cdecl quantized128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1405:_Decimal32 __cdecl quantized32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1406:
+        -: 1407:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/samequantumd64.3m.htm */
+        -: 1408:_Bool __cdecl samequantumd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1409:_Bool __cdecl samequantumd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1410:_Bool __cdecl samequantumd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1411:
+        -: 1412:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/quantexpd64.3m.htm */
+        -: 1413:int __cdecl quantexpd64(_Decimal64 _X);
+        -: 1414:int __cdecl quantexpd128(_Decimal128 _X);
+        -: 1415:int __cdecl quantexpd32(_Decimal32 _X);
+        -: 1416:
+        -: 1417:/*** scaling ***/
+        -: 1418:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/scalbnd64.3m.htm */
+        -: 1419:_Decimal64 __cdecl scalbnd64(_Decimal64 _X, int _Y);
+        -: 1420:_Decimal128 __cdecl scalbnd128(_Decimal128 _X, int _Y);
+        -: 1421:_Decimal32 __cdecl scalbnd32(_Decimal32 _X, int _Y);
+        -: 1422:
+        -: 1423:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/scalblnd64.3m.htm */
+        -: 1424:_Decimal64 __cdecl scalblnd64(_Decimal64 _X, long int _Y);
+        -: 1425:_Decimal128 __cdecl scalblnd128(_Decimal128 _X, long int _Y);
+        -: 1426:_Decimal32 __cdecl scalblnd32(_Decimal32 _X, long int _Y);
+        -: 1427:
+        -: 1428:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/ldexpd64.3m.htm */
+        -: 1429:_Decimal64 __cdecl ldexpd64(_Decimal64 _X, int _Y);
+        -: 1430:_Decimal128 __cdecl ldexpd128(_Decimal128 _X, int _Y);
+        -: 1431:_Decimal32 __cdecl ldexpd32(_Decimal32 _X, int _Y);
+        -: 1432:
+        -: 1433:/*** rounding to integral floating ***/
+        -: 1434:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/ceild64.3m.htm */
+        -: 1435:_Decimal64 __cdecl ceild64(_Decimal64 _X);
+        -: 1436:_Decimal128 __cdecl ceild128(_Decimal128 _X);
+        -: 1437:_Decimal32 __cdecl ceild32(_Decimal32 _X);
+        -: 1438:
+        -: 1439:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/floord64.3m.htm */
+        -: 1440:_Decimal64 __cdecl floord64(_Decimal64 _X);
+        -: 1441:_Decimal128 __cdecl floord128(_Decimal128 _X);
+        -: 1442:_Decimal32 __cdecl floord32(_Decimal32 _X);
+        -: 1443:
+        -: 1444:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/truncd64.3m.htm */
+        -: 1445:_Decimal64 __cdecl truncd64(_Decimal64 _X);
+        -: 1446:_Decimal128 __cdecl truncd128(_Decimal128 _X);
+        -: 1447:_Decimal32 __cdecl truncd32(_Decimal32 _X);
+        -: 1448:
+        -: 1449:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/roundd64.3m.htm */
+        -: 1450:_Decimal64 __cdecl roundd64(_Decimal64 _X);
+        -: 1451:_Decimal128 __cdecl roundd128(_Decimal128 _X);
+        -: 1452:_Decimal32 __cdecl roundd32(_Decimal32 _X);
+        -: 1453:
+        -: 1454:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/rintd64.3m.htm */
+        -: 1455:_Decimal64 __cdecl rintd64(_Decimal64 _X);
+        -: 1456:_Decimal128 __cdecl rintd128(_Decimal128 _X);
+        -: 1457:_Decimal32 __cdecl rintd32(_Decimal32 _X);
+        -: 1458:
+        -: 1459:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/nearbyintd64.3m.htm */
+        -: 1460:_Decimal64 __cdecl nearbyintd64(_Decimal64 _X);
+        -: 1461:_Decimal128 __cdecl nearbyintd128(_Decimal128 _X);
+        -: 1462:_Decimal32 __cdecl nearbyintd32(_Decimal32 _X);
+        -: 1463:
+        -: 1464:/*** rounding to integer ***/
+        -: 1465:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/lroundd64.3m.htm */
+        -: 1466:long int __cdecl lroundd64(_Decimal64 _X);
+        -: 1467:long int __cdecl lroundd128(_Decimal128 _X);
+        -: 1468:long int __cdecl lroundd32(_Decimal32 _X);
+        -: 1469:
+        -: 1470:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/llroundd64.3m.htm */
+        -: 1471:long long int __cdecl llroundd64(_Decimal64 _X);
+        -: 1472:long long int __cdecl llroundd128(_Decimal128 _X);
+        -: 1473:long long int __cdecl llroundd32(_Decimal32 _X);
+        -: 1474:
+        -: 1475:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/lrintd64.3m.htm */
+        -: 1476:long int __cdecl lrintd64(_Decimal64 _X);
+        -: 1477:long int __cdecl lrintd128(_Decimal128 _X);
+        -: 1478:long int __cdecl lrintd32(_Decimal32 _X);
+        -: 1479:
+        -: 1480:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/llrintd64.3m.htm */
+        -: 1481:long long int __cdecl llrintd64(_Decimal64 _X);
+        -: 1482:long long int __cdecl llrintd128(_Decimal128 _X);
+        -: 1483:long long int __cdecl llrintd32(_Decimal32 _X);
+        -: 1484:
+        -: 1485:/*** integral and fractional parts ***/
+        -: 1486:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/modfd64.3m.htm */
+        -: 1487:_Decimal64 __cdecl modfd64(_Decimal64 _X, _Decimal64 *_Y);
+        -: 1488:_Decimal128 __cdecl modfd128(_Decimal128 _X, _Decimal128 *_Y);
+        -: 1489:_Decimal32 __cdecl modfd32(_Decimal32 _X, _Decimal32 *_Y);
+        -: 1490:
+        -: 1491:/** remainder/mod ***/
+        -: 1492:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/remainderd64.3m.htm */
+        -: 1493:_Decimal64 __cdecl remainderd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1494:_Decimal128 __cdecl remainderd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1495:_Decimal32 __cdecl remainderd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1496:
+        -: 1497:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fmodd64.3m.htm */
+        -: 1498:_Decimal64 __cdecl fmodd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1499:_Decimal128 __cdecl fmodd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1500:_Decimal32 __cdecl fmodd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1501:
+        -: 1502:/*** error functions ***/
+        -: 1503:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/erfd64.3m.htm */
+        -: 1504:_Decimal64 __cdecl erfd64(_Decimal64 _X);
+        -: 1505:_Decimal128 __cdecl erfd128(_Decimal128 _X);
+        -: 1506:_Decimal32 __cdecl erfd32(_Decimal32 _X);
+        -: 1507:_Decimal64 __cdecl erfcd64(_Decimal64 _X);
+        -: 1508:_Decimal128 __cdecl erfcd128(_Decimal128 _X);
+        -: 1509:_Decimal32 __cdecl erfcd32(_Decimal32 _X);
+        -: 1510:
+        -: 1511:/*** gamma functions ***/
+        -: 1512:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/lgammad64.3m.htm */
+        -: 1513:_Decimal64 __cdecl lgammad64(_Decimal64 _X);
+        -: 1514:_Decimal128 __cdecl lgammad128(_Decimal128 _X);
+        -: 1515:_Decimal32 __cdecl lgammad32(_Decimal32 _X);
+        -: 1516:
+        -: 1517:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/tgammad64.3m.htm */
+        -: 1518:_Decimal64 __cdecl tgammad64(_Decimal64 _X);
+        -: 1519:_Decimal128 __cdecl tgammad128(_Decimal128 _X);
+        -: 1520:_Decimal32 __cdecl tgammad32(_Decimal32 _X);
+        -: 1521:
+        -: 1522:/*** next value ***/
+        -: 1523:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/nextafterd64.3m.htm */
+        -: 1524:_Decimal64 __cdecl nextafterd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1525:_Decimal128 __cdecl nextafterd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1526:_Decimal32 __cdecl nextafterd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1527:_Decimal64 __cdecl nexttowardd64(_Decimal64 _X, _Decimal128 _Y);
+        -: 1528:_Decimal128 __cdecl nexttowardd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1529:_Decimal32 __cdecl nexttowardd32(_Decimal32 _X, _Decimal128 _Y);
+        -: 1530:
+        -: 1531:/*** absolute value, copy sign ***/
+        -: 1532:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fabsd64.3m.htm */
+        -: 1533:_Decimal64 __cdecl fabsd64(_Decimal64 _X);
+        -: 1534:_Decimal128 __cdecl fabsd128(_Decimal128 _X);
+        -: 1535:_Decimal32 __cdecl fabsd32(_Decimal32 _X);
+        -: 1536:
+        -: 1537:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/copysignd64.3m.htm */
+        -: 1538:_Decimal64 __cdecl copysignd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1539:_Decimal128 __cdecl copysignd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1540:_Decimal32 __cdecl copysignd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1541:
+        -: 1542:/*** max, min, positive difference ***/
+        -: 1543:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fmaxd64.3m.htm */
+        -: 1544:_Decimal64 __cdecl fmaxd64(_Decimal64 _X, _Decimal64 y_Y);
+        -: 1545:_Decimal128 __cdecl fmaxd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1546:_Decimal32 __cdecl fmaxd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1547:
+        -: 1548:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fmind64.3m.htm */
+        -: 1549:_Decimal64 __cdecl fmind64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1550:_Decimal128 __cdecl fmind128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1551:_Decimal32 __cdecl fmind32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1552:
+        -: 1553:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/fdimd64.3m.htm */
+        -: 1554:_Decimal64 __cdecl fdimd64(_Decimal64 _X, _Decimal64 _Y);
+        -: 1555:_Decimal128 __cdecl fdimd128(_Decimal128 _X, _Decimal128 _Y);
+        -: 1556:_Decimal32 __cdecl fdimd32(_Decimal32 _X, _Decimal32 _Y);
+        -: 1557:
+        -: 1558:/*** not-a-number ***/
+        -: 1559:/* http://h21007.www2.hp.com/portal/download/files/unprot/fp/manpages/nand64.3m.htm */
+        -: 1560:_Decimal64 __cdecl nand64(__UNUSED_PARAM(const char *_X));
+        -: 1561:_Decimal128 __cdecl nand128(__UNUSED_PARAM(const char *_X));
+        -: 1562:_Decimal32 __cdecl nand32(__UNUSED_PARAM(const char *_X));
+        -: 1563:
+        -: 1564:/*** classifiers ***/
+        -: 1565:int __cdecl isinfd64(_Decimal64 _X);
+        -: 1566:int __cdecl isinfd128(_Decimal128 _X);
+        -: 1567:int __cdecl isinfd32(_Decimal32 _X);
+        -: 1568:int __cdecl isnand64(_Decimal64 _X);
+        -: 1569:int __cdecl isnand128(_Decimal128 _X);
+        -: 1570:int __cdecl isnand32(_Decimal32 _X);
+        -: 1571:
+        -: 1572:#endif /* __STDC_WANT_DEC_FP__ */
+        -: 1573:
+        -: 1574:#ifdef __cplusplus
+        -: 1575:}
+        -: 1576:#endif
+        -: 1577:
+        -: 1578:#endif	/* Not RC_INVOKED */
+        -: 1579:
+        -: 1580:#pragma pack(pop)
+        -: 1581:
+        -: 1582:#endif /* End _MATH_H_ */
+        -: 1583:

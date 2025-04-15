@@ -1,0 +1,2771 @@
+        -:    0:Source:C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/allocator.h
+        -:    0:Graph:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcno
+        -:    0:Data:C:\Users\esipo\CLionProjects\OOP\lab2\HTML_Decode\cmake-build-debug-coverage\_deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.gcda
+        -:    0:Runs:1
+        -:    1:// Allocators -*- C++ -*-
+        -:    2:
+        -:    3:// Copyright (C) 2001-2024 Free Software Foundation, Inc.
+        -:    4://
+        -:    5:// This file is part of the GNU ISO C++ Library.  This library is free
+        -:    6:// software; you can redistribute it and/or modify it under the
+        -:    7:// terms of the GNU General Public License as published by the
+        -:    8:// Free Software Foundation; either version 3, or (at your option)
+        -:    9:// any later version.
+        -:   10:
+        -:   11:// This library is distributed in the hope that it will be useful,
+        -:   12:// but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   13:// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   14:// GNU General Public License for more details.
+        -:   15:
+        -:   16:// Under Section 7 of GPL version 3, you are granted additional
+        -:   17:// permissions described in the GCC Runtime Library Exception, version
+        -:   18:// 3.1, as published by the Free Software Foundation.
+        -:   19:
+        -:   20:// You should have received a copy of the GNU General Public License and
+        -:   21:// a copy of the GCC Runtime Library Exception along with this program;
+        -:   22:// see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+        -:   23:// <http://www.gnu.org/licenses/>.
+        -:   24:
+        -:   25:/*
+        -:   26: * Copyright (c) 1996-1997
+        -:   27: * Silicon Graphics Computer Systems, Inc.
+        -:   28: *
+        -:   29: * Permission to use, copy, modify, distribute and sell this software
+        -:   30: * and its documentation for any purpose is hereby granted without fee,
+        -:   31: * provided that the above copyright notice appear in all copies and
+        -:   32: * that both that copyright notice and this permission notice appear
+        -:   33: * in supporting documentation.  Silicon Graphics makes no
+        -:   34: * representations about the suitability of this software for any
+        -:   35: * purpose.  It is provided "as is" without express or implied warranty.
+        -:   36: */
+        -:   37:
+        -:   38:/** @file bits/allocator.h
+        -:   39: *  This is an internal header file, included by other library headers.
+        -:   40: *  Do not attempt to use it directly. @headername{memory}
+        -:   41: */
+        -:   42:
+        -:   43:#ifndef _ALLOCATOR_H
+        -:   44:#define _ALLOCATOR_H 1
+        -:   45:
+        -:   46:#include <bits/c++allocator.h> // Define the base class to std::allocator.
+        -:   47:#include <bits/memoryfwd.h>
+        -:   48:#if __cplusplus >= 201103L
+        -:   49:#include <type_traits>
+        -:   50:#endif
+        -:   51:
+        -:   52:namespace std _GLIBCXX_VISIBILITY(default)
+        -:   53:{
+        -:   54:_GLIBCXX_BEGIN_NAMESPACE_VERSION
+        -:   55:
+        -:   56:  /**
+        -:   57:   *  @addtogroup allocators
+        -:   58:   *  @{
+        -:   59:   */
+        -:   60:
+        -:   61:  // Since C++20 the primary template should be used for allocator<void>,
+        -:   62:  // but then it would have a non-trivial default ctor and dtor for C++20,
+        -:   63:  // but trivial for C++98-17, which would be an ABI incompatibility between
+        -:   64:  // different standard dialects. So C++20 still uses the allocator<void>
+        -:   65:  // explicit specialization, with the historical ABI properties, but with
+        -:   66:  // the same members that are present in the primary template.
+        -:   67:
+        -:   68:  /** std::allocator<void> specialization.
+        -:   69:   *
+        -:   70:   * @headerfile memory
+        -:   71:   */
+        -:   72:  template<>
+        -:   73:    class allocator<void>
+        -:   74:    {
+        -:   75:    public:
+        -:   76:      typedef void        value_type;
+        -:   77:      typedef size_t      size_type;
+        -:   78:      typedef ptrdiff_t   difference_type;
+        -:   79:
+        -:   80:#if __cplusplus <= 201703L
+        -:   81:      // These were removed for C++20, allocator_traits does the right thing.
+        -:   82:      typedef void*       pointer;
+        -:   83:      typedef const void* const_pointer;
+        -:   84:
+        -:   85:      template<typename _Tp1>
+        -:   86:	struct rebind
+        -:   87:	{ typedef allocator<_Tp1> other; };
+        -:   88:#endif
+        -:   89:
+        -:   90:#if __cplusplus >= 201103L
+        -:   91:      // _GLIBCXX_RESOLVE_LIB_DEFECTS
+        -:   92:      // 2103. std::allocator propagate_on_container_move_assignment
+        -:   93:      using propagate_on_container_move_assignment = true_type;
+        -:   94:
+        -:   95:      using is_always_equal
+        -:   96:	_GLIBCXX20_DEPRECATED_SUGGEST("std::allocator_traits::is_always_equal")
+        -:   97:	= true_type;
+        -:   98:
+        -:   99:#if __cplusplus >= 202002L
+        -:  100:      // As noted above, these members are present for C++20 to provide the
+        -:  101:      // same API as the primary template, but still trivial as in pre-C++20.
+        -:  102:      allocator() = default;
+        -:  103:      ~allocator() = default;
+        -:  104:
+        -:  105:      template<typename _Up>
+        -:  106:	__attribute__((__always_inline__))
+        -:  107:	constexpr
+        -:  108:	allocator(const allocator<_Up>&) noexcept { }
+        -:  109:
+        -:  110:      // No allocate member because it's ill-formed by LWG 3307.
+        -:  111:      // No deallocate member because it would be undefined to call it
+        -:  112:      // with any pointer which wasn't obtained from allocate.
+        -:  113:#endif // C++20
+        -:  114:#endif // C++11
+        -:  115:    };
+        -:  116:
+        -:  117:  /**
+        -:  118:   * @brief  The @a standard allocator, as per C++03 [20.4.1].
+        -:  119:   *
+        -:  120:   *  See https://gcc.gnu.org/onlinedocs/libstdc++/manual/memory.html#std.util.memory.allocator
+        -:  121:   *  for further details.
+        -:  122:   *
+        -:  123:   *  @tparam  _Tp  Type of allocated object.
+        -:  124:   *
+        -:  125:   *  @headerfile memory
+        -:  126:   */
+        -:  127:  template<typename _Tp>
+        -:  128:    class allocator : public __allocator_base<_Tp>
+        -:  129:    {
+        -:  130:    public:
+        -:  131:      typedef _Tp        value_type;
+        -:  132:      typedef size_t     size_type;
+        -:  133:      typedef ptrdiff_t  difference_type;
+        -:  134:
+        -:  135:#if __cplusplus <= 201703L
+        -:  136:      // These were removed for C++20.
+        -:  137:      typedef _Tp*       pointer;
+        -:  138:      typedef const _Tp* const_pointer;
+        -:  139:      typedef _Tp&       reference;
+        -:  140:      typedef const _Tp& const_reference;
+        -:  141:
+        -:  142:      template<typename _Tp1>
+        -:  143:	struct rebind
+        -:  144:	{ typedef allocator<_Tp1> other; };
+        -:  145:#endif
+        -:  146:
+        -:  147:#if __cplusplus >= 201103L
+        -:  148:      // _GLIBCXX_RESOLVE_LIB_DEFECTS
+        -:  149:      // 2103. std::allocator propagate_on_container_move_assignment
+        -:  150:      using propagate_on_container_move_assignment = true_type;
+        -:  151:
+        -:  152:      using is_always_equal
+        -:  153:	_GLIBCXX20_DEPRECATED_SUGGEST("std::allocator_traits::is_always_equal")
+        -:  154:	= true_type;
+        -:  155:#endif
+        -:  156:
+        -:  157:      // _GLIBCXX_RESOLVE_LIB_DEFECTS
+        -:  158:      // 3035. std::allocator's constructors should be constexpr
+        -:  159:      __attribute__((__always_inline__))
+        -:  160:      _GLIBCXX20_CONSTEXPR
+     141*:  161:      allocator() _GLIBCXX_NOTHROW { }
+    %%%%%:  161-block 3
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        6:  161-block 2
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    %%%%%:  161-block 2
+        1:  161-block 2
+    %%%%%:  161-block 5
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  161-block 2
+call   11 never executed
+    %%%%%:  161-block 7
+call   12 never executed
+    %%%%%:  161-block 12
+call   13 never executed
+    %%%%%:  161-block 16
+call   14 never executed
+    %%%%%:  161-block 7
+call   15 never executed
+        4:  161-block 3
+call   16 returned 4
+    %%%%%:  161-block 31
+call   17 never executed
+branch 18 never executed (fallthrough)
+branch 19 never executed (throw)
+call   20 returned 1
+branch 21 taken 1 (fallthrough)
+branch 22 taken 0 (throw)
+        1:  161-block 10
+call   23 returned 1
+branch 24 taken 1 (fallthrough)
+branch 25 taken 0 (throw)
+       11:  161-block 12
+call   26 returned 11
+branch 27 taken 11 (fallthrough)
+branch 28 taken 0 (throw)
+    %%%%%:  161-block 48
+call   29 never executed
+       11:  161-block 2
+call   30 returned 11
+        1:  161-block 11
+call   31 returned 1
+call   32 returned 1
+branch 33 taken 1 (fallthrough)
+branch 34 taken 0 (throw)
+    %%%%%:  161-block 2
+branch 35 never executed (fallthrough)
+branch 36 never executed
+        1:  161-block 2
+call   37 returned 1
+        1:  161-block 2
+branch 38 taken 1 (fallthrough)
+branch 39 taken 0
+    %%%%%:  161-block 2
+call   40 never executed
+    %%%%%:  161-block 10
+call   41 never executed
+branch 42 never executed (fallthrough)
+branch 43 never executed (throw)
+    %%%%%:  161-block 2
+call   44 never executed
+call   45 never executed
+branch 46 never executed (fallthrough)
+branch 47 never executed (throw)
+    %%%%%:  161-block 9
+call   48 never executed
+branch 49 never executed (fallthrough)
+branch 50 never executed (throw)
+call   51 never executed
+branch 52 never executed (fallthrough)
+branch 53 never executed (throw)
+    %%%%%:  161-block 13
+call   54 never executed
+branch 55 never executed (fallthrough)
+branch 56 never executed (throw)
+    %%%%%:  161-block 2
+call   57 never executed
+call   58 never executed
+branch 59 never executed (fallthrough)
+branch 60 never executed (throw)
+    %%%%%:  161-block 7
+call   61 never executed
+branch 62 never executed (fallthrough)
+branch 63 never executed (throw)
+    %%%%%:  161-block 11
+call   64 never executed
+branch 65 never executed (fallthrough)
+branch 66 never executed (throw)
+    %%%%%:  161-block 15
+call   67 never executed
+branch 68 never executed (fallthrough)
+branch 69 never executed (throw)
+call   70 never executed
+branch 71 never executed (fallthrough)
+branch 72 never executed (throw)
+    %%%%%:  161-block 22
+call   73 never executed
+branch 74 never executed (fallthrough)
+branch 75 never executed (throw)
+    %%%%%:  161-block 27
+call   76 never executed
+branch 77 never executed (fallthrough)
+branch 78 never executed (throw)
+    %%%%%:  161-block 32
+call   79 never executed
+branch 80 never executed (fallthrough)
+branch 81 never executed (throw)
+call   82 never executed
+branch 83 never executed (fallthrough)
+branch 84 never executed (throw)
+    %%%%%:  161-block 41
+call   85 never executed
+branch 86 never executed (fallthrough)
+branch 87 never executed (throw)
+    %%%%%:  161-block 2
+call   88 never executed
+call   89 never executed
+branch 90 never executed (fallthrough)
+branch 91 never executed (throw)
+    %%%%%:  161-block 5
+call   92 never executed
+branch 93 never executed (fallthrough)
+branch 94 never executed (throw)
+call   95 never executed
+branch 96 never executed (fallthrough)
+branch 97 never executed (throw)
+    %%%%%:  161-block 11
+call   98 never executed
+branch 99 never executed (fallthrough)
+branch 100 never executed (throw)
+    %%%%%:  161-block 16
+call   101 never executed
+branch 102 never executed (fallthrough)
+branch 103 never executed (throw)
+    %%%%%:  161-block 21
+call   104 never executed
+branch 105 never executed (fallthrough)
+branch 106 never executed (throw)
+    %%%%%:  161-block 25
+call   107 never executed
+branch 108 never executed (fallthrough)
+branch 109 never executed (throw)
+call   110 never executed
+branch 111 never executed (fallthrough)
+branch 112 never executed (throw)
+    %%%%%:  161-block 32
+call   113 never executed
+branch 114 never executed (fallthrough)
+branch 115 never executed (throw)
+    %%%%%:  161-block 37
+call   116 never executed
+branch 117 never executed (fallthrough)
+branch 118 never executed (throw)
+    %%%%%:  161-block 60
+call   119 never executed
+branch 120 never executed (fallthrough)
+branch 121 never executed (throw)
+    %%%%%:  161-block 2
+call   122 never executed
+    %%%%%:  161-block 42
+call   123 never executed
+branch 124 never executed (fallthrough)
+branch 125 never executed (throw)
+    %%%%%:  161-block 2
+call   126 never executed
+call   127 never executed
+branch 128 never executed (fallthrough)
+branch 129 never executed (throw)
+    %%%%%:  161-block 5
+call   130 never executed
+branch 131 never executed (fallthrough)
+branch 132 never executed (throw)
+call   133 never executed
+branch 134 never executed (fallthrough)
+branch 135 never executed (throw)
+    %%%%%:  161-block 11
+call   136 never executed
+branch 137 never executed (fallthrough)
+branch 138 never executed (throw)
+    %%%%%:  161-block 17
+call   139 never executed
+branch 140 never executed (fallthrough)
+branch 141 never executed (throw)
+    %%%%%:  161-block 18
+call   142 never executed
+branch 143 never executed (fallthrough)
+branch 144 never executed (throw)
+    %%%%%:  161-block 25
+call   145 never executed
+branch 146 never executed (fallthrough)
+branch 147 never executed (throw)
+    %%%%%:  161-block 26
+call   148 never executed
+branch 149 never executed (fallthrough)
+branch 150 never executed (throw)
+    %%%%%:  161-block 31
+call   151 never executed
+branch 152 never executed (fallthrough)
+branch 153 never executed (throw)
+    %%%%%:  161-block 32
+call   154 never executed
+branch 155 never executed (fallthrough)
+branch 156 never executed (throw)
+call   157 never executed
+branch 158 never executed (fallthrough)
+branch 159 never executed (throw)
+    %%%%%:  161-block 41
+call   160 never executed
+branch 161 never executed (fallthrough)
+branch 162 never executed (throw)
+    %%%%%:  161-block 50
+branch 163 never executed (fallthrough)
+branch 164 never executed
+    %%%%%:  161-block 53
+call   165 never executed
+branch 166 never executed (fallthrough)
+branch 167 never executed (throw)
+branch 168 never executed (fallthrough)
+branch 169 never executed
+    %%%%%:  161-block 62
+call   170 never executed
+branch 171 never executed (fallthrough)
+branch 172 never executed (throw)
+    %%%%%:  161-block 67
+call   173 never executed
+branch 174 never executed (fallthrough)
+branch 175 never executed (throw)
+    %%%%%:  161-block 72
+call   176 never executed
+branch 177 never executed (fallthrough)
+branch 178 never executed (throw)
+call   179 never executed
+branch 180 never executed (fallthrough)
+branch 181 never executed (throw)
+    %%%%%:  161-block 77
+call   182 never executed
+branch 183 never executed (fallthrough)
+branch 184 never executed (throw)
+    %%%%%:  161-block 2
+call   185 never executed
+call   186 never executed
+call   187 never executed
+branch 188 never executed (fallthrough)
+branch 189 never executed (throw)
+    %%%%%:  161-block 8
+call   190 never executed
+branch 191 never executed (fallthrough)
+branch 192 never executed (throw)
+    %%%%%:  161-block 9
+call   193 never executed
+branch 194 never executed (fallthrough)
+branch 195 never executed (throw)
+call   196 never executed
+call   197 never executed
+branch 198 never executed (fallthrough)
+branch 199 never executed (throw)
+    %%%%%:  161-block 17
+call   200 never executed
+branch 201 never executed (fallthrough)
+branch 202 never executed (throw)
+    %%%%%:  161-block 23
+call   203 never executed
+call   204 never executed
+branch 205 never executed (fallthrough)
+branch 206 never executed (throw)
+    %%%%%:  161-block 25
+call   207 never executed
+branch 208 never executed (fallthrough)
+branch 209 never executed (throw)
+call   210 never executed
+call   211 never executed
+branch 212 never executed (fallthrough)
+branch 213 never executed (throw)
+    %%%%%:  161-block 32
+call   214 never executed
+branch 215 never executed (fallthrough)
+branch 216 never executed (throw)
+call   217 never executed
+call   218 never executed
+branch 219 never executed (fallthrough)
+branch 220 never executed (throw)
+    %%%%%:  161-block 39
+call   221 never executed
+branch 222 never executed (fallthrough)
+branch 223 never executed (throw)
+call   224 never executed
+call   225 never executed
+branch 226 never executed (fallthrough)
+branch 227 never executed (throw)
+    %%%%%:  161-block 46
+call   228 never executed
+branch 229 never executed (fallthrough)
+branch 230 never executed (throw)
+call   231 never executed
+    %%%%%:  161-block 53
+call   232 never executed
+branch 233 never executed (fallthrough)
+branch 234 never executed (throw)
+    %%%%%:  161-block 54
+call   235 never executed
+branch 236 never executed (fallthrough)
+branch 237 never executed (throw)
+call   238 never executed
+    %%%%%:  161-block 62
+call   239 never executed
+branch 240 never executed (fallthrough)
+branch 241 never executed (throw)
+    %%%%%:  161-block 63
+call   242 never executed
+branch 243 never executed (fallthrough)
+branch 244 never executed (throw)
+    %%%%%:  161-block 70
+call   245 never executed
+call   246 never executed
+call   247 never executed
+call   248 never executed
+branch 249 never executed (fallthrough)
+branch 250 never executed (throw)
+    %%%%%:  161-block 80
+call   251 never executed
+branch 252 never executed (fallthrough)
+branch 253 never executed (throw)
+    %%%%%:  161-block 81
+call   254 never executed
+branch 255 never executed (fallthrough)
+branch 256 never executed (throw)
+call   257 never executed
+call   258 never executed
+branch 259 never executed (fallthrough)
+branch 260 never executed (throw)
+    %%%%%:  161-block 89
+call   261 never executed
+branch 262 never executed (fallthrough)
+branch 263 never executed (throw)
+    %%%%%:  161-block 90
+call   264 never executed
+branch 265 never executed (fallthrough)
+branch 266 never executed (throw)
+call   267 never executed
+call   268 never executed
+branch 269 never executed (fallthrough)
+branch 270 never executed (throw)
+    %%%%%:  161-block 98
+call   271 never executed
+branch 272 never executed (fallthrough)
+branch 273 never executed (throw)
+    %%%%%:  161-block 99
+call   274 never executed
+branch 275 never executed (fallthrough)
+branch 276 never executed (throw)
+call   277 never executed
+    %%%%%:  161-block 107
+call   278 never executed
+branch 279 never executed (fallthrough)
+branch 280 never executed (throw)
+    %%%%%:  161-block 108
+call   281 never executed
+branch 282 never executed (fallthrough)
+branch 283 never executed (throw)
+call   284 never executed
+    %%%%%:  161-block 116
+call   285 never executed
+branch 286 never executed (fallthrough)
+branch 287 never executed (throw)
+    %%%%%:  161-block 117
+call   288 never executed
+branch 289 never executed (fallthrough)
+branch 290 never executed (throw)
+call   291 never executed
+call   292 never executed
+branch 293 never executed (fallthrough)
+branch 294 never executed (throw)
+    %%%%%:  161-block 125
+call   295 never executed
+branch 296 never executed (fallthrough)
+branch 297 never executed (throw)
+    %%%%%:  161-block 126
+call   298 never executed
+branch 299 never executed (fallthrough)
+branch 300 never executed (throw)
+call   301 never executed
+call   302 never executed
+    %%%%%:  161-block 142
+call   303 never executed
+branch 304 never executed (fallthrough)
+branch 305 never executed (throw)
+    %%%%%:  161-block 4
+call   306 never executed
+    %%%%%:  161-block 2
+call   307 never executed
+    %%%%%:  161-block 2
+call   308 never executed
+call   309 never executed
+branch 310 never executed (fallthrough)
+branch 311 never executed (throw)
+    %%%%%:  161-block 15
+call   312 never executed
+branch 313 never executed (fallthrough)
+branch 314 never executed (throw)
+    %%%%%:  161-block 22
+call   315 never executed
+branch 316 never executed (fallthrough)
+branch 317 never executed (throw)
+    %%%%%:  161-block 8
+call   318 never executed
+branch 319 never executed (fallthrough)
+branch 320 never executed (throw)
+    %%%%%:  161-block 2
+call   321 never executed
+    %%%%%:  161-block 10
+call   322 never executed
+branch 323 never executed (fallthrough)
+branch 324 never executed (throw)
+call   325 never executed
+branch 326 never executed (fallthrough)
+branch 327 never executed (throw)
+    %%%%%:  161-block 15
+call   328 never executed
+branch 329 never executed (fallthrough)
+branch 330 never executed (throw)
+    %%%%%:  161-block 2
+call   331 never executed
+    %%%%%:  161-block 8
+call   332 never executed
+branch 333 never executed (fallthrough)
+branch 334 never executed (throw)
+    %%%%%:  161-block 14
+call   335 never executed
+branch 336 never executed (fallthrough)
+branch 337 never executed (throw)
+    %%%%%:  161-block 20
+call   338 never executed
+branch 339 never executed (fallthrough)
+branch 340 never executed (throw)
+call   341 never executed
+branch 342 never executed (fallthrough)
+branch 343 never executed (throw)
+    %%%%%:  161-block 25
+call   344 never executed
+branch 345 never executed (fallthrough)
+branch 346 never executed (throw)
+    %%%%%:  161-block 30
+call   347 never executed
+branch 348 never executed (fallthrough)
+branch 349 never executed (throw)
+    %%%%%:  161-block 35
+call   350 never executed
+branch 351 never executed (fallthrough)
+branch 352 never executed (throw)
+    %%%%%:  161-block 41
+call   353 never executed
+branch 354 never executed (fallthrough)
+branch 355 never executed (throw)
+call   356 never executed
+branch 357 never executed (fallthrough)
+branch 358 never executed (throw)
+    %%%%%:  161-block 50
+call   359 never executed
+branch 360 never executed (fallthrough)
+branch 361 never executed (throw)
+    %%%%%:  161-block 2
+call   362 never executed
+    %%%%%:  161-block 5
+call   363 never executed
+branch 364 never executed (fallthrough)
+branch 365 never executed (throw)
+    %%%%%:  161-block 6
+call   366 never executed
+branch 367 never executed (fallthrough)
+branch 368 never executed (throw)
+    %%%%%:  161-block 12
+call   369 never executed
+branch 370 never executed (fallthrough)
+branch 371 never executed (throw)
+    %%%%%:  161-block 19
+call   372 never executed
+branch 373 never executed (fallthrough)
+branch 374 never executed (throw)
+    %%%%%:  161-block 25
+call   375 never executed
+branch 376 never executed (fallthrough)
+branch 377 never executed (throw)
+    %%%%%:  161-block 31
+call   378 never executed
+branch 379 never executed (fallthrough)
+branch 380 never executed (throw)
+call   381 never executed
+branch 382 never executed (fallthrough)
+branch 383 never executed (throw)
+    %%%%%:  161-block 36
+call   384 never executed
+branch 385 never executed (fallthrough)
+branch 386 never executed (throw)
+    %%%%%:  161-block 41
+call   387 never executed
+branch 388 never executed (fallthrough)
+branch 389 never executed (throw)
+    %%%%%:  161-block 46
+call   390 never executed
+branch 391 never executed (fallthrough)
+branch 392 never executed (throw)
+    %%%%%:  161-block 45
+call   393 never executed
+branch 394 never executed (fallthrough)
+branch 395 never executed (throw)
+    %%%%%:  161-block 2
+call   396 never executed
+    %%%%%:  161-block 5
+call   397 never executed
+branch 398 never executed (fallthrough)
+branch 399 never executed (throw)
+    %%%%%:  161-block 6
+call   400 never executed
+branch 401 never executed (fallthrough)
+branch 402 never executed (throw)
+    %%%%%:  161-block 12
+call   403 never executed
+branch 404 never executed (fallthrough)
+branch 405 never executed (throw)
+    %%%%%:  161-block 13
+call   406 never executed
+branch 407 never executed (fallthrough)
+branch 408 never executed (throw)
+    %%%%%:  161-block 20
+call   409 never executed
+branch 410 never executed (fallthrough)
+branch 411 never executed (throw)
+    %%%%%:  161-block 21
+call   412 never executed
+branch 413 never executed (fallthrough)
+branch 414 never executed (throw)
+    %%%%%:  161-block 26
+call   415 never executed
+branch 416 never executed (fallthrough)
+branch 417 never executed (throw)
+    %%%%%:  161-block 27
+call   418 never executed
+branch 419 never executed (fallthrough)
+branch 420 never executed (throw)
+    %%%%%:  161-block 32
+call   421 never executed
+branch 422 never executed (fallthrough)
+branch 423 never executed (throw)
+    %%%%%:  161-block 38
+branch 424 never executed (fallthrough)
+branch 425 never executed
+    %%%%%:  161-block 41
+call   426 never executed
+branch 427 never executed (fallthrough)
+branch 428 never executed (throw)
+branch 429 never executed (fallthrough)
+branch 430 never executed
+    %%%%%:  161-block 50
+call   431 never executed
+branch 432 never executed (fallthrough)
+branch 433 never executed (throw)
+    %%%%%:  161-block 55
+call   434 never executed
+branch 435 never executed (fallthrough)
+branch 436 never executed (throw)
+    %%%%%:  161-block 60
+call   437 never executed
+branch 438 never executed (fallthrough)
+branch 439 never executed (throw)
+call   440 never executed
+branch 441 never executed (fallthrough)
+branch 442 never executed (throw)
+    %%%%%:  161-block 65
+call   443 never executed
+branch 444 never executed (fallthrough)
+branch 445 never executed (throw)
+call   446 never executed
+call   447 never executed
+branch 448 never executed (fallthrough)
+branch 449 never executed (throw)
+    %%%%%:  161-block 5
+call   450 never executed
+branch 451 never executed (fallthrough)
+branch 452 never executed (throw)
+call   453 never executed
+call   454 never executed
+branch 455 never executed (fallthrough)
+branch 456 never executed (throw)
+    %%%%%:  161-block 12
+call   457 never executed
+branch 458 never executed (fallthrough)
+branch 459 never executed (throw)
+call   460 never executed
+call   461 never executed
+branch 462 never executed (fallthrough)
+branch 463 never executed (throw)
+    %%%%%:  161-block 19
+call   464 never executed
+branch 465 never executed (fallthrough)
+branch 466 never executed (throw)
+call   467 never executed
+call   468 never executed
+branch 469 never executed (fallthrough)
+branch 470 never executed (throw)
+    %%%%%:  161-block 26
+call   471 never executed
+branch 472 never executed (fallthrough)
+branch 473 never executed (throw)
+call   474 never executed
+call   475 never executed
+branch 476 never executed (fallthrough)
+branch 477 never executed (throw)
+    %%%%%:  161-block 33
+call   478 never executed
+branch 479 never executed (fallthrough)
+branch 480 never executed (throw)
+call   481 never executed
+call   482 never executed
+branch 483 never executed (fallthrough)
+branch 484 never executed (throw)
+    %%%%%:  161-block 40
+call   485 never executed
+branch 486 never executed (fallthrough)
+branch 487 never executed (throw)
+call   488 never executed
+branch 489 never executed (fallthrough)
+branch 490 never executed (throw)
+    %%%%%:  161-block 47
+call   491 never executed
+branch 492 never executed (fallthrough)
+branch 493 never executed (throw)
+call   494 never executed
+branch 495 never executed (fallthrough)
+branch 496 never executed (throw)
+    %%%%%:  161-block 54
+call   497 never executed
+branch 498 never executed (fallthrough)
+branch 499 never executed (throw)
+call   500 never executed
+call   501 never executed
+branch 502 never executed (fallthrough)
+branch 503 never executed (throw)
+    %%%%%:  161-block 63
+call   504 never executed
+branch 505 never executed (fallthrough)
+branch 506 never executed (throw)
+call   507 never executed
+call   508 never executed
+branch 509 never executed (fallthrough)
+branch 510 never executed (throw)
+    %%%%%:  161-block 70
+call   511 never executed
+branch 512 never executed (fallthrough)
+branch 513 never executed (throw)
+call   514 never executed
+call   515 never executed
+branch 516 never executed (fallthrough)
+branch 517 never executed (throw)
+    %%%%%:  161-block 77
+call   518 never executed
+branch 519 never executed (fallthrough)
+branch 520 never executed (throw)
+call   521 never executed
+call   522 never executed
+branch 523 never executed (fallthrough)
+branch 524 never executed (throw)
+    %%%%%:  161-block 84
+call   525 never executed
+branch 526 never executed (fallthrough)
+branch 527 never executed (throw)
+call   528 never executed
+branch 529 never executed (fallthrough)
+branch 530 never executed (throw)
+    %%%%%:  161-block 91
+call   531 never executed
+branch 532 never executed (fallthrough)
+branch 533 never executed (throw)
+call   534 never executed
+branch 535 never executed (fallthrough)
+branch 536 never executed (throw)
+    %%%%%:  161-block 98
+call   537 never executed
+branch 538 never executed (fallthrough)
+branch 539 never executed (throw)
+    %%%%%:  161-block 4
+call   540 never executed
+    %%%%%:  161-block 2
+call   541 never executed
+branch 542 never executed (fallthrough)
+branch 543 never executed (throw)
+    %%%%%:  161-block 2
+call   544 never executed
+    %%%%%:  161-block 16
+call   545 never executed
+branch 546 never executed (fallthrough)
+branch 547 never executed (throw)
+    %%%%%:  161-block 17
+call   548 never executed
+branch 549 never executed (fallthrough)
+branch 550 never executed (throw)
+        1:  161-block 2
+call   551 returned 1
+    %%%%%:  161-block 5
+call   552 never executed
+branch 553 never executed (fallthrough)
+branch 554 never executed (throw)
+       11:  161-block 4
+call   555 returned 11
+branch 556 taken 11 (fallthrough)
+branch 557 taken 0 (throw)
+       11:  161-block 5
+call   558 returned 11
+branch 559 taken 11 (fallthrough)
+branch 560 taken 0 (throw)
+call   561 returned 11
+branch 562 taken 11 (fallthrough)
+branch 563 taken 0 (throw)
+    %%%%%:  161-block 7
+call   564 never executed
+branch 565 never executed (fallthrough)
+branch 566 never executed (throw)
+    %%%%%:  161-block 10
+call   567 never executed
+branch 568 never executed (fallthrough)
+branch 569 never executed (throw)
+call   570 never executed
+call   571 never executed
+branch 572 never executed (fallthrough)
+branch 573 never executed (throw)
+    %%%%%:  161-block 3
+call   574 never executed
+    %%%%%:  161-block 6
+call   575 never executed
+    %%%%%:  161-block 9
+call   576 never executed
+    %%%%%:  161-block 3
+call   577 never executed
+    %%%%%:  161-block 6
+call   578 never executed
+    %%%%%:  161-block 9
+call   579 never executed
+call   580 never executed
+branch 581 never executed (fallthrough)
+branch 582 never executed (throw)
+    %%%%%:  161-block 13
+call   583 never executed
+branch 584 never executed (fallthrough)
+branch 585 never executed (throw)
+call   586 returned 65
+branch 587 taken 65 (fallthrough)
+branch 588 taken 0 (throw)
+    %%%%%:  161-block 3
+call   589 never executed
+    %%%%%:  161-block 18
+call   590 never executed
+    %%%%%:  161-block 2
+call   591 never executed
+call   592 never executed
+branch 593 never executed (fallthrough)
+branch 594 never executed (throw)
+    %%%%%:  161-block 2
+branch 595 never executed (fallthrough)
+branch 596 never executed
+    %%%%%:  161-block 2
+call   597 never executed
+    %%%%%:  161-block 5
+call   598 never executed
+branch 599 never executed (fallthrough)
+branch 600 never executed (throw)
+    %%%%%:  161-block 5
+call   601 never executed
+branch 602 never executed (fallthrough)
+branch 603 never executed (throw)
+    %%%%%:  161-block 10
+call   604 never executed
+branch 605 never executed (fallthrough)
+branch 606 never executed (throw)
+call   607 never executed
+branch 608 never executed (fallthrough)
+branch 609 never executed (throw)
+    %%%%%:  161-block 25
+call   610 never executed
+branch 611 never executed (fallthrough)
+branch 612 never executed (throw)
+    %%%%%:  161-block 30
+call   613 never executed
+branch 614 never executed (fallthrough)
+branch 615 never executed (throw)
+call   616 never executed
+branch 617 never executed (fallthrough)
+branch 618 never executed (throw)
+        1:  161-block 4
+call   619 returned 1
+branch 620 taken 1 (fallthrough)
+branch 621 taken 0 (throw)
+    %%%%%:  161-block 5
+call   622 never executed
+branch 623 never executed (fallthrough)
+branch 624 never executed (throw)
+    %%%%%:  161-block 2
+call   625 never executed
+    %%%%%:  161-block 2
+call   626 never executed
+    %%%%%:  161-block 4
+call   627 never executed
+branch 628 never executed (fallthrough)
+branch 629 never executed (throw)
+call   630 never executed
+call   631 never executed
+branch 632 never executed (fallthrough)
+branch 633 never executed (throw)
+    %%%%%:  161-block 2
+call   634 never executed
+    %%%%%:  161-block 3
+call   635 never executed
+    %%%%%:  161-block 4
+call   636 never executed
+        1:  161-block 2
+call   637 returned 1
+    %%%%%:  161-block 5
+call   638 never executed
+branch 639 never executed (fallthrough)
+branch 640 never executed (throw)
+call   641 never executed
+branch 642 never executed (fallthrough)
+branch 643 never executed (throw)
+    %%%%%:  161-block 8
+call   644 never executed
+call   645 never executed
+branch 646 never executed (fallthrough)
+branch 647 never executed (throw)
+    %%%%%:  161-block 2
+branch 648 never executed (fallthrough)
+branch 649 never executed
+    %%%%%:  161-block 2
+branch 650 never executed (fallthrough)
+branch 651 never executed
+    %%%%%:  161-block 2
+call   652 never executed
+branch 653 never executed (fallthrough)
+branch 654 never executed (throw)
+    %%%%%:  161-block 2
+call   655 never executed
+branch 656 never executed (fallthrough)
+branch 657 never executed (throw)
+    %%%%%:  161-block 2
+call   658 never executed
+branch 659 never executed (fallthrough)
+branch 660 never executed (throw)
+    %%%%%:  161-block 2
+call   661 never executed
+branch 662 never executed (fallthrough)
+branch 663 never executed (throw)
+    %%%%%:  161-block 2
+call   664 never executed
+branch 665 never executed (fallthrough)
+branch 666 never executed (throw)
+    %%%%%:  161-block 2
+call   667 never executed
+branch 668 never executed (fallthrough)
+branch 669 never executed (throw)
+    %%%%%:  161-block 2
+call   670 never executed
+    %%%%%:  161-block 2
+branch 671 never executed (fallthrough)
+branch 672 never executed
+    %%%%%:  161-block 2
+branch 673 never executed (fallthrough)
+branch 674 never executed
+    %%%%%:  161-block 3
+call   675 never executed
+branch 676 never executed (fallthrough)
+branch 677 never executed (throw)
+    %%%%%:  161-block 3
+call   678 never executed
+    %%%%%:  161-block 2
+call   679 never executed
+        1:  161-block 2
+call   680 returned 1
+call   681 never executed
+branch 682 never executed (fallthrough)
+branch 683 never executed (throw)
+call   684 never executed
+branch 685 never executed (fallthrough)
+branch 686 never executed (throw)
+    %%%%%:  161-block 36
+call   687 never executed
+    %%%%%:  161-block 58
+call   688 never executed
+branch 689 never executed (fallthrough)
+branch 690 never executed (throw)
+    %%%%%:  161-block 101
+call   691 never executed
+branch 692 never executed (fallthrough)
+branch 693 never executed (throw)
+    %%%%%:  161-block 112
+call   694 never executed
+branch 695 never executed (fallthrough)
+branch 696 never executed (throw)
+call   697 never executed
+branch 698 never executed (fallthrough)
+branch 699 never executed (throw)
+    %%%%%:  161-block 143
+call   700 never executed
+branch 701 never executed (fallthrough)
+branch 702 never executed (throw)
+call   703 never executed
+branch 704 never executed (fallthrough)
+branch 705 never executed (throw)
+call   706 never executed
+branch 707 never executed (fallthrough)
+branch 708 never executed (throw)
+call   709 never executed
+branch 710 never executed (fallthrough)
+branch 711 never executed (throw)
+    %%%%%:  161-block 2
+call   712 never executed
+branch 713 never executed (fallthrough)
+branch 714 never executed (throw)
+call   715 never executed
+branch 716 never executed (fallthrough)
+branch 717 never executed (throw)
+call   718 never executed
+    %%%%%:  161-block 4
+call   719 never executed
+    %%%%%:  161-block 2
+call   720 never executed
+       11:  161-block 2
+call   721 returned 11
+branch 722 taken 11 (fallthrough)
+branch 723 taken 0 (throw)
+    %%%%%:  161-block 2
+branch 724 never executed (fallthrough)
+branch 725 never executed
+    %%%%%:  161-block 6
+call   726 never executed
+branch 727 never executed (fallthrough)
+branch 728 never executed (throw)
+    %%%%%:  161-block 4
+call   729 never executed
+    %%%%%:  161-block 4
+call   730 never executed
+    %%%%%:  161-block 3
+call   731 never executed
+    %%%%%:  161-block 4
+call   732 never executed
+branch 733 never executed (fallthrough)
+branch 734 never executed
+        -:  162:
+        -:  163:      __attribute__((__always_inline__))
+        -:  164:      _GLIBCXX20_CONSTEXPR
+      26*:  165:      allocator(const allocator& __a) _GLIBCXX_NOTHROW
+    %%%%%:  165-block 2
+call    0 never executed
+    %%%%%:  165-block 2
+call    1 never executed
+       11:  165-block 2
+call    2 returned 11
+branch  3 taken 11 (fallthrough)
+branch  4 taken 0 (throw)
+        2:  165-block 2
+call    5 returned 2
+    %%%%%:  165-block 2
+call    6 never executed
+       11:  165-block 2
+call    7 returned 11
+    %%%%%:  165-block 2
+call    8 never executed
+        2:  165-block 2
+call    9 returned 2
+        -:  166:      : __allocator_base<_Tp>(__a) { }
+        -:  167:
+        -:  168:#if __cplusplus >= 201103L
+        -:  169:      // Avoid implicit deprecation.
+        -:  170:      allocator& operator=(const allocator&) = default;
+        -:  171:#endif
+        -:  172:
+        -:  173:      template<typename _Tp1>
+        -:  174:	__attribute__((__always_inline__))
+        -:  175:	_GLIBCXX20_CONSTEXPR
+    #####:  176:	allocator(const allocator<_Tp1>&) _GLIBCXX_NOTHROW { }
+    %%%%%:  176-block 2
+call    0 never executed
+    %%%%%:  176-block 2
+call    1 never executed
+    %%%%%:  176-block 3
+call    2 never executed
+        -:  177:
+        -:  178:      __attribute__((__always_inline__))
+        -:  179:#if __cpp_constexpr_dynamic_alloc
+        -:  180:      constexpr
+        -:  181:#endif
+     350*:  182:      ~allocator() _GLIBCXX_NOTHROW { }
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+call    4 never executed
+    %%%%%:  182-block 4
+call    5 never executed
+call    6 never executed
+call    7 never executed
+call    8 never executed
+call    9 never executed
+call   10 never executed
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    %%%%%:  182-block 3
+call   14 never executed
+call   15 never executed
+        6:  182-block 2
+branch 16 taken 0 (fallthrough)
+branch 17 taken 6
+call   18 never executed
+    %%%%%:  182-block 2
+        1:  182-block 2
+call   19 returned 11
+call   20 never executed
+call   21 never executed
+call   22 never executed
+call   23 never executed
+call   24 never executed
+call   25 never executed
+call   26 never executed
+call   27 never executed
+call   28 never executed
+call   29 never executed
+call   30 never executed
+call   31 never executed
+call   32 never executed
+call   33 never executed
+call   34 never executed
+call   35 never executed
+call   36 never executed
+call   37 never executed
+    $$$$$:  182-block 17
+call   38 never executed
+call   39 never executed
+       11:  182-block 2
+call   40 returned 11
+branch 41 taken 11 (fallthrough)
+branch 42 taken 0 (throw)
+call   43 returned 2
+branch 44 taken 2 (fallthrough)
+branch 45 taken 0 (throw)
+    %%%%%:  182-block 2
+call   46 never executed
+call   47 never executed
+call   48 never executed
+call   49 never executed
+call   50 never executed
+call   51 never executed
+call   52 never executed
+call   53 never executed
+call   54 never executed
+call   55 never executed
+call   56 never executed
+call   57 never executed
+call   58 never executed
+branch 59 never executed
+branch 60 never executed
+branch 61 never executed
+branch 62 never executed
+branch 63 never executed
+branch 64 never executed
+call   65 returned 4
+branch 66 taken 1 (fallthrough)
+branch 67 taken 3
+call   68 never executed
+call   69 never executed
+branch 70 never executed (fallthrough)
+branch 71 never executed (throw)
+call   72 never executed
+call   73 never executed
+call   74 never executed
+branch 75 never executed (fallthrough)
+branch 76 never executed (throw)
+        1:  182-block 11
+       11:  182-block 13
+call   77 returned 11
+call   78 never executed
+branch 79 never executed (fallthrough)
+branch 80 never executed (throw)
+call   81 never executed
+branch 82 never executed (fallthrough)
+branch 83 never executed (throw)
+call   84 never executed
+branch 85 never executed (fallthrough)
+branch 86 never executed (throw)
+call   87 never executed
+branch 88 never executed (fallthrough)
+branch 89 never executed (throw)
+call   90 returned 11
+branch 91 taken 10 (fallthrough)
+branch 92 taken 1
+call   93 returned 1
+branch 94 taken 1 (fallthrough)
+branch 95 taken 0 (throw)
+branch 96 taken 0 (fallthrough)
+branch 97 taken 1
+call   98 never executed
+call   99 never executed
+    %%%%%:  182-block 2
+branch 100 never executed (fallthrough)
+branch 101 never executed
+call   102 never executed
+call   103 never executed
+call   104 returned 1
+branch 105 taken 1 (fallthrough)
+branch 106 taken 0 (throw)
+call   107 never executed
+call   108 never executed
+call   109 never executed
+call   110 never executed
+branch 111 never executed (fallthrough)
+branch 112 never executed (throw)
+branch 113 taken 0 (fallthrough)
+branch 114 taken 1
+call   115 never executed
+call   116 never executed
+branch 117 never executed (fallthrough)
+branch 118 never executed (throw)
+    %%%%%:  182-block 5
+call   119 never executed
+branch 120 never executed (fallthrough)
+branch 121 never executed (throw)
+call   122 never executed
+branch 123 never executed (fallthrough)
+branch 124 never executed (throw)
+call   125 never executed
+call   126 never executed
+branch 127 never executed (fallthrough)
+branch 128 never executed (throw)
+call   129 never executed
+    $$$$$:  182-block 38
+call   130 never executed
+    $$$$$:  182-block 42
+call   131 never executed
+call   132 never executed
+branch 133 never executed (fallthrough)
+branch 134 never executed (throw)
+    %%%%%:  182-block 5
+call   135 never executed
+branch 136 never executed (fallthrough)
+branch 137 never executed (throw)
+call   138 never executed
+branch 139 never executed (fallthrough)
+branch 140 never executed (throw)
+call   141 never executed
+branch 142 never executed (fallthrough)
+branch 143 never executed (throw)
+call   144 never executed
+branch 145 never executed (fallthrough)
+branch 146 never executed (throw)
+branch 147 never executed (fallthrough)
+branch 148 never executed
+call   149 never executed
+call   150 never executed
+branch 151 never executed (fallthrough)
+branch 152 never executed (throw)
+call   153 never executed
+call   154 never executed
+branch 155 never executed (fallthrough)
+branch 156 never executed (throw)
+call   157 never executed
+branch 158 never executed (fallthrough)
+branch 159 never executed (throw)
+call   160 never executed
+call   161 never executed
+branch 162 never executed (fallthrough)
+branch 163 never executed (throw)
+call   164 never executed
+    $$$$$:  182-block 80
+call   165 never executed
+    $$$$$:  182-block 84
+call   166 never executed
+    $$$$$:  182-block 90
+call   167 never executed
+    $$$$$:  182-block 94
+call   168 never executed
+call   169 never executed
+branch 170 never executed (fallthrough)
+branch 171 never executed (throw)
+    %%%%%:  182-block 5
+call   172 never executed
+branch 173 never executed (fallthrough)
+branch 174 never executed (throw)
+    %%%%%:  182-block 7
+call   175 never executed
+branch 176 never executed (fallthrough)
+branch 177 never executed (throw)
+call   178 never executed
+branch 179 never executed (fallthrough)
+branch 180 never executed (throw)
+call   181 never executed
+call   182 never executed
+branch 183 never executed (fallthrough)
+branch 184 never executed (throw)
+branch 185 never executed (fallthrough)
+branch 186 never executed
+call   187 never executed
+branch 188 never executed (fallthrough)
+branch 189 never executed (throw)
+call   190 never executed
+branch 191 never executed (fallthrough)
+branch 192 never executed (throw)
+call   193 never executed
+branch 194 never executed (fallthrough)
+branch 195 never executed (throw)
+call   196 never executed
+call   197 never executed
+branch 198 never executed (fallthrough)
+branch 199 never executed (throw)
+call   200 never executed
+call   201 never executed
+branch 202 never executed (fallthrough)
+branch 203 never executed (throw)
+    %%%%%:  182-block 62
+call   204 never executed
+branch 205 never executed (fallthrough)
+branch 206 never executed (throw)
+call   207 never executed
+call   208 never executed
+    $$$$$:  182-block 72
+call   209 never executed
+    $$$$$:  182-block 84
+call   210 never executed
+    $$$$$:  182-block 88
+call   211 never executed
+    $$$$$:  182-block 96
+call   212 never executed
+call   213 never executed
+call   214 never executed
+branch 215 never executed (fallthrough)
+branch 216 never executed (throw)
+call   217 never executed
+    %%%%%:  182-block 44
+call   218 never executed
+branch 219 never executed (fallthrough)
+branch 220 never executed (throw)
+call   221 never executed
+call   222 never executed
+branch 223 never executed (fallthrough)
+branch 224 never executed (throw)
+    %%%%%:  182-block 5
+call   225 never executed
+branch 226 never executed (fallthrough)
+branch 227 never executed (throw)
+    %%%%%:  182-block 7
+call   228 never executed
+branch 229 never executed (fallthrough)
+branch 230 never executed (throw)
+call   231 never executed
+branch 232 never executed (fallthrough)
+branch 233 never executed (throw)
+call   234 never executed
+branch 235 never executed (fallthrough)
+branch 236 never executed
+call   237 never executed
+call   238 never executed
+call   239 never executed
+call   240 never executed
+branch 241 never executed (fallthrough)
+branch 242 never executed (throw)
+branch 243 never executed (fallthrough)
+branch 244 never executed
+    %%%%%:  182-block 43
+call   245 never executed
+branch 246 never executed (fallthrough)
+branch 247 never executed (throw)
+call   248 never executed
+call   249 never executed
+call   250 never executed
+branch 251 never executed (fallthrough)
+branch 252 never executed
+call   253 never executed
+call   254 never executed
+branch 255 never executed (fallthrough)
+branch 256 never executed (throw)
+call   257 never executed
+call   258 never executed
+branch 259 never executed (fallthrough)
+branch 260 never executed (throw)
+call   261 never executed
+call   262 never executed
+branch 263 never executed (fallthrough)
+branch 264 never executed (throw)
+call   265 never executed
+call   266 never executed
+branch 267 never executed (fallthrough)
+branch 268 never executed (throw)
+call   269 never executed
+branch 270 never executed (fallthrough)
+branch 271 never executed (throw)
+call   272 never executed
+    $$$$$:  182-block 93
+call   273 never executed
+    $$$$$:  182-block 97
+call   274 never executed
+    $$$$$:  182-block 101
+call   275 never executed
+    $$$$$:  182-block 105
+call   276 never executed
+    $$$$$:  182-block 113
+call   277 never executed
+    $$$$$:  182-block 117
+call   278 never executed
+    $$$$$:  182-block 121
+call   279 never executed
+    $$$$$:  182-block 125
+call   280 never executed
+    $$$$$:  182-block 129
+call   281 never executed
+    $$$$$:  182-block 135
+call   282 never executed
+call   283 never executed
+branch 284 never executed (fallthrough)
+branch 285 never executed (throw)
+call   286 never executed
+call   287 never executed
+branch 288 never executed (fallthrough)
+branch 289 never executed (throw)
+call   290 never executed
+call   291 never executed
+call   292 never executed
+call   293 never executed
+call   294 never executed
+branch 295 never executed (fallthrough)
+branch 296 never executed (throw)
+call   297 never executed
+call   298 never executed
+branch 299 never executed (fallthrough)
+branch 300 never executed
+call   301 never executed
+branch 302 never executed (fallthrough)
+branch 303 never executed (throw)
+call   304 never executed
+call   305 never executed
+call   306 never executed
+call   307 never executed
+branch 308 never executed (fallthrough)
+branch 309 never executed (throw)
+call   310 never executed
+call   311 never executed
+call   312 never executed
+call   313 never executed
+branch 314 never executed (fallthrough)
+branch 315 never executed (throw)
+call   316 never executed
+call   317 never executed
+call   318 never executed
+call   319 never executed
+branch 320 never executed (fallthrough)
+branch 321 never executed (throw)
+call   322 never executed
+call   323 never executed
+call   324 never executed
+call   325 never executed
+branch 326 never executed (fallthrough)
+branch 327 never executed (throw)
+call   328 never executed
+call   329 never executed
+call   330 never executed
+call   331 never executed
+call   332 never executed
+branch 333 never executed (fallthrough)
+branch 334 never executed (throw)
+call   335 never executed
+call   336 never executed
+call   337 never executed
+call   338 never executed
+branch 339 never executed (fallthrough)
+branch 340 never executed (throw)
+call   341 never executed
+call   342 never executed
+branch 343 never executed (fallthrough)
+branch 344 never executed (throw)
+call   345 never executed
+call   346 never executed
+branch 347 never executed (fallthrough)
+branch 348 never executed (throw)
+call   349 never executed
+call   350 never executed
+call   351 never executed
+call   352 never executed
+call   353 never executed
+branch 354 never executed (fallthrough)
+branch 355 never executed (throw)
+call   356 never executed
+call   357 never executed
+call   358 never executed
+call   359 never executed
+call   360 never executed
+branch 361 never executed (fallthrough)
+branch 362 never executed (throw)
+call   363 never executed
+call   364 never executed
+call   365 never executed
+call   366 never executed
+call   367 never executed
+branch 368 never executed (fallthrough)
+branch 369 never executed (throw)
+call   370 never executed
+call   371 never executed
+call   372 never executed
+call   373 never executed
+call   374 never executed
+branch 375 never executed (fallthrough)
+branch 376 never executed (throw)
+call   377 never executed
+call   378 never executed
+call   379 never executed
+call   380 never executed
+call   381 never executed
+branch 382 never executed (fallthrough)
+branch 383 never executed (throw)
+call   384 never executed
+call   385 never executed
+call   386 never executed
+call   387 never executed
+call   388 never executed
+branch 389 never executed (fallthrough)
+branch 390 never executed (throw)
+call   391 never executed
+call   392 never executed
+call   393 never executed
+branch 394 never executed (fallthrough)
+branch 395 never executed (throw)
+    %%%%%:  182-block 144
+call   396 never executed
+branch 397 never executed (fallthrough)
+branch 398 never executed (throw)
+call   399 never executed
+call   400 never executed
+    $$$$$:  182-block 153
+call   401 never executed
+    $$$$$:  182-block 155
+call   402 never executed
+    $$$$$:  182-block 157
+call   403 never executed
+call   404 never executed
+    $$$$$:  182-block 161
+call   405 never executed
+    $$$$$:  182-block 163
+call   406 never executed
+call   407 never executed
+    $$$$$:  182-block 167
+call   408 never executed
+    $$$$$:  182-block 169
+call   409 never executed
+call   410 never executed
+    $$$$$:  182-block 173
+call   411 never executed
+    $$$$$:  182-block 175
+call   412 never executed
+call   413 never executed
+    $$$$$:  182-block 179
+call   414 never executed
+    $$$$$:  182-block 181
+call   415 never executed
+call   416 never executed
+    $$$$$:  182-block 185
+call   417 never executed
+    $$$$$:  182-block 187
+call   418 never executed
+call   419 never executed
+    $$$$$:  182-block 191
+call   420 never executed
+    $$$$$:  182-block 193
+call   421 never executed
+call   422 never executed
+    $$$$$:  182-block 199
+call   423 never executed
+    $$$$$:  182-block 201
+call   424 never executed
+call   425 never executed
+call   426 never executed
+call   427 never executed
+    $$$$$:  182-block 211
+call   428 never executed
+    $$$$$:  182-block 213
+call   429 never executed
+    $$$$$:  182-block 215
+call   430 never executed
+call   431 never executed
+    $$$$$:  182-block 219
+call   432 never executed
+    $$$$$:  182-block 221
+call   433 never executed
+    $$$$$:  182-block 223
+call   434 never executed
+call   435 never executed
+    $$$$$:  182-block 227
+call   436 never executed
+    $$$$$:  182-block 229
+call   437 never executed
+    $$$$$:  182-block 231
+call   438 never executed
+call   439 never executed
+    $$$$$:  182-block 235
+call   440 never executed
+    $$$$$:  182-block 237
+call   441 never executed
+call   442 never executed
+    $$$$$:  182-block 243
+call   443 never executed
+    $$$$$:  182-block 245
+call   444 never executed
+call   445 never executed
+    $$$$$:  182-block 251
+call   446 never executed
+    $$$$$:  182-block 253
+call   447 never executed
+    $$$$$:  182-block 255
+call   448 never executed
+call   449 never executed
+call   450 never executed
+branch 451 never executed (fallthrough)
+branch 452 never executed
+branch 453 never executed (fallthrough)
+branch 454 never executed
+call   455 never executed
+call   456 never executed
+call   457 never executed
+call   458 never executed
+call   459 never executed
+call   460 never executed
+call   461 never executed
+call   462 never executed
+call   463 never executed
+call   464 never executed
+call   465 never executed
+call   466 never executed
+call   467 never executed
+call   468 never executed
+call   469 never executed
+call   470 never executed
+branch 471 never executed (fallthrough)
+branch 472 never executed (throw)
+branch 473 never executed (fallthrough)
+branch 474 never executed
+call   475 never executed
+branch 476 never executed (fallthrough)
+branch 477 never executed (throw)
+    %%%%%:  182-block 4
+branch 478 never executed (fallthrough)
+branch 479 never executed
+call   480 never executed
+call   481 never executed
+call   482 never executed
+branch 483 never executed (fallthrough)
+branch 484 never executed (throw)
+call   485 never executed
+call   486 never executed
+branch 487 never executed (fallthrough)
+branch 488 never executed (throw)
+call   489 never executed
+call   490 never executed
+call   491 never executed
+branch 492 never executed (fallthrough)
+branch 493 never executed (throw)
+call   494 never executed
+call   495 never executed
+branch 496 never executed (fallthrough)
+branch 497 never executed (throw)
+call   498 never executed
+call   499 never executed
+branch 500 never executed (fallthrough)
+branch 501 never executed (throw)
+    $$$$$:  182-block 31
+call   502 never executed
+    $$$$$:  182-block 35
+call   503 never executed
+call   504 never executed
+branch 505 never executed (fallthrough)
+branch 506 never executed (throw)
+call   507 never executed
+call   508 never executed
+branch 509 never executed (fallthrough)
+branch 510 never executed (throw)
+call   511 never executed
+call   512 never executed
+branch 513 never executed (fallthrough)
+branch 514 never executed (throw)
+call   515 never executed
+call   516 never executed
+branch 517 never executed (fallthrough)
+branch 518 never executed (throw)
+call   519 never executed
+call   520 never executed
+branch 521 never executed (fallthrough)
+branch 522 never executed (throw)
+call   523 never executed
+call   524 never executed
+branch 525 never executed (fallthrough)
+branch 526 never executed (throw)
+call   527 never executed
+branch 528 never executed (fallthrough)
+branch 529 never executed
+call   530 never executed
+call   531 never executed
+branch 532 never executed (fallthrough)
+branch 533 never executed (throw)
+call   534 never executed
+call   535 never executed
+branch 536 never executed (fallthrough)
+branch 537 never executed (throw)
+    $$$$$:  182-block 70
+call   538 never executed
+    $$$$$:  182-block 74
+call   539 never executed
+    $$$$$:  182-block 78
+call   540 never executed
+    $$$$$:  182-block 82
+call   541 never executed
+    $$$$$:  182-block 86
+call   542 never executed
+    $$$$$:  182-block 90
+call   543 never executed
+    $$$$$:  182-block 94
+call   544 never executed
+    $$$$$:  182-block 100
+call   545 never executed
+call   546 never executed
+branch 547 never executed (fallthrough)
+branch 548 never executed (throw)
+call   549 never executed
+call   550 never executed
+branch 551 never executed (fallthrough)
+branch 552 never executed (throw)
+call   553 never executed
+branch 554 never executed (fallthrough)
+branch 555 never executed
+call   556 never executed
+call   557 never executed
+branch 558 never executed (fallthrough)
+branch 559 never executed (throw)
+call   560 never executed
+call   561 never executed
+branch 562 never executed (fallthrough)
+branch 563 never executed (throw)
+call   564 never executed
+call   565 never executed
+branch 566 never executed (fallthrough)
+branch 567 never executed (throw)
+call   568 never executed
+call   569 never executed
+branch 570 never executed (fallthrough)
+branch 571 never executed (throw)
+call   572 never executed
+call   573 never executed
+branch 574 never executed (fallthrough)
+branch 575 never executed (throw)
+call   576 never executed
+call   577 never executed
+branch 578 never executed (fallthrough)
+branch 579 never executed (throw)
+    $$$$$:  182-block 67
+call   580 never executed
+    $$$$$:  182-block 71
+call   581 never executed
+    $$$$$:  182-block 75
+call   582 never executed
+    $$$$$:  182-block 79
+call   583 never executed
+    $$$$$:  182-block 83
+call   584 never executed
+    $$$$$:  182-block 87
+call   585 never executed
+    $$$$$:  182-block 91
+call   586 never executed
+    $$$$$:  182-block 95
+call   587 never executed
+call   588 never executed
+branch 589 never executed (fallthrough)
+branch 590 never executed (throw)
+call   591 never executed
+branch 592 never executed (fallthrough)
+branch 593 never executed (throw)
+call   594 never executed
+branch 595 never executed (fallthrough)
+branch 596 never executed (throw)
+call   597 never executed
+branch 598 never executed (fallthrough)
+branch 599 never executed (throw)
+call   600 never executed
+call   601 never executed
+call   602 never executed
+branch 603 never executed (fallthrough)
+branch 604 never executed (throw)
+call   605 never executed
+call   606 never executed
+branch 607 never executed (fallthrough)
+branch 608 never executed (throw)
+call   609 never executed
+branch 610 never executed (fallthrough)
+branch 611 never executed (throw)
+call   612 never executed
+branch 613 never executed (fallthrough)
+branch 614 never executed (throw)
+call   615 never executed
+call   616 never executed
+call   617 never executed
+branch 618 never executed (fallthrough)
+branch 619 never executed
+call   620 never executed
+branch 621 never executed (fallthrough)
+branch 622 never executed
+call   623 never executed
+call   624 never executed
+call   625 never executed
+call   626 never executed
+branch 627 never executed (fallthrough)
+branch 628 never executed (throw)
+call   629 never executed
+branch 630 never executed (fallthrough)
+branch 631 never executed
+call   632 never executed
+branch 633 never executed (fallthrough)
+branch 634 never executed
+call   635 never executed
+call   636 never executed
+branch 637 never executed (fallthrough)
+branch 638 never executed (throw)
+call   639 never executed
+call   640 never executed
+branch 641 never executed (fallthrough)
+branch 642 never executed (throw)
+call   643 never executed
+call   644 never executed
+branch 645 never executed (fallthrough)
+branch 646 never executed (throw)
+call   647 never executed
+call   648 never executed
+branch 649 never executed (fallthrough)
+branch 650 never executed (throw)
+    $$$$$:  182-block 77
+call   651 never executed
+    $$$$$:  182-block 81
+call   652 never executed
+    $$$$$:  182-block 85
+call   653 never executed
+    $$$$$:  182-block 89
+call   654 never executed
+    $$$$$:  182-block 93
+call   655 never executed
+    $$$$$:  182-block 97
+call   656 never executed
+    $$$$$:  182-block 101
+call   657 never executed
+    $$$$$:  182-block 105
+call   658 never executed
+    $$$$$:  182-block 109
+call   659 never executed
+    $$$$$:  182-block 113
+call   660 never executed
+call   661 never executed
+call   662 never executed
+call   663 never executed
+call   664 never executed
+call   665 never executed
+call   666 never executed
+call   667 never executed
+call   668 never executed
+call   669 never executed
+call   670 never executed
+call   671 never executed
+call   672 never executed
+call   673 never executed
+call   674 never executed
+call   675 never executed
+call   676 never executed
+call   677 never executed
+call   678 never executed
+call   679 never executed
+call   680 never executed
+call   681 never executed
+call   682 never executed
+call   683 never executed
+call   684 never executed
+call   685 never executed
+call   686 never executed
+call   687 never executed
+call   688 never executed
+call   689 never executed
+call   690 never executed
+call   691 never executed
+call   692 never executed
+call   693 never executed
+call   694 never executed
+call   695 never executed
+call   696 never executed
+call   697 never executed
+call   698 never executed
+call   699 never executed
+call   700 never executed
+call   701 never executed
+call   702 never executed
+    $$$$$:  182-block 108
+call   703 never executed
+    $$$$$:  182-block 110
+call   704 never executed
+call   705 never executed
+    $$$$$:  182-block 114
+call   706 never executed
+    $$$$$:  182-block 116
+call   707 never executed
+call   708 never executed
+    $$$$$:  182-block 120
+call   709 never executed
+    $$$$$:  182-block 122
+call   710 never executed
+call   711 never executed
+    $$$$$:  182-block 126
+call   712 never executed
+    $$$$$:  182-block 128
+call   713 never executed
+call   714 never executed
+    $$$$$:  182-block 132
+call   715 never executed
+    $$$$$:  182-block 134
+call   716 never executed
+call   717 never executed
+    $$$$$:  182-block 138
+call   718 never executed
+    $$$$$:  182-block 140
+call   719 never executed
+call   720 never executed
+    $$$$$:  182-block 144
+call   721 never executed
+    $$$$$:  182-block 146
+call   722 never executed
+call   723 never executed
+    $$$$$:  182-block 150
+call   724 never executed
+    $$$$$:  182-block 152
+call   725 never executed
+call   726 never executed
+    $$$$$:  182-block 156
+call   727 never executed
+    $$$$$:  182-block 158
+call   728 never executed
+call   729 never executed
+    $$$$$:  182-block 162
+call   730 never executed
+    $$$$$:  182-block 164
+call   731 never executed
+call   732 never executed
+    $$$$$:  182-block 168
+call   733 never executed
+    $$$$$:  182-block 170
+call   734 never executed
+call   735 never executed
+    $$$$$:  182-block 174
+call   736 never executed
+    $$$$$:  182-block 176
+call   737 never executed
+call   738 never executed
+    $$$$$:  182-block 180
+call   739 never executed
+    $$$$$:  182-block 182
+call   740 never executed
+call   741 never executed
+    $$$$$:  182-block 186
+call   742 never executed
+    $$$$$:  182-block 188
+call   743 never executed
+call   744 never executed
+call   745 never executed
+call   746 never executed
+call   747 never executed
+call   748 never executed
+call   749 never executed
+call   750 never executed
+call   751 never executed
+call   752 never executed
+call   753 never executed
+call   754 never executed
+call   755 never executed
+call   756 never executed
+call   757 never executed
+call   758 never executed
+call   759 never executed
+call   760 never executed
+call   761 never executed
+    %%%%%:  182-block 2
+call   762 never executed
+branch 763 never executed (fallthrough)
+branch 764 never executed (throw)
+call   765 never executed
+branch 766 never executed (fallthrough)
+branch 767 never executed (throw)
+call   768 never executed
+branch 769 never executed (fallthrough)
+branch 770 never executed (throw)
+branch 771 never executed (fallthrough)
+branch 772 never executed
+call   773 never executed
+branch 774 never executed (fallthrough)
+branch 775 never executed
+call   776 never executed
+call   777 never executed
+call   778 never executed
+call   779 never executed
+call   780 returned 1
+branch 781 taken 1 (fallthrough)
+branch 782 taken 0
+call   783 returned 1
+call   784 never executed
+call   785 never executed
+call   786 never executed
+call   787 never executed
+call   788 returned 1
+branch 789 taken 1 (fallthrough)
+branch 790 taken 0 (throw)
+call   791 returned 1
+call   792 returned 1
+branch 793 taken 1 (fallthrough)
+branch 794 taken 0 (throw)
+    %%%%%:  182-block 21
+branch 795 never executed (fallthrough)
+branch 796 never executed
+    %%%%%:  182-block 24
+call   797 never executed
+call   798 returned 7
+branch 799 taken 0 (fallthrough)
+branch 800 taken 1
+        1:  182-block 6
+call   801 returned 1
+branch 802 taken 1 (fallthrough)
+branch 803 taken 0 (throw)
+    $$$$$:  182-block 8
+branch 804 never executed (fallthrough)
+branch 805 never executed
+call   806 never executed
+call   807 never executed
+call   808 returned 11
+call   809 returned 11
+call   810 returned 11
+    $$$$$:  182-block 15
+call   811 never executed
+    $$$$$:  182-block 17
+call   812 never executed
+call   813 never executed
+call   814 never executed
+       11:  182-block 5
+branch 815 taken 0 (fallthrough)
+branch 816 taken 11
+       11:  182-block 8
+branch 817 taken 0 (fallthrough)
+branch 818 taken 11
+       11:  182-block 11
+call   819 returned 11
+branch 820 taken 11 (fallthrough)
+branch 821 taken 0 (throw)
+    $$$$$:  182-block 14
+branch 822 never executed (fallthrough)
+branch 823 never executed
+    $$$$$:  182-block 17
+branch 824 never executed (fallthrough)
+branch 825 never executed
+call   826 never executed
+call   827 never executed
+    $$$$$:  182-block 10
+call   828 never executed
+call   829 never executed
+call   830 never executed
+branch 831 never executed (fallthrough)
+branch 832 never executed
+call   833 never executed
+call   834 returned 65
+branch 835 taken 65 (fallthrough)
+branch 836 taken 0 (throw)
+call   837 never executed
+call   838 never executed
+call   839 never executed
+call   840 never executed
+call   841 never executed
+branch 842 never executed (fallthrough)
+branch 843 never executed (throw)
+call   844 never executed
+call   845 never executed
+call   846 never executed
+call   847 never executed
+branch 848 never executed (fallthrough)
+branch 849 never executed (throw)
+call   850 never executed
+branch 851 never executed (fallthrough)
+branch 852 never executed (throw)
+call   853 returned 4
+call   854 never executed
+branch 855 never executed (fallthrough)
+branch 856 never executed (throw)
+call   857 returned 11
+call   858 never executed
+branch 859 never executed (fallthrough)
+branch 860 never executed (throw)
+call   861 never executed
+call   862 never executed
+call   863 never executed
+call   864 never executed
+call   865 never executed
+branch 866 never executed (fallthrough)
+branch 867 never executed
+call   868 never executed
+call   869 never executed
+call   870 never executed
+call   871 never executed
+call   872 never executed
+call   873 never executed
+branch 874 never executed (fallthrough)
+branch 875 never executed (throw)
+call   876 never executed
+    $$$$$:  182-block 68
+call   877 never executed
+    $$$$$:  182-block 80
+call   878 never executed
+        1:  182-block 6
+call   879 returned 1
+    $$$$$:  182-block 8
+call   880 never executed
+call   881 never executed
+branch 882 never executed (fallthrough)
+branch 883 never executed (throw)
+call   884 never executed
+call   885 never executed
+call   886 never executed
+call   887 never executed
+call   888 never executed
+branch 889 never executed (fallthrough)
+branch 890 never executed (throw)
+call   891 never executed
+branch 892 never executed (fallthrough)
+branch 893 never executed (throw)
+call   894 never executed
+call   895 never executed
+branch 896 never executed (fallthrough)
+branch 897 never executed
+call   898 never executed
+call   899 never executed
+    $$$$$:  182-block 12
+call   900 never executed
+call   901 never executed
+call   902 never executed
+call   903 never executed
+call   904 never executed
+branch 905 never executed (fallthrough)
+branch 906 never executed (throw)
+call   907 never executed
+branch 908 never executed (fallthrough)
+branch 909 never executed (throw)
+call   910 never executed
+call   911 never executed
+call   912 never executed
+call   913 never executed
+call   914 never executed
+call   915 never executed
+call   916 never executed
+    %%%%%:  182-block 4
+call   917 never executed
+call   918 never executed
+call   919 never executed
+call   920 never executed
+branch 921 never executed (fallthrough)
+branch 922 never executed (throw)
+call   923 never executed
+call   924 never executed
+call   925 never executed
+call   926 never executed
+call   927 returned 1
+call   928 never executed
+    $$$$$:  182-block 15
+call   929 never executed
+call   930 never executed
+call   931 never executed
+branch 932 never executed (fallthrough)
+branch 933 never executed (throw)
+call   934 never executed
+branch 935 never executed (fallthrough)
+branch 936 never executed (throw)
+call   937 never executed
+call   938 never executed
+branch 939 never executed (fallthrough)
+branch 940 never executed (throw)
+branch 941 never executed (fallthrough)
+branch 942 never executed
+call   943 never executed
+branch 944 never executed (fallthrough)
+branch 945 never executed
+call   946 never executed
+call   947 never executed
+call   948 never executed
+call   949 never executed
+call   950 never executed
+call   951 never executed
+call   952 never executed
+call   953 never executed
+call   954 never executed
+call   955 never executed
+branch 956 never executed (fallthrough)
+branch 957 never executed (throw)
+call   958 never executed
+    $$$$$:  182-block 18
+call   959 never executed
+call   960 never executed
+    $$$$$:  182-block 17
+call   961 never executed
+call   962 never executed
+call   963 never executed
+    $$$$$:  182-block 18
+call   964 never executed
+call   965 never executed
+    $$$$$:  182-block 17
+call   966 never executed
+call   967 never executed
+call   968 never executed
+    $$$$$:  182-block 17
+call   969 never executed
+call   970 never executed
+call   971 never executed
+    $$$$$:  182-block 17
+call   972 never executed
+call   973 never executed
+call   974 never executed
+branch 975 never executed (fallthrough)
+branch 976 never executed (throw)
+call   977 never executed
+call   978 never executed
+branch 979 never executed (fallthrough)
+branch 980 never executed (throw)
+call   981 never executed
+call   982 never executed
+    %%%%%:  182-block 2
+branch 983 never executed (fallthrough)
+branch 984 never executed
+call   985 never executed
+call   986 never executed
+call   987 never executed
+call   988 never executed
+call   989 never executed
+call   990 never executed
+    %%%%%:  182-block 2
+branch 991 never executed (fallthrough)
+branch 992 never executed
+    %%%%%:  182-block 9
+call   993 never executed
+branch 994 never executed (fallthrough)
+branch 995 never executed (throw)
+call   996 never executed
+call   997 never executed
+call   998 never executed
+call   999 never executed
+call   1000 never executed
+call   1001 never executed
+call   1002 never executed
+call   1003 never executed
+call   1004 never executed
+call   1005 never executed
+call   1006 never executed
+call   1007 never executed
+call   1008 never executed
+branch 1009 never executed (fallthrough)
+branch 1010 never executed (throw)
+call   1011 never executed
+call   1012 never executed
+call   1013 never executed
+call   1014 never executed
+call   1015 never executed
+call   1016 never executed
+call   1017 never executed
+call   1018 never executed
+call   1019 never executed
+call   1020 never executed
+call   1021 never executed
+call   1022 never executed
+call   1023 never executed
+call   1024 never executed
+call   1025 never executed
+call   1026 never executed
+call   1027 never executed
+call   1028 never executed
+branch 1029 never executed (fallthrough)
+branch 1030 never executed (throw)
+call   1031 never executed
+call   1032 never executed
+call   1033 never executed
+call   1034 never executed
+call   1035 never executed
+branch 1036 never executed (fallthrough)
+branch 1037 never executed (throw)
+call   1038 never executed
+branch 1039 never executed (fallthrough)
+branch 1040 never executed (throw)
+call   1041 never executed
+call   1042 never executed
+    $$$$$:  182-block 173
+call   1043 never executed
+call   1044 never executed
+    $$$$$:  182-block 187
+call   1045 never executed
+call   1046 never executed
+call   1047 never executed
+    $$$$$:  182-block 225
+call   1048 never executed
+    $$$$$:  182-block 247
+call   1049 never executed
+    $$$$$:  182-block 273
+call   1050 never executed
+    $$$$$:  182-block 63
+call   1051 never executed
+call   1052 never executed
+    $$$$$:  182-block 77
+call   1053 never executed
+call   1054 never executed
+    $$$$$:  182-block 91
+call   1055 never executed
+call   1056 never executed
+call   1057 never executed
+call   1058 never executed
+call   1059 never executed
+    %%%%%:  182-block 2
+    $$$$$:  182-block 43
+call   1060 never executed
+call   1061 never executed
+    $$$$$:  182-block 76
+call   1062 never executed
+call   1063 never executed
+call   1064 never executed
+branch 1065 taken 0 (fallthrough)
+branch 1066 taken 1
+call   1067 never executed
+call   1068 returned 11
+call   1069 returned 11
+call   1070 returned 11
+call   1071 returned 11
+call   1072 returned 11
+       11:  182-block 2
+call   1073 returned 11
+branch 1074 taken 11 (fallthrough)
+branch 1075 taken 0 (throw)
+        2:  182-block 2
+call   1076 returned 2
+call   1077 never executed
+branch 1078 never executed (fallthrough)
+branch 1079 never executed (throw)
+    %%%%%:  182-block 7
+branch 1080 never executed (fallthrough)
+branch 1081 never executed
+        -:  183:
+        -:  184:#if __cplusplus > 201703L
+        -:  185:      [[nodiscard,__gnu__::__always_inline__]]
+        -:  186:      constexpr _Tp*
+    #####:  187:      allocate(size_t __n)
+    %%%%%:  187-block 2
+call    0 never executed
+    %%%%%:  187-block 2
+call    1 never executed
+    %%%%%:  187-block 2
+call    2 never executed
+    %%%%%:  187-block 2
+call    3 never executed
+    %%%%%:  187-block 2
+call    4 never executed
+    %%%%%:  187-block 2
+call    5 never executed
+    %%%%%:  187-block 2
+call    6 never executed
+    %%%%%:  187-block 6
+call    7 never executed
+        -:  188:      {
+        -:  189:	if (std::__is_constant_evaluated())
+        -:  190:	  {
+        -:  191:	    if (__builtin_mul_overflow(__n, sizeof(_Tp), &__n))
+        -:  192:	      std::__throw_bad_array_new_length();
+        -:  193:	    return static_cast<_Tp*>(::operator new(__n));
+        -:  194:	  }
+        -:  195:
+     109*:  196:	return __allocator_base<_Tp>::allocate(__n, 0);
+    %%%%%:  196-block 2
+call    0 never executed
+call    1 never executed
+    %%%%%:  196-block 5
+call    2 never executed
+call    3 never executed
+call    4 never executed
+call    5 never executed
+    %%%%%:  196-block 5
+call    6 never executed
+call    7 never executed
+    %%%%%:  196-block 3
+call    8 never executed
+    %%%%%:  196-block 3
+call    9 never executed
+    %%%%%:  196-block 3
+call   10 never executed
+    %%%%%:  196-block 3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+        1:  196-block 3
+call   14 returned 1
+        1:  196-block 5
+call   15 returned 1
+    %%%%%:  196-block 5
+call   16 never executed
+    %%%%%:  196-block 5
+call   17 never executed
+    %%%%%:  196-block 5
+call   18 never executed
+        1:  196-block 5
+call   19 returned 1
+        6:  196-block 5
+call   20 returned 6
+        5:  196-block 5
+call   21 returned 5
+    %%%%%:  196-block 5
+call   22 never executed
+    %%%%%:  196-block 5
+call   23 never executed
+    %%%%%:  196-block 5
+call   24 never executed
+        8:  196-block 5
+call   25 returned 8
+    %%%%%:  196-block 5
+call   26 never executed
+    %%%%%:  196-block 5
+call   27 never executed
+    %%%%%:  196-block 5
+call   28 never executed
+    %%%%%:  196-block 8
+call   29 never executed
+        3:  196-block 5
+call   30 returned 3
+       84:  196-block 8
+branch 31 taken 0 (fallthrough)
+branch 32 taken 84
+        -:  197:      }
+        -:  198:
+        -:  199:      [[__gnu__::__always_inline__]]
+        -:  200:      constexpr void
+     143*:  201:      deallocate(_Tp* __p, size_t __n)
+    %%%%%:  201-block 3
+call    0 never executed
+call    1 never executed
+    %%%%%:  201-block 3
+call    2 never executed
+call    3 never executed
+call    4 never executed
+    %%%%%:  201-block 3
+call    5 never executed
+    %%%%%:  201-block 3
+call    6 never executed
+    %%%%%:  201-block 3
+call    7 never executed
+call    8 never executed
+call    9 never executed
+call   10 never executed
+call   11 never executed
+    %%%%%:  201-block 4
+call   12 never executed
+    %%%%%:  201-block 3
+call   13 never executed
+    %%%%%:  201-block 3
+call   14 never executed
+    %%%%%:  201-block 3
+call   15 never executed
+    %%%%%:  201-block 3
+call   16 never executed
+    %%%%%:  201-block 3
+call   17 never executed
+        4:  201-block 3
+call   18 returned 4
+        4:  201-block 3
+call   19 returned 4
+    %%%%%:  201-block 3
+call   20 never executed
+    %%%%%:  201-block 3
+call   21 never executed
+    %%%%%:  201-block 3
+call   22 never executed
+call   23 never executed
+    %%%%%:  201-block 3
+call   24 never executed
+    %%%%%:  201-block 3
+call   25 never executed
+    %%%%%:  201-block 3
+call   26 never executed
+    %%%%%:  201-block 3
+call   27 never executed
+    %%%%%:  201-block 3
+call   28 never executed
+call   29 never executed
+        3:  201-block 3
+call   30 returned 3
+    %%%%%:  201-block 3
+call   31 never executed
+    %%%%%:  201-block 3
+call   32 never executed
+    %%%%%:  201-block 5
+call   33 never executed
+    %%%%%:  201-block 3
+call   34 never executed
+    %%%%%:  201-block 3
+call   35 never executed
+    %%%%%:  201-block 3
+call   36 never executed
+    %%%%%:  201-block 3
+call   37 never executed
+    %%%%%:  201-block 3
+call   38 never executed
+    %%%%%:  201-block 3
+call   39 never executed
+    %%%%%:  201-block 3
+call   40 never executed
+    %%%%%:  201-block 3
+call   41 never executed
+    %%%%%:  201-block 8
+call   42 never executed
+    %%%%%:  201-block 3
+call   43 never executed
+        8:  201-block 3
+call   44 returned 8
+      124:  201-block 5
+call   45 returned 124
+    %%%%%:  201-block 3
+call   46 never executed
+    %%%%%:  201-block 3
+call   47 never executed
+        -:  202:      {
+        -:  203:	if (std::__is_constant_evaluated())
+        -:  204:	  {
+        -:  205:	    ::operator delete(__p);
+        -:  206:	    return;
+        -:  207:	  }
+     143*:  208:	__allocator_base<_Tp>::deallocate(__p, __n);
+    %%%%%:  208-block 3
+call    0 never executed
+call    1 never executed
+    %%%%%:  208-block 3
+call    2 never executed
+call    3 never executed
+call    4 never executed
+    %%%%%:  208-block 3
+call    5 never executed
+    %%%%%:  208-block 3
+call    6 never executed
+call    7 never executed
+call    8 never executed
+    %%%%%:  208-block 3
+call    9 never executed
+    %%%%%:  208-block 3
+call   10 never executed
+    %%%%%:  208-block 3
+call   11 never executed
+    %%%%%:  208-block 3
+call   12 never executed
+    %%%%%:  208-block 3
+call   13 never executed
+        4:  208-block 3
+call   14 returned 4
+        4:  208-block 3
+call   15 returned 4
+    %%%%%:  208-block 3
+call   16 never executed
+    %%%%%:  208-block 3
+call   17 never executed
+    %%%%%:  208-block 3
+call   18 never executed
+call   19 never executed
+    %%%%%:  208-block 3
+call   20 never executed
+    %%%%%:  208-block 3
+call   21 never executed
+    %%%%%:  208-block 3
+call   22 never executed
+    %%%%%:  208-block 3
+call   23 never executed
+    %%%%%:  208-block 3
+call   24 never executed
+call   25 never executed
+        3:  208-block 3
+call   26 returned 3
+    %%%%%:  208-block 3
+call   27 never executed
+    %%%%%:  208-block 3
+call   28 never executed
+    %%%%%:  208-block 5
+call   29 never executed
+    %%%%%:  208-block 3
+call   30 never executed
+    %%%%%:  208-block 3
+call   31 never executed
+    %%%%%:  208-block 3
+call   32 never executed
+    %%%%%:  208-block 3
+call   33 never executed
+    %%%%%:  208-block 3
+call   34 never executed
+    %%%%%:  208-block 3
+call   35 never executed
+    %%%%%:  208-block 3
+call   36 never executed
+    %%%%%:  208-block 3
+call   37 never executed
+    %%%%%:  208-block 8
+call   38 never executed
+    %%%%%:  208-block 3
+call   39 never executed
+        8:  208-block 3
+call   40 returned 8
+      124:  208-block 5
+call   41 returned 124
+    %%%%%:  208-block 3
+call   42 never executed
+    %%%%%:  208-block 3
+call   43 never executed
+        -:  209:      }
+        -:  210:#endif // C++20
+        -:  211:
+        -:  212:      friend __attribute__((__always_inline__)) _GLIBCXX20_CONSTEXPR
+        -:  213:      bool
+        -:  214:      operator==(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+        -:  215:      { return true; }
+        -:  216:
+        -:  217:#if __cpp_impl_three_way_comparison < 201907L
+        -:  218:      friend __attribute__((__always_inline__)) _GLIBCXX20_CONSTEXPR
+        -:  219:      bool
+        -:  220:      operator!=(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+        -:  221:      { return false; }
+        -:  222:#endif
+        -:  223:
+        -:  224:      // Inherit everything else.
+        -:  225:    };
+        -:  226:
+        -:  227:  /** Equality comparison for std::allocator objects
+        -:  228:   *
+        -:  229:   * @return true, for all std::allocator objects.
+        -:  230:   * @relates std::allocator
+        -:  231:   */
+        -:  232:  template<typename _T1, typename _T2>
+        -:  233:    __attribute__((__always_inline__))
+        -:  234:    inline _GLIBCXX20_CONSTEXPR bool
+        -:  235:    operator==(const allocator<_T1>&, const allocator<_T2>&)
+        -:  236:    _GLIBCXX_NOTHROW
+        -:  237:    { return true; }
+        -:  238:
+        -:  239:#if __cpp_impl_three_way_comparison < 201907L
+        -:  240:  template<typename _T1, typename _T2>
+        -:  241:    __attribute__((__always_inline__))
+        -:  242:    inline _GLIBCXX20_CONSTEXPR bool
+        -:  243:    operator!=(const allocator<_T1>&, const allocator<_T2>&)
+        -:  244:    _GLIBCXX_NOTHROW
+        -:  245:    { return false; }
+        -:  246:#endif
+        -:  247:
+        -:  248:  /// @cond undocumented
+        -:  249:
+        -:  250:  // Invalid allocator<cv T> partial specializations.
+        -:  251:  // allocator_traits::rebind_alloc can be used to form a valid allocator type.
+        -:  252:  template<typename _Tp>
+        -:  253:    class allocator<const _Tp>
+        -:  254:    {
+        -:  255:    public:
+        -:  256:      typedef _Tp value_type;
+        -:  257:      allocator() { }
+        -:  258:      template<typename _Up> allocator(const allocator<_Up>&) { }
+        -:  259:    };
+        -:  260:
+        -:  261:  template<typename _Tp>
+        -:  262:    class allocator<volatile _Tp>
+        -:  263:    {
+        -:  264:    public:
+        -:  265:      typedef _Tp value_type;
+        -:  266:      allocator() { }
+        -:  267:      template<typename _Up> allocator(const allocator<_Up>&) { }
+        -:  268:    };
+        -:  269:
+        -:  270:  template<typename _Tp>
+        -:  271:    class allocator<const volatile _Tp>
+        -:  272:    {
+        -:  273:    public:
+        -:  274:      typedef _Tp value_type;
+        -:  275:      allocator() { }
+        -:  276:      template<typename _Up> allocator(const allocator<_Up>&) { }
+        -:  277:    };
+        -:  278:  /// @endcond
+        -:  279:
+        -:  280:  /// @} group allocator
+        -:  281:
+        -:  282:  // Inhibit implicit instantiations for required instantiations,
+        -:  283:  // which are defined via explicit instantiations elsewhere.
+        -:  284:#if _GLIBCXX_EXTERN_TEMPLATE
+        -:  285:  extern template class allocator<char>;
+        -:  286:  extern template class allocator<wchar_t>;
+        -:  287:#endif
+        -:  288:
+        -:  289:  // Undefine.
+        -:  290:#undef __allocator_base
+        -:  291:
+        -:  292:_GLIBCXX_END_NAMESPACE_VERSION
+        -:  293:} // namespace std
+        -:  294:
+        -:  295:#endif
