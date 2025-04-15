@@ -1,9 +1,0 @@
-ninja_dyndep_version = 1.0
-build CMakeFiles/HTML_Decode.dir/main.cpp.obj: dyndep
-
-build CMakeFiles/HTML_Decode.dir/Decoder.cpp.obj: dyndep
-
-build CMakeFiles/HTML_Decode.dir/HTMLDecodeCore.cpp.obj: dyndep
-
-build CMakeFiles/HTML_Decode.dir/StreamUtils.cpp.obj: dyndep
-
