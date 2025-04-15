@@ -67813,17 +67813,18 @@ namespace std
 std::string HTMLDecode(const std::string &html);
 # 2 "C:/Users/esipo/CLionProjects/OOP/lab2/HTML_Decode/HTMLDecodeCore.cpp" 2
 
+const std::array<std::pair<std::string_view, char>, 5> HTML_ENTITIES = {{
+                                                                                {"&quot;", '"'},
+                                                                                {"&apos;", '\''},
+                                                                                {"&lt;", '<'},
+                                                                                {"&gt;", '>'},
+                                                                                {"&amp;", '&'}
+                                                                        }};
+
+
 std::string HTMLDecode(std::string const& html) {
-    const std::array<std::pair<std::string_view, char>, 5> HTML_ENTITIES = {{
-        {"&quot;", '"'},
-        {"&apos;", '\''},
-        {"&lt;", '<'},
-        {"&gt;", '>'},
-        {"&amp;", '&'}
-    }};
 
     std::string decodedHtml;
-    decodedHtml.reserve(html.size());
 
     size_t pos = 0;
     while (pos < html.size()) {
