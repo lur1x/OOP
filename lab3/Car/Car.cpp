@@ -2,10 +2,13 @@
 #include "Constants.h"
 #include <iostream>
 
+const int Car::MIN_SPEED = 0;
+const int Car::MAX_SPEED = 150;
+
 const std::unordered_map<int, GearLimitSpeed> Car::SpeedLimitsForGears =
         {
                 {-1, {0, 20}},
-                {0, {0, 150}},
+                {0, {MIN_SPEED, MAX_SPEED}},
                 {1, {0, 30}},
                 {2, {20, 50}},
                 {3, {30, 60}},
@@ -13,8 +16,6 @@ const std::unordered_map<int, GearLimitSpeed> Car::SpeedLimitsForGears =
                 {5, {50, 150}},
         };
 
-const int Car::MIN_SPEED = 0;
-const int Car::MAX_SPEED = 150;
 
 bool Car::IsTurnedOn() const
 {
@@ -53,26 +54,19 @@ bool Car::TurnOffEngine()
     return true;
 }
 
-void Car::SetDirection()
-{
 
+std::string Car::GetDirection() const
+{
     if (GetSpeed() == 0)
     {
-        m_direction = MoveDirection::STANDING_STILL;
-        return;
+        return STANDING_DIRECTION;
     }
     if (GetGear() > 0)
     {
-        m_direction = MoveDirection::FORWARD;
-        return;
+        return FORWARD_DIRECTION;
     }
 
-    m_direction = MoveDirection::BACKWARD;
-}
-
-MoveDirection Car::GetDirection() const
-{
-    return m_direction;
+    return BACKWARD_DIRECTION;
 }
 
 bool Car::SetSpeed(const int speed)
@@ -99,7 +93,6 @@ bool Car::SetSpeed(const int speed)
     }
 
     m_speed = speed;
-    SetDirection();
 
     return true;
 
@@ -179,7 +172,7 @@ bool Car::CanChangeGearForSpeed() const
     const auto& limits = *speedLimitsOpt;
     const int currentSpeed = GetSpeed();
 
-    if ((GetDirection() == MoveDirection::BACKWARD && currentSpeed != 0)
+    if ((GetDirection() == BACKWARD_DIRECTION && currentSpeed != 0)
     || currentSpeed > limits.maxSpeed || currentSpeed < limits.minSpeed)
         return false;
 

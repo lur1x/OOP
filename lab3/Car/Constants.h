@@ -9,9 +9,9 @@ const std::string INFO = "Info";
 const std::string SET_GEAR = "SetGear";
 const std::string SET_SPEED = "SetSpeed";
 
-//const std::string FORWARD_DIRECTION = "forward";
-//const std::string BACKWARD_DIRECTION = "backward";
-//const std::string STANDING_DIRECTION = "standing still";
+const std::string FORWARD_DIRECTION = "forward";
+const std::string BACKWARD_DIRECTION = "backward";
+const std::string STANDING_DIRECTION = "standing still";
 
 const std::string INFO_ENGINE = "Engine: ";
 const std::string INFO_DIRECTION = "Direction: ";
