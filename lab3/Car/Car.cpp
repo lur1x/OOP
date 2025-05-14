@@ -41,7 +41,7 @@ bool Car::TurnOnEngine()
         m_speed = 0;
     }
 
-    return true;
+    return IsTurnedOn();
 }
 
 bool Car::TurnOffEngine()
@@ -51,9 +51,17 @@ bool Car::TurnOffEngine()
         m_isTurnedOn = false;
     }
 
-    return true;
+    return !IsTurnedOn();
 }
 
+bool Car::DisplayInfo() const
+{
+    std::cout << INFO_ENGINE << (IsTurnedOn() ? INFO_ON : INFO_OFF) << '\n';
+    std::cout << INFO_DIRECTION << GetDirection() << '\n';
+    std::cout << INFO_SPEED << GetSpeed() << '\n';
+    std::cout << INFO_GEAR << GetGear() << '\n';
+    return true;
+}
 
 std::string Car::GetDirection() const
 {
@@ -61,7 +69,7 @@ std::string Car::GetDirection() const
     {
         return STANDING_DIRECTION;
     }
-    if (GetGear() > 0)
+    if (GetGear() >= 0)
     {
         return FORWARD_DIRECTION;
     }
@@ -99,14 +107,14 @@ bool Car::SetSpeed(const int speed)
 }
 bool Car::CanChangeSpeedForGear(const int speed) const
 {
-    auto speedLimitsOpt = GetSpeedLimitForGear();
+    auto speedLimitsOpt = GetSpeedLimitForGear(GetGear());
     if (!speedLimitsOpt)
         return false;
 
     const auto& limits = *speedLimitsOpt;
     const int currentSpeed = GetSpeed();
 
-    if (speed > limits.maxSpeed || currentSpeed < limits.minSpeed)
+    if (speed > limits.maxSpeed || speed < limits.minSpeed)
         return false;
 
     return true;
@@ -139,7 +147,7 @@ bool Car::SetGear(const int gear)
         case 3:
         case 4:
         case 5:
-            if (!CanChangeGearForSpeed())
+            if (!CanChangeGearForSpeed(gear))
             {
                 std::cout << UNSUITABLE_CURRENT_SPEED;
                 return false;
@@ -154,18 +162,18 @@ bool Car::SetGear(const int gear)
     return true;
 }
 
-std::optional<GearLimitSpeed> Car::GetSpeedLimitForGear() const
+std::optional<GearLimitSpeed> Car::GetSpeedLimitForGear(const int gear) const
 {
-    auto it = SpeedLimitsForGears.find(GetGear());
+    auto it = SpeedLimitsForGears.find(gear);
     if (it != SpeedLimitsForGears.end())
         return it->second;
     else
         return std::nullopt;
 }
 
-bool Car::CanChangeGearForSpeed() const
+bool Car::CanChangeGearForSpeed(const int gear) const
 {
-    auto speedLimitsOpt = GetSpeedLimitForGear();
+    auto speedLimitsOpt = GetSpeedLimitForGear(gear);
     if (!speedLimitsOpt)
         return false;
 

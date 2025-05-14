@@ -3,15 +3,12 @@
 
 #include <string>
 
-const std::string ENGINE_ON = "EngineOn";
-const std::string ENGINE_OFF = "EngineOff";
-const std::string INFO = "Info";
-const std::string SET_GEAR = "SetGear";
-const std::string SET_SPEED = "SetSpeed";
-
-const std::string FORWARD_DIRECTION = "forward";
-const std::string BACKWARD_DIRECTION = "backward";
-const std::string STANDING_DIRECTION = "standing still";
+const std::string ENGINE_ON_COMMAND = "EngineOn";
+const std::string ENGINE_OFF_COMMAND = "EngineOff";
+const std::string INFO_COMMAND = "Info";
+const std::string SET_GEAR_COMMAND = "SetGear";
+const std::string SET_SPEED_COMMAND = "SetSpeed";
+const std::string EXIT_COMMAND = "Exit";
 
 const std::string INFO_ENGINE = "Engine: ";
 const std::string INFO_DIRECTION = "Direction: ";
@@ -19,6 +16,10 @@ const std::string INFO_SPEED = "Speed: ";
 const std::string INFO_GEAR = "Gear: ";
 const std::string INFO_ON = "on";
 const std::string INFO_OFF = "off";
+
+const std::string FORWARD_DIRECTION = "forward";
+const std::string BACKWARD_DIRECTION = "backward";
+const std::string STANDING_DIRECTION = "standing still";
 
 const std::string UNKNOWN_COMMAND = "Unknown command\n";
 const std::string INVALID_COMMAND_ARGUMENT = "Invalid command argument\n";

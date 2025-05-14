@@ -16,32 +16,36 @@ FetchContent_MakeAvailable(googletest)
 add_executable(Car main.cpp
         Car.cpp
         Car.h
-        Constants.h)
+        Constants.h
+        CarController.cpp
+        CarController.h)
 
 
-#add_executable(${PROJECT_NAME}Test
-#        test/${PROJECT_NAME}Test.cpp
-#        Decoder.cpp
-#        HtmlDecodeCore.cpp
-#        StreamUtils.cpp
-#)
+add_executable(${PROJECT_NAME}Test
+        ${PROJECT_NAME}Test.cpp
+        Car.cpp
+        Car.h
+        Constants.h
+        CarController.cpp
+        CarController.h
+)
 
 
-#target_link_libraries(${PROJECT_NAME}Test gtest gtest_main)
+target_link_libraries(${PROJECT_NAME}Test gtest gtest_main)
 
-#enable_testing()
-#add_test(NAME ${PROJECT_NAME}Test COMMAND ${PROJECT_NAME}Test)
-#add_definitions(-DGTEST_HAS_PTHREAD=0)
-#set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+enable_testing()
+add_test(NAME ${PROJECT_NAME}Test COMMAND ${PROJECT_NAME}Test)
+add_definitions(-DGTEST_HAS_PTHREAD=0)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#option(CODE_COVERAGE "Enable code coverage" OFF)
-#if (CODE_COVERAGE)
-#    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
-#        target_compile_options(${PROJECT_NAME}Test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-#        target_link_options(${PROJECT_NAME}Test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-#    else ()
-#        target_compile_options(${PROJECT_NAME}Test PRIVATE --coverage)
-#        target_link_options(${PROJECT_NAME}Test PRIVATE --coverage)
-#    endif ()
-#endif ()
+option(CODE_COVERAGE "Enable code coverage" OFF)
+if (CODE_COVERAGE)
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+         target_compile_options(${PROJECT_NAME}Test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+        target_link_options(${PROJECT_NAME}Test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+    else ()
+        target_compile_options(${PROJECT_NAME}Test PRIVATE --coverage)
+        target_link_options(${PROJECT_NAME}Test PRIVATE --coverage)
+    endif ()
+endif ()
