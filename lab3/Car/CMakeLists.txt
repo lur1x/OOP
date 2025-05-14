@@ -15,7 +15,8 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(Car main.cpp
         Car.cpp
-        Car.h)
+        Car.h
+        Constants.h)
 
 
 #add_executable(${PROJECT_NAME}Test
