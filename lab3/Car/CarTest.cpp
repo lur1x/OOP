@@ -1,9 +1,11 @@
 #include "Car.h"
 #include <gtest/gtest.h>
 
+std::ostringstream oss;
+
 TEST(CarTest, InitialState)
 {
-    Car car;
+    Car car(oss);
     ASSERT_FALSE(car.IsTurnedOn());
     ASSERT_EQ(car.GetGear(), 0);
     ASSERT_EQ(car.GetSpeed(), 0);
@@ -11,7 +13,7 @@ TEST(CarTest, InitialState)
 
 TEST(CarTest, EngineOnOff)
 {
-    Car car;
+    Car car(oss);
 
     ASSERT_TRUE(car.TurnOnEngine());
     ASSERT_TRUE(car.IsTurnedOn());
@@ -22,7 +24,7 @@ TEST(CarTest, EngineOnOff)
 
 TEST(CarTest, EngineTurnOffWhileMoving)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_TRUE(car.SetGear(1));
@@ -55,7 +57,7 @@ TEST(CarTest, EngineTurnOffWhileMoving)
 
 TEST(CarTest, ReverseGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_TRUE(car.SetGear(-1));
@@ -74,7 +76,7 @@ TEST(CarTest, ReverseGearSpeedChange)
 
 TEST(CarTest, FirstGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_TRUE(car.SetGear(1));
@@ -93,7 +95,7 @@ TEST(CarTest, FirstGearSpeedChange)
 
 TEST(CarTest, SecondGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -115,7 +117,7 @@ TEST(CarTest, SecondGearSpeedChange)
 
 TEST(CarTest, ThirdGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -139,7 +141,7 @@ TEST(CarTest, ThirdGearSpeedChange)
 
 TEST(CarTest, FourthGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -165,7 +167,7 @@ TEST(CarTest, FourthGearSpeedChange)
 
 TEST(CarTest, FifthGearSpeedChange)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -193,7 +195,7 @@ TEST(CarTest, FifthGearSpeedChange)
 
 TEST(CarTest, ReverseDirection)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_TRUE(car.SetGear(1));
@@ -210,7 +212,7 @@ TEST(CarTest, ReverseDirection)
 
 TEST(CarTest, GearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_FALSE(car.SetGear(-2));
@@ -230,7 +232,7 @@ TEST(CarTest, GearShift)
 
 TEST(CarTest, FirstGearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
 
@@ -249,7 +251,7 @@ TEST(CarTest, FirstGearShift)
 
 TEST(CarTest, SecondGearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
 
@@ -278,7 +280,7 @@ TEST(CarTest, SecondGearShift)
 
 TEST(CarTest, ThirdGearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
 
@@ -309,7 +311,7 @@ TEST(CarTest, ThirdGearShift)
 
 TEST(CarTest, FourthGearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -349,7 +351,7 @@ TEST(CarTest, FourthGearShift)
 
 TEST(CarTest, FifthGearShift)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
     car.SetGear(1);
     car.SetSpeed(20);
@@ -387,7 +389,7 @@ TEST(CarTest, FifthGearShift)
 
 TEST(CarTest, ChangeSpeedOnNeutralGear)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     car.SetGear(1);
@@ -401,7 +403,7 @@ TEST(CarTest, ChangeSpeedOnNeutralGear)
 
 TEST(CarTest, NegativeSpeed)
 {
-    Car car;
+    Car car(oss);
     car.TurnOnEngine();
 
     ASSERT_FALSE(car.SetSpeed(-10));
@@ -411,7 +413,7 @@ TEST(CarTest, NegativeSpeed)
 
 GTEST_API_ int main(int argc, char** argv)
 {
-    std::cout << "Running tests" << std::endl;
+    oss << "Running tests" << std::endl;
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

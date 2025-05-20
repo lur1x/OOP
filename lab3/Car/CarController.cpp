@@ -2,80 +2,30 @@
 #include "Car.h"
 #include <iostream>
 
-bool PrintInfo(Car& car)
+bool CarController::Run()
 {
-    car.DisplayInfo();
-    return true;
-}
-
-bool HandleEngineOnCommand(Car& car)
-{
-    car.TurnOnEngine();
-    return true;
-}
-
-bool HandleEngineOffCommand(Car& car)
-{
-    if (!car.TurnOffEngine())
-    {
-        std::cout << INVALID_TURNOFF_ENGINE;
-        return false;
-    }
-    return true;
-}
-
-bool HandleSetGearCommand(Car& car)
-{
-    int value;
-    if (!(std::cin >> value))
-    {
-        std::cout << INVALID_COMMAND_ARGUMENT;
-        return false;
-    }
-    else
-        car.SetGear(value);
-    return true;
-}
-
-bool HandleSetSpeedCommand(Car& car)
-{
-    int value;
-    if (!(std::cin >> value))
-    {
-        std::cout << INVALID_COMMAND_ARGUMENT;
-        return false;
-    }
-    else
-        car.SetSpeed(value);
-    return true;
-}
-
-void RunCarController()
-{
-    Car car;
-
     std::string command;
-    while (std::cin >> command)
+    while (m_input >> command)
     {
         if (command == INFO_COMMAND)
         {
-            PrintInfo(car);
+            ActionPrintInfo();
         }
         else if (command == ENGINE_ON_COMMAND)
         {
-            HandleEngineOnCommand(car);
+            ActionEngineOn();
         }
         else if (command == ENGINE_OFF_COMMAND)
         {
-            HandleEngineOffCommand(car);
+            ActionEngineOff();
         }
         else if (command == SET_GEAR_COMMAND)
         {
-            HandleSetGearCommand(car);
+            ActionSetGear();
         }
         else if (command == SET_SPEED_COMMAND)
         {
-            HandleSetSpeedCommand(car);
+            ActionSetSpeed();
         }
         else if (command == EXIT_COMMAND)
         {
@@ -83,9 +33,61 @@ void RunCarController()
         }
         else
         {
-            std::cout << UNKNOWN_COMMAND;
+            m_output << UNKNOWN_COMMAND;
         }
     }
 
-    return;
+    return true;
+}
+
+
+bool CarController::ActionPrintInfo()
+{
+    m_output << INFO_ENGINE << (m_car.IsTurnedOn() ? INFO_ON : INFO_OFF) << '\n';
+    m_output << INFO_DIRECTION << m_car.GetDirection() << '\n';
+    m_output << INFO_SPEED << m_car.GetSpeed() << '\n';
+    m_output << INFO_GEAR << m_car.GetGear() << '\n';
+    return true;
+}
+
+bool CarController::ActionEngineOn()
+{
+    m_car.TurnOnEngine();
+    return true;
+}
+
+bool CarController::ActionEngineOff()
+{
+    if (!m_car.TurnOffEngine())
+    {
+        m_output << INVALID_TURNOFF_ENGINE;
+        return false;
+    }
+    return true;
+}
+
+bool CarController::ActionSetGear()
+{
+    int value;
+    if (!(m_input >> value))
+    {
+        m_output << INVALID_COMMAND_ARGUMENT;
+        return false;
+    }
+    else
+        m_car.SetGear(value);
+    return true;
+}
+
+bool CarController::ActionSetSpeed()
+{
+    int value;
+    if (!(m_input >> value))
+    {
+        m_output << INVALID_COMMAND_ARGUMENT;
+        return false;
+    }
+    else
+        m_car.SetSpeed(value);
+    return true;
 }

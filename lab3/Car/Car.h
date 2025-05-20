@@ -13,15 +13,20 @@ struct GearLimitSpeed
 class Car
 {
 public:
-    bool TurnOnEngine();
-    bool TurnOffEngine();
-    bool SetSpeed(const int speed);
-    bool SetGear(const int gear);
+    Car(std::ostream &output) : m_output(output){};
+
     bool IsTurnedOn() const;
+
     int GetSpeed() const;
     int GetGear() const;
+
     std::string GetDirection() const;
-    bool DisplayInfo() const;
+
+    bool TurnOnEngine();
+    bool TurnOffEngine();
+
+    bool SetSpeed(const int speed);
+    bool SetGear(const int gear);
 
 private:
     static const std::unordered_map<int, GearLimitSpeed> SpeedLimitsForGears;
@@ -32,6 +37,7 @@ private:
     bool m_isTurnedOn = false;
     int m_speed = 0;
     int m_gear = 0;
+    std::ostream &m_output;
 
     bool CanChangeGearForSpeed(const int gear) const;
     bool CanChangeSpeedForGear(const int speed) const;

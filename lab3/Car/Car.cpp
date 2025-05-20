@@ -54,15 +54,6 @@ bool Car::TurnOffEngine()
     return !IsTurnedOn();
 }
 
-bool Car::DisplayInfo() const
-{
-    std::cout << INFO_ENGINE << (IsTurnedOn() ? INFO_ON : INFO_OFF) << '\n';
-    std::cout << INFO_DIRECTION << GetDirection() << '\n';
-    std::cout << INFO_SPEED << GetSpeed() << '\n';
-    std::cout << INFO_GEAR << GetGear() << '\n';
-    return true;
-}
-
 std::string Car::GetDirection() const
 {
     if (GetSpeed() == 0)
@@ -81,22 +72,22 @@ bool Car::SetSpeed(const int speed)
 {
     if (speed < MIN_SPEED)
     {
-        std::cout << SPEED_CANT_BE_NEGATIVE;
+        m_output << SPEED_CANT_BE_NEGATIVE;
         return false;
     }
     if (!IsTurnedOn())
     {
-        std::cout << TURN_IF_NOT_RUNNING_ENGINE;
+        m_output << TURN_IF_NOT_RUNNING_ENGINE;
         return false;
     }
     if (GetGear() == 0 && speed > GetSpeed())
     {
-        std::cout << CANT_ACCELERATE_ON_NEUTRAL;
+        m_output << CANT_ACCELERATE_ON_NEUTRAL;
         return false;
     }
     if (!CanChangeSpeedForGear(speed))
     {
-        std::cout << SPEED_OUT_OF_RANGE;
+        m_output << SPEED_OUT_OF_RANGE;
         return false;
     }
 
@@ -105,6 +96,7 @@ bool Car::SetSpeed(const int speed)
     return true;
 
 }
+
 bool Car::CanChangeSpeedForGear(const int speed) const
 {
     auto speedLimitsOpt = GetSpeedLimitForGear(GetGear());
@@ -112,7 +104,6 @@ bool Car::CanChangeSpeedForGear(const int speed) const
         return false;
 
     const auto& limits = *speedLimitsOpt;
-    const int currentSpeed = GetSpeed();
 
     if (speed > limits.maxSpeed || speed < limits.minSpeed)
         return false;
@@ -125,7 +116,7 @@ bool Car::SetGear(const int gear)
 {
     if (!IsTurnedOn())
     {
-        std::cout << TURN_IF_NOT_RUNNING_ENGINE;
+        m_output << TURN_IF_NOT_RUNNING_ENGINE;
         return false;
     }
 
@@ -134,7 +125,7 @@ bool Car::SetGear(const int gear)
         case -1:
             if (GetSpeed() != 0)
             {
-                std::cout << CANT_REVERSE_WHILE_MOVING;
+                m_output << CANT_REVERSE_WHILE_MOVING;
                 return false;
             }
             m_gear = -1;
@@ -149,13 +140,13 @@ bool Car::SetGear(const int gear)
         case 5:
             if (!CanChangeGearForSpeed(gear))
             {
-                std::cout << UNSUITABLE_CURRENT_SPEED;
+                m_output << UNSUITABLE_CURRENT_SPEED;
                 return false;
             }
             m_gear = gear;
             break;
         default:
-            std::cout << INVALID_GEAR;
+            m_output << INVALID_GEAR;
             return false;
     }
 

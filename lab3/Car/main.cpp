@@ -1,7 +1,10 @@
 #include "CarController.h"
+#include <iostream>
 
 int main()
 {
-    RunCarController();
+    CarController carController(std::cin, std::cout);
+    carController.Run();
+
     return 0;
 }
