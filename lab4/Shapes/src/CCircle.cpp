@@ -22,10 +22,10 @@ double CCircle::GetRadius() const {
 
 std::string CCircle::ToString() const
 {
-    return "Circle at " + m_center.ToString() + "\n"
-           + "Radius: " + std::to_string(GetRadius()) + "\n"
-           + "Fill color: #" + GetColorHex(GetFillColor()) + "\n"
-           + "Outline color: #" + GetColorHex(GetOutlineColor()) + "\n";
+    return CIRCLE_OUTPUT_FORMAT + CENTER_OUTPUT_FORMAT + m_center.ToString() + "\n"
+           + RADIUS_OUTPUT_FORMAT + std::to_string(GetRadius()) + "\n"
+           + FILL_COLOR_OUTPUT_FORMAT + GetColorHex(GetFillColor()) + "\n"
+           + OUTLINE_COLOR_OUTPUT_FORMAT + GetColorHex(GetOutlineColor()) + "\n";
 }
 
 uint32_t CCircle::GetOutlineColor() const

@@ -3,6 +3,7 @@
 
 #include "CPoint.h"
 #include "ISolidShape.h"
+#include "Constants.h"
 
 class CTriangle : public ISolidShape
 {

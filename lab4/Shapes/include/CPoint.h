@@ -2,7 +2,7 @@
 #define SHAPES_CPOINT_H
 
 #include <string>
-
+#include "Constants.h"
 class CPoint
 {
 public:

@@ -25,11 +25,11 @@ double CTriangle::GetPerimeter() const
 
 std::string CTriangle::ToString() const
 {
-    return "Vertex 1: " + m_vertex1.ToString() + "\n"
-           + "Vertex 2: " + m_vertex2.ToString() + "\n"
-           + "Vertex 3: " + m_vertex3.ToString() + "\n"
-           + "Fill color: #" + GetColorHex(m_fillColor) + "\n"
-           + "Outline color: #" + GetColorHex(m_outlineColor) + "\n";
+    return TRIANGLE_OUTPUT_FORMAT + VERTEX1_OUTPUT_FORMAT + m_vertex1.ToString() + "\n"
+           + VERTEX2_OUTPUT_FORMAT + m_vertex2.ToString() + "\n"
+           + VERTEX3_OUTPUT_FORMAT + m_vertex3.ToString() + "\n"
+           + FILL_COLOR_OUTPUT_FORMAT + GetColorHex(m_fillColor) + "\n"
+           + OUTLINE_COLOR_OUTPUT_FORMAT + GetColorHex(m_outlineColor) + "\n";
 }
 
 uint32_t CTriangle::GetOutlineColor() const

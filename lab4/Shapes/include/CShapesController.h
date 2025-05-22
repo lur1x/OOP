@@ -14,7 +14,7 @@
 #include "CRectangle.h"
 #include "CTriangle.h"
 #include "IShape.h"
-
+#include "Constants.h"
 
 class CShapesController
 {
@@ -42,6 +42,11 @@ private:
     IShape* GetShapeWithMaxArea() const;
     IShape* GetShapeWithMinPerimeter() const;
 
+    bool IsValidColorFormat(const std::string& colorStr);
+    bool IsValidTriangle(const CPoint& v1, const CPoint& v2, const CPoint& v3);
+    bool ReadColor(const std::string& colorStr, uint32_t& color);
+    bool ReadPoint(std::istream& input, double& x, double& y);
+    bool ReadPositiveDouble(std::istream& input, double& value);
 };
 
 #endif //SHAPES_CSHAPESCONTROLLER_H

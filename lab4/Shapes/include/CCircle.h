@@ -3,6 +3,7 @@
 
 #include "ISolidShape.h"
 #include "CPoint.h"
+#include "Constants.h"
 
 class CCircle : public ISolidShape
 {

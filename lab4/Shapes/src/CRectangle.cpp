@@ -18,11 +18,11 @@ double CRectangle::GetPerimeter() const
 
 std::string CRectangle::ToString() const
 {
-    return "Left top: " + m_startPos.ToString() + "\n"
-           + "Width: " + std::to_string(m_width) + "\n"
-           + "Height: " + std::to_string(m_height) + "\n"
-           + "Fill color: #" + GetColorHex(m_fillColor) + "\n"
-           + "Outline color: #" + GetColorHex(m_outlineColor) + "\n";
+    return RECTANGLE_OUTPUT_FORMAT + LEFT_OUTPUT_FORMAT + m_startPos.ToString() + "\n"
+           + WIDTH_OUTPUT_FORMAT + std::to_string(m_width) + "\n"
+           + HEIGHT_OUTPUT_FORMAT + std::to_string(m_height) + "\n"
+           + FILL_COLOR_OUTPUT_FORMAT + GetColorHex(m_fillColor) + "\n"
+           + OUTLINE_COLOR_OUTPUT_FORMAT + GetColorHex(m_outlineColor) + "\n";
 }
 
 uint32_t CRectangle::GetOutlineColor() const

@@ -1,105 +1,108 @@
 #include "../include/CShapesController.h"
 #include <sstream>
 #include <regex>
-#include <limits>
 #include <cmath>
-
-namespace
-{
-
-    bool IsValidColorFormat(const std::string& colorStr)
-    {
-        static const std::regex colorRegex("^[0-9a-fA-F]{6}$");
-        return std::regex_match(colorStr, colorRegex);
-    }
-
-    bool IsValidTriangle(const CPoint& v1, const CPoint& v2, const CPoint& v3)
-    {
-        const double area = std::abs(
-                (v2.GetX() - v1.GetX()) * (v3.GetY() - v1.GetY()) -
-                (v3.GetX() - v1.GetX()) * (v2.GetY() - v1.GetY())
-        );
-        return area > 1e-10; // Эпсилон-проверка для double
-    }
-
-    bool ReadColor(const std::string& colorStr, uint32_t& color, std::ostream& errors)
-    {
-        if (!IsValidColorFormat(colorStr))
-        {
-            errors << "Invalid color format. Expected RRGGBB (6 hex digits)\n";
-            return false;
-        }
-
-        std::stringstream ss;
-        ss << std::hex << colorStr << "FF";
-        ss >> color;
-        return true;
-    }
-
-    bool ReadPoint(std::istream& input, double& x, double& y, std::ostream& errors)
-    {
-        if (!(input >> x >> y))
-        {
-            errors << "Invalid point coordinates\n";
-            input.clear();
-            input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            return false;
-        }
-        return true;
-    }
-
-    bool ReadPositiveDouble(std::istream& input, double& value, const std::string& name, std::ostream& errors)
-    {
-        if (!(input >> value) || value <= 0)
-        {
-            errors << name << " must be positive number\n";
-            input.clear();
-            input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            return false;
-        }
-        return true;
-    }
-}
 
 CShapesController::CShapesController(std::istream& input, std::ostream& output)
         : m_input(input), m_output(output),
           m_actionMap({
-                              {"circle", [this] { AddCircle(); }},
-                              {"rectangle", [this] { AddRectangle(); }},
-                              {"triangle", [this] { AddTriangle(); }},
-                              {"line", [this] { AddLine(); }}
+                              {CIRCLE, [this] { AddCircle(); }},
+                              {RECTANGLE, [this] { AddRectangle(); }},
+                              {TRIANGLE, [this] { AddTriangle(); }},
+                              {LINE, [this] { AddLine(); }}
                       }) {}
+
+bool CShapesController::IsValidColorFormat(const std::string& colorStr)
+{
+    static const std::regex colorRegex("^[0-9a-fA-F]{6}$");
+    return std::regex_match(colorStr, colorRegex);
+}
+
+bool CShapesController::IsValidTriangle(const CPoint& v1, const CPoint& v2, const CPoint& v3)
+{
+    const double area = std::abs(
+            (v2.GetX() - v1.GetX()) * (v3.GetY() - v1.GetY()) -
+            (v3.GetX() - v1.GetX()) * (v2.GetY() - v1.GetY()));
+    return area > 0;
+}
+
+bool CShapesController::ReadColor(const std::string& colorStr, uint32_t& color)
+{
+    if (!IsValidColorFormat(colorStr))
+    {
+        m_output << INVALID_COLOR_FORMAT;
+        return false;
+    }
+
+    std::stringstream ss;
+    ss << std::hex << colorStr << "FF";
+    ss >> color;
+    return true;
+}
+
+bool CShapesController::ReadPoint(std::istream& input, double& x, double& y)
+{
+    if (!(input >> x >> y))
+    {
+        m_output << INVALID_POINT;
+        return false;
+    }
+    return true;
+}
+
+bool CShapesController::ReadPositiveDouble(std::istream& input, double& value)
+{
+    if (!(input >> value) || value <= 0)
+    {
+        m_output << POSITIVE_NUMBER_REQUIRED;
+        return false;
+    }
+    return true;
+}
 
 void CShapesController::HandleUserInput()
 {
     std::string command;
-    while (m_output << "> " && std::getline(m_input, command))
+    while (true)
     {
+        if (!std::getline(m_input, command))
+        {
+            break;
+        }
+
+        if (command.empty())
+            continue;
+
         if (auto it = m_actionMap.find(command); it != m_actionMap.end())
         {
             it->second();
         }
         else
         {
-            m_output << "Unknown command '" << command << "'\n";
+            m_output << UNKNOWN_COMMAND << command << "'\n";
         }
     }
 }
 
 void CShapesController::AddCircle()
 {
-    m_output << "Enter: <fillColor> <outlineColor> <x> <y> <radius>\n";
+    m_output << CIRCLE_INPUT_FORMAT;
 
     std::string fillColorStr, outlineColorStr;
     double x, y, radius;
     uint32_t fillColor, outlineColor;
 
-    if (!(m_input >> fillColorStr >> outlineColorStr) ||
-        !ReadPoint(m_input, x, y, m_output) ||
-        !ReadPositiveDouble(m_input, radius, "Radius", m_output) ||
-        !ReadColor(fillColorStr, fillColor, m_output) ||
-        !ReadColor(outlineColorStr, outlineColor, m_output))
+    if (!(m_input >> fillColorStr >> outlineColorStr >> x >> y >> radius) ||
+        !ReadColor(fillColorStr, fillColor) ||
+        !ReadColor(outlineColorStr, outlineColor))
     {
+        m_output << INVALID_CIRCLE_INPUT;
+        return;
+    }
+
+    if (radius <= 0)
+    {
+        m_output << INVALID_CIRCLE_RADIUS;
         return;
     }
 
@@ -108,18 +111,18 @@ void CShapesController::AddCircle()
 
 void CShapesController::AddRectangle()
 {
-    m_output << "Enter: <fillColor> <outlineColor> <x> <y> <width> <height>\n";
+    m_output << RECTANGLE_INPUT_FORMAT;
 
     std::string fillColorStr, outlineColorStr;
     double x, y, width, height;
     uint32_t fillColor, outlineColor;
 
     if (!(m_input >> fillColorStr >> outlineColorStr) ||
-        !ReadPoint(m_input, x, y, m_output) ||
-        !ReadPositiveDouble(m_input, width, "Width", m_output) ||
-        !ReadPositiveDouble(m_input, height, "Height", m_output) ||
-        !ReadColor(fillColorStr, fillColor, m_output) ||
-        !ReadColor(outlineColorStr, outlineColor, m_output))
+        !ReadPoint(m_input, x, y) ||
+        !ReadPositiveDouble(m_input, width) ||
+        !ReadPositiveDouble(m_input, height) ||
+        !ReadColor(fillColorStr, fillColor) ||
+        !ReadColor(outlineColorStr, outlineColor))
     {
         return;
     }
@@ -129,25 +132,25 @@ void CShapesController::AddRectangle()
 
 void CShapesController::AddTriangle()
 {
-    m_output << "Enter: <fillColor> <outlineColor> <x1> <y1> <x2> <y2> <x3> <y3>\n";
+    m_output << TRIANGLE_INPUT_FORMAT;
 
     std::string fillColorStr, outlineColorStr;
     double x1, y1, x2, y2, x3, y3;
     uint32_t fillColor, outlineColor;
 
     if (!(m_input >> fillColorStr >> outlineColorStr) ||
-        !ReadPoint(m_input, x1, y1, m_output) ||
-        !ReadPoint(m_input, x2, y2, m_output) ||
-        !ReadPoint(m_input, x3, y3, m_output) ||
-        !ReadColor(fillColorStr, fillColor, m_output) ||
-        !ReadColor(outlineColorStr, outlineColor, m_output))
+        !ReadPoint(m_input, x1, y1) ||
+        !ReadPoint(m_input, x2, y2) ||
+        !ReadPoint(m_input, x3, y3) ||
+        !ReadColor(fillColorStr, fillColor) ||
+        !ReadColor(outlineColorStr, outlineColor))
     {
         return;
     }
 
     if (!IsValidTriangle(CPoint(x1, y1), CPoint(x2, y2), CPoint(x3, y3)))
     {
-        m_output << "Error: Points must not be collinear\n";
+        m_output << COLLINEAR_POINTS;
         return;
     }
 
@@ -157,16 +160,16 @@ void CShapesController::AddTriangle()
 
 void CShapesController::AddLine()
 {
-    m_output << "Enter: <color> <x1> <y1> <x2> <y2>\n";
+    m_output << LINE_INPUT_FORMAT;
 
     std::string colorStr;
     double x1, y1, x2, y2;
     uint32_t color;
 
     if (!(m_input >> colorStr) ||
-        !ReadPoint(m_input, x1, y1, m_output) ||
-        !ReadPoint(m_input, x2, y2, m_output) ||
-        !ReadColor(colorStr, color, m_output)) {
+        !ReadPoint(m_input, x1, y1) ||
+        !ReadPoint(m_input, x2, y2) ||
+        !ReadColor(colorStr, color)) {
         return;
     }
 
@@ -209,14 +212,14 @@ void CShapesController::PrintTaskResult()
 {
     if (m_shapes.empty())
     {
-        m_output << "No shapes added" << std::endl;
+        m_output << NO_SHAPES_ADDED;
         return;
     }
 
     const auto maxAreaShape = GetShapeWithMaxArea();
-    m_output << "Shape with max area: " << maxAreaShape->ToString() << "\n";
+    m_output << MAX_AREA_HEADER << maxAreaShape->ToString() << "\n";
 
     const auto minPerimetrShape = GetShapeWithMinPerimeter();
-    m_output << "Shape with min perimeter:" << minPerimetrShape->ToString() << "\n";
+    m_output << MIN_PERIMETER_HEADER<< minPerimetrShape->ToString() << "\n";
 }
 

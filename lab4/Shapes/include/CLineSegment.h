@@ -3,6 +3,7 @@
 
 #include "IShape.h"
 #include "CPoint.h"
+#include "Constants.h"
 
 class CLineSegment : public IShape
 {

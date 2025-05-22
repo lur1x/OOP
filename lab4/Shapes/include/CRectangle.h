@@ -3,6 +3,7 @@
 
 #include "CPoint.h"
 #include "ISolidShape.h"
+#include "Constants.h"
 #include <string>
 
 class CRectangle : public ISolidShape

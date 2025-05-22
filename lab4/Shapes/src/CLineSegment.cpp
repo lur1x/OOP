@@ -32,6 +32,6 @@ CPoint CLineSegment::GetEndPoint() const
 
 std::string CLineSegment::ToString() const
 {
-    return "Start point: " + m_startPoint.ToString() + "\n"
-           + "End point: " + m_endPoint.ToString() + "\n";
+    return LINE_OUTPUT_FORMAT + START_POINT_OUTPUT_FORMAT + m_startPoint.ToString() + "\n"
+           + END_POINT_OUTPUT_FORMAT + m_endPoint.ToString() + "\n";
 }
