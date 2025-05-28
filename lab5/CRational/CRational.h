@@ -1,37 +1,84 @@
 #ifndef CRATIONAL_CRATIONAL_H
 #define CRATIONAL_CRATIONAL_H
 
+#include "Constants.h";
+
 class CRational
 {
 public:
-    // Конструирует рациональное число, равное нулю (0/1)
     CRational();
-
-    // Конструирует рациональное число, равное value (value/1)
     CRational(const int value);
-
-    // Конструирует рациональное число, равное numerator/denominator
-    // Рациональное число должно храниться в нормализованном виде:
-    // знаменатель положительный (числитель может быть отрицательным)
-    // числитель и знаменатель не имеют общих делителей (6/8 => 3/4 и т.п.)
-    // Если знаменатель равен нулю, должно конструироваться рациональное число, равное нулю,
-    // либо должно быть выброшено исключение std::invalid_argument.
     CRational(const int numerator, const int denominator);
 
-    // Возвращает числитель
     int GetNumerator() const;
-
-    // Возвращает знаменатель (натуральное число)
     int GetDenominator() const;
 
-    // Возвращает отношение числителя и знаменателя в виде числа double
     double ToDouble() const;
 
-    // Прочие операторы согласно заданию
+    CRational operator+() const;
+    CRational operator-() const;
+
+    CRational operator+(const CRational& other) const;
+    CRational operator+(const int value) const;
+    friend CRational operator+(const int value, const CRational& rational);
+
+    CRational operator-(const CRational& other) const;
+    CRational operator-(const int value) const;
+    friend CRational operator-(const int value, const CRational& rational);
+
+    CRational& operator+=(const CRational& other);
+    CRational& operator+=(const int value);
+
+    CRational& operator-=(const CRational& other);
+    CRational& operator-=(const int value);
+
+    CRational operator*(const CRational& other) const;
+    CRational operator*(const int value) const;
+    friend CRational operator*(const int value, const CRational& rational);
+
+    CRational operator/(const CRational& other) const;
+    CRational operator/(const int value) const;
+    friend CRational operator/(const int value, const CRational& rational);
+
+    CRational& operator*=(const CRational& other);
+    CRational& operator*=(const int value);
+
+    CRational& operator/=(const CRational& other);
+    CRational& operator/=(const int value);
+
+
+    friend bool operator==(const CRational& lhs, const CRational& rhs);
+    friend bool operator==(const CRational& lhs, int rhs);
+    friend bool operator==(int lhs, const CRational& rhs);
+
+    friend bool operator!=(const CRational& lhs, const CRational& rhs);
+    friend bool operator!=(const CRational& lhs, int rhs);
+    friend bool operator!=(int lhs, const CRational& rhs);
+
+    bool operator<(const CRational& other) const;
+    friend bool operator<(const CRational& lhs, int rhs);
+    friend bool operator<(int lhs, const CRational& rhs);
+
+    bool operator<=(const CRational& other) const;
+    friend bool operator<=(const CRational& lhs, int rhs);
+    friend bool operator<=(int lhs, const CRational& rhs);
+
+    bool operator>(const CRational& other) const;
+    friend bool operator>(const CRational& lhs, int rhs);
+    friend bool operator>(int lhs, const CRational& rhs);
+
+    bool operator>=(const CRational& other) const;
+    friend bool operator>=(const CRational& lhs, int rhs);
+    friend bool operator>=(int lhs, const CRational& rhs);
+
+    friend std::ostream& operator<<(std::ostream& os, const CRational& rational);
+    friend std::istream& operator>>(std::istream& is, CRational& rational);
+
 private:
     int m_numerator;
     int m_denominator;
-};
 
+    CRational Normalize();
+};
 
 #endif //CRATIONAL_CRATIONAL_H
