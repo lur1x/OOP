@@ -27,9 +27,12 @@ const Port HTTPS_PORT = 443;
 const std::string HTTP = "http";
 const std::string HTTPS = "https";
 
-const char SLASH = '/';
+
+
 const char COLON = ':';
 const char EMPTY = ' ';
+const char SLASH_CH = '/';
+const std::string SLASH = "/";
 const std::string SPASH = "://";
 const std::string CONSECUTIVE_DOTS = "..";
 
@@ -42,5 +45,5 @@ const std::string INVALID_DOMAIN_CONTAINS_SPACES ="Domain contains spaces";
 const std::string INVALID_DOMAIN_CONSECUTIVE_DOTS ="Domain contains consecutive dots";
 
 const std::regex URL_REGEX(R"(^([a-zA-Z]+)://([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9](?:\.[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])*)(?::(\d+))?(?:/(.*))?$)");
-
+const std::regex DOMAIN_REGEX(R"(^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$)");
 #endif //CHTTPURL_CONSTANTS_H

@@ -1,24 +1,50 @@
 #include "CHTTPUrl.h"
-
+#include <iostream>
 CHttpUrl::CHttpUrl(std::string const& url)
 {
-    ParseUrl(url);
+    try
+    {
+        InitializeFromUrl(url);
+    }
+    catch (const CUrlParsingError&)
+    {
+        if (CouldBeDomain(url))
+        {
+            InitializeFromParts(url, SLASH, HTTP);
+        }
+        else
+        {
+            throw CUrlParsingError(INVALID_URL);
+        }
+    }
+}
+
+bool CHttpUrl::CouldBeDomain(const std::string& str) const
+{
+
+    if (str.empty()) {
+        return false;
+    }
+
+    if (str.find(SPASH) != std::string::npos ||
+        str.find(SLASH) != std::string::npos ||
+        str.find(COLON) != std::string::npos)
+    {
+
+        return false;
+    }
+
+    return std::regex_match(str, DOMAIN_REGEX);
 }
 
 CHttpUrl::CHttpUrl(std::string const& domain, std::string const& document, std::string const& protocol)
 {
-    m_protocol = ParseProtocol(protocol);
-    m_domain = ParseDomain(domain);
-    m_port = GetDefaultPort(GetProtocol());
-    m_document = ParseDocument(document);
+    InitializeFromParts(domain, document, protocol);
 }
 
 CHttpUrl::CHttpUrl(std::string const& domain, std::string const& document, std::string const& protocol, std::string const& port)
 {
-    m_protocol = ParseProtocol(protocol);
-    m_domain = ParseDomain(domain);
-    m_port = ParsePort(port);
-    m_document = ParseDocument(document);
+    InitializeFromParts(domain, document, protocol, port);
 }
 
 std::string CHttpUrl::GetDomain() const noexcept
@@ -41,7 +67,7 @@ Port CHttpUrl::GetPort() const noexcept
     return m_port;
 }
 
-bool CHttpUrl::ParseUrl(std::string const& url)
+bool CHttpUrl::InitializeFromUrl(std::string const& url)
 {
     std::smatch matches;
 
@@ -54,6 +80,28 @@ bool CHttpUrl::ParseUrl(std::string const& url)
     m_domain = ParseDomain(matches[2].str());
     m_port = ParsePort(matches[3].str());
     m_document = ParseDocument(matches[4].str());
+
+    return true;
+}
+
+bool CHttpUrl::InitializeFromParts(const std::string& domain, const std::string& document,
+                                   const std::string& protocol)
+{
+    m_protocol = ParseProtocol(protocol);
+    m_domain = ParseDomain(domain);
+    m_port = GetDefaultPort(GetProtocol());
+    m_document = ParseDocument(document);
+
+    return true;
+}
+
+bool CHttpUrl::InitializeFromParts(const std::string& domain, const std::string& document,
+                                   const std::string& protocol, const std::string& port)
+{
+    m_protocol = ParseProtocol(protocol);
+    m_domain = ParseDomain(domain);
+    m_port = ParsePort(port);
+    m_document = ParseDocument(document);
 
     return true;
 }
@@ -82,12 +130,12 @@ std::string CHttpUrl::ParseDomain(const std::string& domain)
 
     if (domain.find(EMPTY) != std::string::npos)
     {
-        throw std::invalid_argument(INVALID_DOMAIN_CONTAINS_SPACES);
+        throw CUrlParsingError(INVALID_DOMAIN_CONTAINS_SPACES);
     }
 
     if (domain.find(CONSECUTIVE_DOTS) != std::string::npos)
     {
-        throw std::invalid_argument(INVALID_DOMAIN_CONSECUTIVE_DOTS);
+        throw CUrlParsingError(INVALID_DOMAIN_CONSECUTIVE_DOTS);
     }
     return domain;
 }
@@ -120,7 +168,7 @@ Port CHttpUrl::ParsePort(const std::string& port)
 
 std::string CHttpUrl::ParseDocument(const std::string& document)
 {
-    if (document.empty() || document[0] != SLASH)
+    if (document.empty() || document[0] != SLASH_CH)
     {
         return SLASH + document;
     }

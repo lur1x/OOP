@@ -2,7 +2,6 @@
 #include "CHttpUrl.h"
 #include "Constants.h"
 #include "CUrlParsingError.h"
-#include <sstream>
 
 TEST(CHttpUrlTest, ConstructorFromString_ValidHttpUrl)
 {
@@ -33,12 +32,16 @@ TEST(CHttpUrlTest, ConstructorFromString_ValidUrlWithUpperCaseProtocol)
     EXPECT_EQ(url.GetProtocol(), Protocol::HTTPS);
     EXPECT_EQ(url.GetDomain(), "example.com");
     EXPECT_EQ(url.GetPort(), 443);
+    EXPECT_EQ(url.GetDocument(), "/path");
+    EXPECT_EQ(url.GetURL(), "https://example.com/path");
 }
 
 TEST(CHttpUrlTest, ConstructorFromString_ValidUrlWithoutDocument)
 {
     CHttpUrl url("http://example.com");
-
+    EXPECT_EQ(url.GetProtocol(), Protocol::HTTP);
+    EXPECT_EQ(url.GetDomain(), "example.com");
+    EXPECT_EQ(url.GetPort(), 80);
     EXPECT_EQ(url.GetDocument(), "/");
     EXPECT_EQ(url.GetURL(), "http://example.com/");
 }
@@ -46,15 +49,13 @@ TEST(CHttpUrlTest, ConstructorFromString_ValidUrlWithoutDocument)
 TEST(CHttpUrlTest, ConstructorFromString_ValidUrlWithEmptyDocument)
 {
     CHttpUrl url("http://example.com/");
-
     EXPECT_EQ(url.GetDocument(), "/");
 }
 
 TEST(CHttpUrlTest, ConstructorFromString_ValidUrlWithRootDocument)
 {
     CHttpUrl url("http://example.com////");
-
-    EXPECT_EQ(url.GetDocument(), "///"); //check
+    EXPECT_EQ(url.GetDocument(), "///");
 }
 
 TEST(CHttpUrlTest, ConstructorFromString_InvalidUrl_MissingProtocol)
@@ -81,10 +82,19 @@ TEST(CHttpUrlTest, ConstructorFromString_InvalidUrl_EmptyDomain)
 
 TEST(CHttpUrlTest, ConstructorFromString_InvalidUrl_InvalidDomainChars)
 {
-    EXPECT_THROW(CHttpUrl url("http://exa mple.com/path"), CUrlParsingError); //check
+    EXPECT_THROW(CHttpUrl url("http://exa mple.com/path"), CUrlParsingError);
     EXPECT_THROW(CHttpUrl url("http://example..com/path"), CUrlParsingError);
 }
 
+TEST(CHttpUrlTest, ConstructorFromString_ValidDomainAsUrl)
+{
+
+    CHttpUrl url("example.com");
+    EXPECT_EQ(url.GetProtocol(), Protocol::HTTP);
+    EXPECT_EQ(url.GetDomain(), "example.com");
+    EXPECT_EQ(url.GetPort(), 80);
+    EXPECT_EQ(url.GetDocument(), "/");
+}
 
 TEST(CHttpUrlTest, ConstructorFromParts_ValidHttp) {
     CHttpUrl url("example.com", "/path", "http");
@@ -110,30 +120,27 @@ TEST(CHttpUrlTest, ConstructorFromParts_ValidHttpsWithCustomPort)
 TEST(CHttpUrlTest, ConstructorFromParts_DocumentWithoutLeadingSlash)
 {
     CHttpUrl url("example.com", "path", "http");
-
     EXPECT_EQ(url.GetDocument(), "/path");
 }
 
 TEST(CHttpUrlTest, ConstructorFromParts_EmptyDocument)
 {
     CHttpUrl url("example.com", "", "http");
-
     EXPECT_EQ(url.GetDocument(), "/");
 }
 
 TEST(CHttpUrlTest, ConstructorFromParts_InvalidDomain)
 {
-    EXPECT_THROW(CHttpUrl url("", "/path", "http"), std::invalid_argument); //check
-    EXPECT_THROW(CHttpUrl url("example..com", "/path", "http"), std::invalid_argument);
+    EXPECT_THROW(CHttpUrl url("", "/path", "http"), CUrlParsingError);
+    EXPECT_THROW(CHttpUrl url("example..com", "/path", "http"), CUrlParsingError);
 }
 
 TEST(CHttpUrlTest, ConstructorFromParts_InvalidPort)
 {
-    EXPECT_THROW(CHttpUrl url("example.com", "/path", "http", "0"), std::invalid_argument);
-    EXPECT_THROW(CHttpUrl url("example.com", "/path", "http", "65536"), std::invalid_argument);
+    EXPECT_THROW(CHttpUrl url("example.com", "/path", "http", "0"), CUrlParsingError);
+    EXPECT_THROW(CHttpUrl url("example.com", "/path", "http", "65536"), CUrlParsingError);
 }
 
-// Тесты для метода GetURL
 TEST(CHttpUrlTest, GetURL_OmitsDefaultPort)
 {
     CHttpUrl httpUrl("http://example.com:80/path");
@@ -152,18 +159,15 @@ TEST(CHttpUrlTest, GetURL_IncludesNonDefaultPort)
     EXPECT_EQ(httpsUrl.GetURL(), "https://example.com:80/path");
 }
 
-// Тесты для различных методов
 TEST(CHttpUrlTest, GetMethods)
 {
     CHttpUrl url("https://example.com:8080/path/to/resource?query=value");
-
     EXPECT_EQ(url.GetProtocol(), Protocol::HTTPS);
     EXPECT_EQ(url.GetDomain(), "example.com");
     EXPECT_EQ(url.GetPort(), 8080);
     EXPECT_EQ(url.GetDocument(), "/path/to/resource?query=value");
 }
 
-// Тесты для обработки граничных случаев
 TEST(CHttpUrlTest, EdgeCases_MaxPortNumber)
 {
     CHttpUrl url("http://example.com:65535/path");
@@ -189,7 +193,6 @@ TEST(CHttpUrlTest, EdgeCases_ComplexDocument)
     EXPECT_EQ(url.GetDocument(), "/path/with/multiple/parts?and=query&params=too#fragment");
 }
 
-// Тесты для обработки ошибок
 TEST(CHttpUrlTest, ErrorMessages)
 {
     try
@@ -199,7 +202,7 @@ TEST(CHttpUrlTest, ErrorMessages)
     }
     catch (const CUrlParsingError& e)
     {
-        EXPECT_STREQ(e.what(), "Invalid port. Port must be number in this interval: 1 <= Port <= 65565.");
+        EXPECT_STREQ(e.what(), "Invalid Url.");
     }
     catch (...)
     {
@@ -209,15 +212,15 @@ TEST(CHttpUrlTest, ErrorMessages)
     try
     {
         CHttpUrl url("", "/path", "http");
-        FAIL() << "Expected std::invalid_argument";
+        FAIL() << "Expected CUrlParsingError";
     }
-    catch (const std::invalid_argument& e)
+    catch (const CUrlParsingError& e)
     {
         EXPECT_STREQ(e.what(), "Domain cannot be empty.");
     }
     catch (...)
     {
-        FAIL() << "Expected std::invalid_argument";
+        FAIL() << "Expected CUrlParsingError";
     }
 }
 

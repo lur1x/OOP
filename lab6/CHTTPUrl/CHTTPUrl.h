@@ -34,7 +34,13 @@ private:
     std::string m_document;
     Port m_port;
 
-    bool ParseUrl(std::string const& url);
+    bool InitializeFromUrl(std::string const& url);
+    bool InitializeFromParts(const std::string& domain, const std::string& document,
+                             const std::string& protocol);
+    bool InitializeFromParts(const std::string& domain, const std::string& document,
+                             const std::string& protocol, const std::string& port);
+
+    bool CouldBeDomain(const std::string& str) const;
     Protocol ParseProtocol(const std::string& protocol);
     std::string ParseDomain(const std::string& domain);
     Port ParsePort(const std::string& port);
