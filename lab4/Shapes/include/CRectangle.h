@@ -9,7 +9,10 @@
 class CRectangle : public ISolidShape
 {
 public:
-    CRectangle(CPoint startPos, double width, double height, uint32_t fillColor, uint32_t outlineColor);
+    CRectangle(CPoint leftTop, double width, double height,
+               uint32_t outlineColor, uint32_t fillColor)
+            : m_leftTop(leftTop), m_width(width), m_height(height),
+              m_outlineColor(outlineColor), m_fillColor(fillColor) {}
 
     double GetArea() const override;
     double GetPerimeter() const override;
@@ -23,13 +26,12 @@ public:
     double GetHeight() const;
 
 private:
-    CPoint m_startPos;
+    CPoint m_leftTop;
     double m_width;
     double m_height;
 
     uint32_t m_fillColor;
     uint32_t m_outlineColor;
 };
-
 
 #endif //SHAPES_CRECTANGLE_H

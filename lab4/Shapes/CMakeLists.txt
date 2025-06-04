@@ -29,7 +29,9 @@ add_executable(Shapes main.cpp
         include/CCircle.h
         src/CShapesController.cpp
         include/CShapesController.h
-        include/Constants.h)
+        include/Constants.h
+        include/ShapeFactory.h
+        src/ShapeFactory.cpp)
 
 add_executable(${PROJECT_NAME}Test
         tests/${PROJECT_NAME}Test.cpp

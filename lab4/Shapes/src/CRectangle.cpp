@@ -1,11 +1,5 @@
 #include "../include/CRectangle.h"
 
-
-CRectangle::CRectangle(CPoint startPos, double width, double height, uint32_t fillColor, uint32_t outlineColor)
-        : m_startPos(startPos), m_width(width), m_height(height), m_fillColor(fillColor), m_outlineColor(outlineColor)
-{
-}
-
 double CRectangle::GetArea() const
 {
     return m_width * m_height;
@@ -18,7 +12,7 @@ double CRectangle::GetPerimeter() const
 
 std::string CRectangle::ToString() const
 {
-    return RECTANGLE_OUTPUT_FORMAT + LEFT_OUTPUT_FORMAT + m_startPos.ToString() + "\n"
+    return RECTANGLE_OUTPUT_FORMAT + LEFT_OUTPUT_FORMAT + m_leftTop.ToString() + "\n"
            + WIDTH_OUTPUT_FORMAT + std::to_string(m_width) + "\n"
            + HEIGHT_OUTPUT_FORMAT + std::to_string(m_height) + "\n"
            + FILL_COLOR_OUTPUT_FORMAT + GetColorHex(m_fillColor) + "\n"
@@ -37,12 +31,12 @@ uint32_t CRectangle::GetFillColor() const
 
 CPoint CRectangle::GetLeftTop() const
 {
-    return m_startPos;
+    return m_leftTop;
 }
 
 CPoint CRectangle::GetRightBottom() const
 {
-    return { m_startPos.GetX() + m_width, m_startPos.GetY() + m_height };
+    return { m_leftTop.GetX() + m_width, m_leftTop.GetY() + m_height };
 }
 
 double CRectangle::GetWidth() const
