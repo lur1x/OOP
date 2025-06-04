@@ -14,33 +14,34 @@ public:
     CHttpUrl(
             std::string const& domain,
             std::string const& document,
-            Protocol protocol = Protocol::HTTP);
+            std::string const& protocol);
 
     CHttpUrl(
             std::string const& domain,
             std::string const& document,
-            Protocol protocol,
-            Port port);
+            std::string const& protocol,
+            std::string const& port);
 
     std::string GetURL() const noexcept;
     std::string GetDomain() const noexcept;
     std::string GetDocument() const noexcept;
     Protocol GetProtocol() const noexcept;
     Port GetPort() const noexcept;
-    std::string ToString() const;
+
 private:
     Protocol m_protocol;
     std::string m_domain;
     std::string m_document;
     Port m_port;
 
-    std::string StringToLowerCase(const std::string& str);
-    Protocol ParseStringToProtocol(const std::string& stringProtocol);
-    Port ParsePort(std::string const& stringPort, Protocol protocol);
-    Port GetDefaultPort(Protocol protocol);
-    bool IsValidDocument(std::string const& document);
-    bool IsValidDomain(std::string const& domain);
-    std::string ConvertProtocolToString(Protocol protocol) const;
+    bool ParseUrl(std::string const& url);
+    Protocol ParseProtocol(const std::string& protocol);
+    std::string ParseDomain(const std::string& domain);
+    Port ParsePort(const std::string& port);
+    std::string ParseDocument(const std::string& document);
+
+    Port GetDefaultPort(Protocol protocol) const;
+    static std::string ToLowerCase(const std::string& str);
 };
 
 #endif //CHTTPURL_CHTTPURL_H

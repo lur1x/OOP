@@ -20,7 +20,6 @@ add_executable(CHTTPUrl main.cpp
         CHTTPUrl.cpp
         CHTTPUrl.h
         Constants.h
-        CHTTPUrlTest.cpp
         CUrlParsingError.h
         CUrlParsingError.cpp
         Controller.cpp
@@ -33,7 +32,6 @@ add_executable(${PROJECT_NAME}Test
         CHTTPUrl.cpp
         CHTTPUrl.h
         Constants.h
-        CHTTPUrlTest.cpp
         CUrlParsingError.h
         CUrlParsingError.cpp
         Controller.cpp

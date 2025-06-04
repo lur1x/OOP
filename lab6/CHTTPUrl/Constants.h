@@ -12,12 +12,6 @@ enum class Protocol
     HTTPS
 };
 
-const std::string INVALID_URL_MESSAGE = "Invalid Url.";
-const std::string INVALID_PORT_MESSAGE = "Invalid port. Port must be number in this interval: 1 <= Port <= 65565.";
-const std::string INVALID_PROTOCOL_MESSAGE = "Invalid protocol. Protocol must be: HTTP / HTTPS.";
-const std::string INVALID_DOMAIN_MESSAGE = "Invalid domain. Domain must only contain english letters, digits, '-', '.'.";
-const std::string INVALID_DOCUMENT_MESSAGE = "Invalid document. Document mustn't contain spaces.";
-
 const std::string PRINT_URL = "Url: ";
 const std::string PRINT_DOMAIN = "Domain: ";
 const std::string PRINT_DOCUMENT = "Document: ";
@@ -35,16 +29,18 @@ const std::string HTTPS = "https";
 
 const char SLASH = '/';
 const char COLON = ':';
-const std::string EMPTY = "";
+const char EMPTY = ' ';
 const std::string SPASH = "://";
+const std::string CONSECUTIVE_DOTS = "..";
 
-const std::string PROTOCOL_REGEX_STRING = "(https?)://";
-const std::string DOMAIN_REGEX_STRING = "([0-9A-Za-z\\-.]+)";
-const std::string PORT_REGEX_STRING = "(?:\\:([\\d]{1,5}))?";
-const std::string DOCUMENT_REGEX_STRING = "(?:(?:/)([\\S]*))?";
+const std::string INVALID_URL = "Invalid Url.";
+const std::string INVALID_PORT_OUT_OF_RANGE = "Invalid port. Port must be number in this interval: 1 <= Port <= 65565.";
+const std::string INVALID_PORT_CHAR = "Invalid port: port need to be number.";
+const std::string INVALID_PROTOCOL = "Invalid protocol. Protocol must be: HTTP / HTTPS.";
+const std::string INVALID_DOMAIN_EMPTY = "Domain cannot be empty.";
+const std::string INVALID_DOMAIN_CONTAINS_SPACES ="Domain contains spaces";
+const std::string INVALID_DOMAIN_CONSECUTIVE_DOTS ="Domain contains consecutive dots";
 
-const std::regex URL_REGEX = std::regex(PROTOCOL_REGEX_STRING + DOMAIN_REGEX_STRING + PORT_REGEX_STRING + DOCUMENT_REGEX_STRING);
-const std::regex DOMAIN_REGEX = std::regex(DOMAIN_REGEX_STRING);
-const std::regex DOCUMENT_REGEX = std::regex("([\\S]*)?");
+const std::regex URL_REGEX(R"(^([a-zA-Z]+)://([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9](?:\.[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])*)(?::(\d+))?(?:/(.*))?$)");
 
 #endif //CHTTPURL_CONSTANTS_H
