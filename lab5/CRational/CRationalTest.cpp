@@ -299,14 +299,16 @@ TEST(CRationalTest, GreaterEnqualOperator)
     EXPECT_TRUE(CRational(3, 3) >= 1);
 }
 
-TEST(CRationalTest, OutputOperator) {
+TEST(CRationalTest, OutputOperator)
+{
     CRational r(3, 4);
     std::ostringstream oss;
     oss << r;
     EXPECT_EQ(oss.str(), "3/4");
 }
 
-TEST(CRationalTest, InputOperator) {
+TEST(CRationalTest, InputOperator)
+{
     CRational r;
     std::istringstream iss("5/6");
     iss >> r;
@@ -319,6 +321,35 @@ TEST(CRationalTest, InputOperator) {
     EXPECT_EQ(r.GetDenominator(), 1);
 }
 
+TEST(CRationalTest, ToCompoundBigFraction)
+{
+    CRational first(9, 8);
+    int intPart = first.GetIntegerPart();
+    CRational fractionalPart = first.GetFractionalPart();
+    EXPECT_EQ(intPart, 1);
+    EXPECT_EQ(fractionalPart.GetNumerator(), 1);
+    EXPECT_EQ(fractionalPart.GetDenominator(), 8);
+}
+
+TEST(CRationalTest, ToCompounSmallFraction)
+{
+    CRational second(1, 8);
+    int intPart = second.GetIntegerPart();
+    CRational fractionalPart = second.GetFractionalPart();
+    EXPECT_EQ(intPart, 0);
+    EXPECT_EQ(fractionalPart.GetNumerator(), 1);
+    EXPECT_EQ(fractionalPart.GetDenominator(), 8);
+}
+
+TEST(CRationalTest, ToCompounNegativeFraction)
+{
+    CRational second(-9, 8);
+    int intPart = second.GetIntegerPart();
+    CRational fractionalPart = second.GetFractionalPart();
+    EXPECT_EQ(intPart, -1);
+    EXPECT_EQ(fractionalPart.GetNumerator(), 1);
+    EXPECT_EQ(fractionalPart.GetDenominator(), 8);
+}
 
 int main(int argc, char** argv)
 {
