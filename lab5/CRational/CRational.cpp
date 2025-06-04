@@ -327,3 +327,23 @@ std::istream& operator>>(std::istream& is, CRational& rational)
 
     return is;
 }
+
+int CRational::GetIntegerPart() const
+{
+    return GetNumerator() / GetDenominator();
+}
+
+CRational CRational::GetFractionalPart() const
+{
+    int sign = 1;
+    if (GetNumerator() < 0)
+    {
+        sign= -sign;
+    }
+    return CRational(GetNumerator() % GetDenominator() * sign, GetDenominator());
+}
+
+std::pair<int, CRational> CRational::ToCompoundFraction() const
+{
+    return {GetIntegerPart(), GetFractionalPart()};
+}

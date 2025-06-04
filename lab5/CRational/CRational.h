@@ -13,6 +13,11 @@ public:
     int GetNumerator() const;
     int GetDenominator() const;
 
+    int GetIntegerPart() const;
+    CRational GetFractionalPart() const;
+
+    std::pair<int, CRational> ToCompoundFraction() const;
+
     double ToDouble() const;
 
     CRational operator+() const;
@@ -73,6 +78,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const CRational& rational);
     friend std::istream& operator>>(std::istream& is, CRational& rational);
+
 
 private:
     int m_numerator;
