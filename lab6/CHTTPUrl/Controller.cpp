@@ -1,6 +1,5 @@
 #include "Controller.h"
 
-
 void Controller::PrintInfo(const CHttpUrl& url) const
 {
     m_output << url.GetURL() << std::endl;
@@ -24,8 +23,7 @@ bool Controller::Run() const
         }
         catch (CUrlParsingError const& e)
         {
-            std::cout << e.what() << std::endl
-                      << std::endl;
+            std::cout << e.what() << std::endl;
         }
     }
 

@@ -2,52 +2,55 @@
 #define CHTTPURL_CHTTPURL_H
 
 #include <stdexcept>
+#include <optional>
 #include "CUrlParsingError.h"
 #include "Constants.h"
-
+#include <iostream>
 
 class CHttpUrl
 {
 public:
-    CHttpUrl(std::string const& url);
+    CHttpUrl(std::string const &url);
 
+    CHttpUrl(std::string const &domain, std::string const &document, Protocol protocol);
+    
     CHttpUrl(
-            std::string const& domain,
-            std::string const& document,
-            std::string const& protocol);
+            std::string const &domain,
+            std::string const &document,
+            Protocol protocol,
+            Port port) : m_port(port), m_protocol(protocol), m_document(document), m_domain(GetValidDomain(domain))
+            {std::cout << "Зашли в последний конструктор\n";};
 
-    CHttpUrl(
-            std::string const& domain,
-            std::string const& document,
-            std::string const& protocol,
-            std::string const& port);
 
     std::string GetURL() const noexcept;
+    
     std::string GetDomain() const noexcept;
+    
     std::string GetDocument() const noexcept;
+    
     Protocol GetProtocol() const noexcept;
+    
     Port GetPort() const noexcept;
 
 private:
-    Protocol m_protocol;
-    std::string m_domain;
-    std::string m_document;
     Port m_port;
+    std::string m_domain;
+    Protocol m_protocol;
+    std::string m_document;
 
-    bool InitializeFromUrl(std::string const& url);
-    bool InitializeFromParts(const std::string& domain, const std::string& document,
-                             const std::string& protocol);
-    bool InitializeFromParts(const std::string& domain, const std::string& document,
-                             const std::string& protocol, const std::string& port);
+    std::string ToLowerCase(const std::string &str) const;
+    std::string ProtocolToString() const;
+    Port GetDefaultPort(const Protocol &protocol) const noexcept;
 
-    bool CouldBeDomain(const std::string& str) const;
-    Protocol ParseProtocol(const std::string& protocol);
-    std::string ParseDomain(const std::string& domain);
-    Port ParsePort(const std::string& port);
-    std::string ParseDocument(const std::string& document);
+    bool ParseUrl(std::istringstream &iss, SHttpUrl &httpElems) const;
+    std::optional<Port> ParsePort(std::istringstream &iss) const;
+    std::string ParseDomain(std::istringstream &iss) const;
+    Protocol ParseProtocol(std::istringstream &iss) const;
+    std::string ParseDocument(std::istringstream &iss) const;
 
-    Port GetDefaultPort(Protocol protocol) const;
-    static std::string ToLowerCase(const std::string& str);
+    std::optional<Protocol> GetProtocolByString(const std::string &str) const;
+
+    std::string GetValidDomain(const std::string &domain) const;
 };
 
-#endif //CHTTPURL_CHTTPURL_H
+#endif
